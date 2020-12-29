@@ -1,0 +1,69 @@
+/**
+ * @module bot
+ */
+
+import Discord from "discord.js"
+import winston_logger from "../modules/logger/index.js"
+import dfname from "../utils/__dfname.js"
+// import textToCodeBlock from "../utils/bot/textToCodeBlock.js"
+import commands from "./commands/index.js"
+import helpers from "./helpers/index.js"
+import {
+    env
+} from "process"
+
+const prefix = '!'
+const logger = new winston_logger(dfname.dirfilename(
+    import.meta.url), true)
+const client = new Discord.Client({
+    disableEveryone: false
+})
+
+;
+(async () => {
+    client.login(env.DSTOKEN)
+})()
+
+client.on('ready', () => {
+    logger.info("Discord client ready")
+})
+
+client.on('guildCreate', (newGuild) => {
+    helpers.init.run(newGuild)
+})
+
+/**
+ * Событие при обнаружении сообщения
+ */
+let isCmdRunning = []
+client.on('message', async (message) => {
+    if (message.author.bot) return
+    if (!message.content.startsWith(prefix)) return
+    if (isCmdRunning.indexOf(message.member.id) !== -1) return
+    helpers.permissions.get(message.guild.id, message.member.id)
+        .then(row => {
+            let role
+            if (row[0])
+                role = row[0]["role"]
+            else if (message.member.user.id == "542733341011738639")
+                role = 2
+            else
+                role = 0
+            logger.info(`Новая команда: ${message.content}`)
+            let cmd = message.content.slice(1).split(' ')[0]
+            if (commands[cmd]) {
+                if (role >= commands[cmd].permissions || commands[cmd].permissions == undefined) {
+                    commands[cmd].run(message, role)
+                        .then(() => isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1))
+                        .catch((err) => {
+                                message.channel.send("Произошла непредвиденная ошибка.")
+                                logger.error(err)
+                        })
+                    isCmdRunning.push(message.member.id)
+                } else
+                    message.reply("Не прокатит")
+            }
+            // } else
+            //     message.reply("Нет такой команды! Все команды - !help")
+        })
+})
