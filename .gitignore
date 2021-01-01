@@ -118,3 +118,7 @@ jsdoc.config.json
 *.db-journal
 databases/**
 *.sqbpro
+
+#idea
+.idea/
+.idea/**

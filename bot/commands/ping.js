@@ -11,6 +11,7 @@ function main(msg) {
     return new Promise((resolve, reject) => {
         try {
             msg.channel.send("Pong")
+            resolve()
         } catch (err) {
             reject(err);
         }

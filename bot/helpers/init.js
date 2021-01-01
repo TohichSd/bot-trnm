@@ -18,7 +18,7 @@ function main(guild) {
         .then((rowSelect) => {
             if (rowSelect == undefined || rowSelect == null) {
                 DAO.run(`INSERT INTO guilds (guild_id) VALUES (${guild.id})`)
-                    .then(logger.debug("Guild added to db"))
+                    .then(() => logger.info("Guild added to db"))
                     .catch((error) => {
                         logger.warn(error.stack)
                     })
@@ -30,7 +30,37 @@ function main(guild) {
         })
         .catch(err => logger.warn(err.stack))
 }
+
+/**
+ * Проверить наличие сервера в бд и в случае отстутствия запростить ключ
+ * @param {object} msg
+ * @param {boolean} init
+ * @param {string} key
+ */
+function check(guild) {
+    return new Promise((resolve, reject) => {
+        try {
+            DAO.get(`SELECT * FROM guilds WHERE guild_id = '${guild.id}'`)
+                .then(rowSelect => {
+                    if (rowSelect === undefined) {
+                        resolve(false)
+                    }
+                    else {
+                        resolve(true)
+                    }
+                })
+        }
+        catch (err) {
+            reject(err)
+            logger.warn(err)
+        }
+
+    })
+
+}
+
 export default {
     run: main,
+    check: check,
     name: 'init'
 }
