@@ -3,6 +3,7 @@ import DAO from "../../modules/db/index.js"
 import {
     MessageEmbed
 } from "discord.js"
+
 /**
  * Класс турнира
  */
@@ -27,7 +28,7 @@ class Tournament {
     }) {
         //Получить id последнего турнира из бд
         //создание embed-сообщения
-        if (params.channelsTrnm.size == 0 || params.channelsMembers.size == 0) {
+        if (params.channelsTrnm.size === 0 || params.channelsMembers.size === 0) {
             params.feedbackChannel.send("Я же просил использовать #упоминания! Давай по новой.")
             return
         }
@@ -46,11 +47,10 @@ class Tournament {
         let channels = ""
         let event_id = 0;
         let member;
-        (async () => {
-            await DAO.get("SELECT MAX(id) FROM events").then(event => {
-                event_id = parseInt(event['MAX(id)'])
-            })
-
+        DAO.get("SELECT MAX(id) FROM events").then(event => {
+            event_id = parseInt(event['MAX(id)'])
+        })
+        ;(async () => {
             for (let channel of params.channelsTrnm) {
                 channel = channel[1]
                 await channel.send(embed)
@@ -99,21 +99,26 @@ class Tournament {
                     })
             }
             //создать запись о турнире в бд
-            DAO.run("INSERT INTO events (name, description, loot, message_id, channel_id) VALUES ($name, $description, $loot, $message_id, $channel_id)", {
+            let channelsToSendID = ""
+            for (let channelM of params.channelsMembers) {
+                channelM = channelM[1]
+                channelsToSendID += channelM.id + ','
+            }
+            DAO.run("INSERT INTO events (name, description, loot, message_id, channel_id, channelsToSendID, feedbackChannel) VALUES ($name, $description, $loot, $message_id, $channel_id, $channelsToSendID, $feedbackChannel)", {
                 $name: params.name,
                 $description: params.description,
                 $loot: params.loot,
                 $message_id: messages.slice(0, messages.length - 1),
-                $channel_id: channels.slice(0, channels.length - 1)
+                $channel_id: channels.slice(0, channels.length - 1),
+                $channelsToSendID: channelsToSendID.slice(0, channelsToSendID.length - 1),
+                $feedbackChannel: params.feedbackChannel.id
             })
             //Обновить последние сообщения и каналы в guilds
-            DAO.run("UPDATE guilds SET lastMessageID = $message_id, lastChannelID = $channel_id, lastEventID = $event_id WHERE guild_id = $guild_id", {
-                $message_id: messages.slice(0, messages.length - 1),
-                $channel_id: channels.slice(0, channels.length - 1),
+            DAO.run("UPDATE guilds SET lastEventID = $event_id WHERE guild_id = $guild_id", {
                 $guild_id: params.guild_id,
-                $event_id: event_id
+                $event_id: (event_id + 1).toString()
             })
-            params.feedbackChannel.send("Турнир создан")
+            // params.feedbackChannel.send("Турнир создан")
         })()
     }
 

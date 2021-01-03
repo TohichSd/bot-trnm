@@ -21,7 +21,8 @@ function main(msg) {
 const ping = {
     name: "ping",
     run: main,
-    description: "Просто пинг"
+    description: "Просто пинг",
+    showhelp: false
 }
 
 export default ping
