@@ -3,7 +3,9 @@
  * Не используется
  */
 import DAO from "../../modules/db/index.js"
-
+import winston_logger from "../../modules/logger/index.js"
+import dfname from "../../utils/__dfname.js"
+const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 /**
  * Добавляет слушателей реакций для всех последних сообщений о турнирах для всех серверов
  * @param {object} guilds client.guilds
@@ -31,6 +33,8 @@ async function main(guilds) {
             let channel = guild.channels.cache.get(channelID)
             let message
             await channel.messages.fetch(event["message_id"]).then(msg => message = msg)
+                .catch((err) => logger.warn(err))
+            if(!message) continue
             let channelsToSendID = event["channelsToSendID"].split(',')
             let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`, {
                 time: 432000

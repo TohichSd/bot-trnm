@@ -137,7 +137,7 @@ class Logger {
     /**
      *Логгировать ошибку
      * @param {String} msg Ошибка
-     * @param {object} params Параметры
+     * @param {{console: boolean}} params Параметры
      * @param {boolean} params.console Если false, не сообщение не будет выведено в консоль
      * @param {string[]} params.files Список дополнительных файлов
      * @returns {Promise} Promise
