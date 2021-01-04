@@ -10,7 +10,6 @@ import helpers from "./helpers/index.js"
 import {
     env
 } from "process"
-import http from "http"
 
 const prefix = '!'
 const logger = new winston_logger(dfname.dirfilename(
@@ -24,9 +23,9 @@ client.on('ready', () => {
     helpers.restartReactionListener.run(client.guilds)
 })
 // console.log = function() {}
-// client.on('guildCreate', (newGuild) => {
-//     // helpers.init.run(newGuild)
-// })
+client.on('guildCreate', (newGuild) => {
+    // helpers.init.run(newGuild)
+})
 
 /**
  * Событие при обнаружении сообщения
@@ -52,8 +51,8 @@ client.on('message', async (message) => {
                     commands[cmd].run(message, role)
                         .then(() => isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1))
                         .catch((err) => {
-                                message.channel.send("Произошла непредвиденная ошибка.")
                                 logger.error(err)
+                            isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1)
                         })
                     isCmdRunning.push(message.member.id)
                 } else
