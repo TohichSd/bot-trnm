@@ -1,1 +1,1 @@
-# Discord bot for server tournaments
+# Discord-бот для проведения турниров

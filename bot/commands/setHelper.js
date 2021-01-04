@@ -23,8 +23,8 @@ function main(msg) {
 }
 
 export default {
-    name: "помощник",
+    name: "админ",
     run: main,
-    description: "Дать участнику права управлять ботом",
+    description: "Дать участнику права управлять ботом. Использование: !админ @участник",
     permissions: 2
 }

@@ -63,6 +63,7 @@ class Tournament {
                         })
                         //При добавлении эмодзи, выполнить следующее
                         await collector.on("collect", async (reaction, user) => {
+
                             if (user.bot) return
                             let member_id = channel.guild.members.cache.find(member => member.user.id === user.id).id
                             //Проверка наличия участника в турнире
@@ -84,15 +85,33 @@ class Tournament {
                                     params.feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.")
                                     return
                                 }
-                                DAO.run("INSERT INTO members (id, guild_id, event) VALUES ($id, $guild_id, $event)", {
-                                    $id: member_id,
-                                    $guild_id: params.guild_id,
-                                    $event: (event_id + 1).toString()
-                                })
+                                let messagesID = ""
                                 //Послать сообщения об участии в перечисленные каналы
                                 for (let channelM of params.channelsMembers) {
                                     channelM = channelM[1]
                                     channelM.send(`<@${member_id}> принимает участие в турнире ${params.name}!\nСсылка на steam: ${rowApp['link']}\nУровень: ${rowApp['level']}\nВозраст: ${rowApp['age']}\nМикрофон: ${rowApp['micro']}`)
+                                        .then(message => {
+                                            messagesID += message.id = ","
+                                        })
+                                }
+                                DAO.run("INSERT INTO members (id, guild_id, event, messagesID) VALUES ($id, $guild_id, $event, $messagesID)", {
+                                    $id: member_id,
+                                    $guild_id: params.guild_id,
+                                    $event: (event_id + 1).toString(),
+                                    $messagesID: messagesID
+                                })
+                            })
+                        })
+                        await collector.on("remove", (reaction, user) => {
+                            let member_id = channel.guild.members.cache.find(member => member.user.id === user.id).id
+                            DAO.get("SELECT * FROM members WHERE id = $id AND guild_id = $guild_id AND event = $event", {
+                                $id: member_id,
+                                $guild_id: params.guild_id,
+                                $event: (event_id + 1).toString(),
+                            }).then(rowMember => {
+                                let memberMessagesID = rowMember["messagesID"].split(',')
+                                for (let mmID of memberMessagesID) {
+                                    // let message =
                                 }
                             })
                         })
