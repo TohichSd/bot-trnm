@@ -5,6 +5,8 @@
 import Tournament from "../helpers/Tournament.js"
 import Interview from "../helpers/Interview.js"
 
+console.log = function() {}
+console.error = function() {}
 function main(msg) {
     return new Promise((resolve, reject) => {
         try {

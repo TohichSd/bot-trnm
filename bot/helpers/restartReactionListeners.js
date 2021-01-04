@@ -1,11 +1,13 @@
 /**
  * @module restart-reaction-listener
- * Не используется
  */
 import DAO from "../../modules/db/index.js"
 import winston_logger from "../../modules/logger/index.js"
 import dfname from "../../utils/__dfname.js"
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
+
+console.log = function() {}
+console.error = function() {}
 /**
  * Добавляет слушателей реакций для всех последних сообщений о турнирах для всех серверов
  * @param {object} guilds client.guilds

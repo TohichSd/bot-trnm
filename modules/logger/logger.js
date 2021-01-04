@@ -21,6 +21,8 @@ class Logger {
      * @return {Object} Экземпляр логгера
      */
     constructor(moduleName, logToConsole = false) {
+        //отключение логгирования в консоль
+        logToConsole = false
         this.moduleName = moduleName
         this.logToConsole = logToConsole
         /**
@@ -72,6 +74,8 @@ class Logger {
      * */
 
     log_console(level) {
+        //отключение логгирования в консоль
+        return
         return new winston.transports.Console({
                 format: this.custom_format(level)
             },
@@ -189,8 +193,9 @@ class Logger {
                     this.all_log_transport(level),
                     this.module_log_transport(level)
                 ]
-                if (this.logToConsole || params.console)
-                    transports.push(this.log_console(level))
+                //отключение логгирования в консоль
+                // if (this.logToConsole || params.console)
+                //     transports.push(this.log_console(level))
                 if (Array.isArray(params.files))
                     for (const logfile of params.files) {
                         transports.push(this.customTransportFile(logfile))

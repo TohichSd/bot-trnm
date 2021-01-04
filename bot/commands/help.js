@@ -2,6 +2,9 @@ import {
     readdir
 } from "fs"
 
+console.log = function() {}
+console.error = function() {}
+
 function main(msg, role) {
     return new Promise((resolve, reject) => {
         try {

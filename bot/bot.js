@@ -22,7 +22,7 @@ client.on('ready', () => {
     logger.info("Discord client ready")
     helpers.restartReactionListener.run(client.guilds)
 })
-
+console.log = function() {}
 // client.on('guildCreate', (newGuild) => {
 //     // helpers.init.run(newGuild)
 // })

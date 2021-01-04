@@ -3,6 +3,8 @@
  */
 import init from "../helpers/init.js"
 
+console.log = function() {}
+console.error = function() {}
 
 export default {
     run: (msg) => {

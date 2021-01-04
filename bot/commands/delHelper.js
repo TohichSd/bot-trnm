@@ -4,6 +4,9 @@
 
 import userPermissions from "../helpers/userPermissions.js"
 
+console.log = function() {}
+console.error = function() {}
+
 /**
  * Присвоить упомянотому участнику роль 1
  * @param {object} msg message
