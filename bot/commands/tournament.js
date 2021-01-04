@@ -2,11 +2,11 @@
  * @module cmd-tournament
  */
 
-import Tournament from "../helpers/Tournament.js"
+import Tournament from "../helpers/tournament.js"
 import Interview from "../helpers/Interview.js"
 
-console.log = function() {}
-console.error = function() {}
+// console.log = function() {}
+// console.error = function() {}
 function main(msg) {
     return new Promise((resolve, reject) => {
         try {

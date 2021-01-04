@@ -10,8 +10,8 @@ import Interview from "../helpers/Interview.js"
 const logger = new winston_logger(dfname.dirfilename(
     import.meta.url), true)
 
-console.log = function() {}
-console.error = function() {}
+// console.log = function() {}
+// console.error = function() {}
 /**
  * Создать заявку
  * @param {object} msg message

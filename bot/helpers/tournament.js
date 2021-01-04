@@ -4,8 +4,8 @@ import {
     MessageEmbed
 } from "discord.js"
 import {env} from "process"
-console.log = function() {}
-console.error = function() {}
+// console.log = function() {}
+// console.error = function() {}
 /**
  * Класс турнира
  */
