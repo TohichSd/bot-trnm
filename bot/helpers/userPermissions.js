@@ -62,7 +62,7 @@ function set(guild_id, permissions, id) {
                 $id: id
             })
             .then(row => {
-                if (row == undefined || row == null) {
+                if (row === undefined) {
                     DAO.run(`INSERT INTO roles (guild_id, role, id) VALUES ($guild_id, $permissions, $id)`, {
                             $guild_id: guild_id,
                             $permissions: permissions,

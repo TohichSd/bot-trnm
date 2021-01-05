@@ -33,6 +33,7 @@ client.on('guildCreate', (newGuild) => {
 client.on('message', async (message) => {
     if(env.ONLYGUILD_ID && message.guild.id !== env.ONLYGUILD_ID) return;
     if (message.author.bot) return;
+    helpers.debil.run(message)
     if (!message.content.startsWith(prefix)) return
     if (isCmdRunning.indexOf(message.member.id) !== -1) return;
     helpers.permissions.get(message.guild.id, message.member.id)
