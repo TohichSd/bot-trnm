@@ -2,27 +2,28 @@
  * Дебильные ответ очки
  * @param message
  */
-function main(message) {
-    if (message.content.toLowerCase() === "а") {
-        sendMsg(message.channel, "Хуй на")
-    } else if (message.content.toLowerCase() === "чё") {
-        sendMsg(message.channel, "Хуй в очё")
-    } else if (message.content.toLowerCase() === "чо") {
-        sendMsg(message.channel, "Хуй в очо")
-    } else if (message.content.toLowerCase().includes("коммунизм")) {
-        sendMsg(message.channel, "САЮЮЮЮЗ НЕРУШИМЫЙ РЕСПУЛИК СВАБОООДНЫХ")
+async function main(message) {
+    if (message.content.toLowerCase().includes("коммунизм")) {
+        await sendMsg(message.channel, "САЮЮЮЮЗ НЕРУШИМЫЙ РЕСПУЛИК СВАБОООДНЫХ")
+        message.channel.send({files: ["https://i.ibb.co/sjLd17x/18-1924.png"]})
     }
 }
 
 
 function sendMsg(channel, text) {
-    let len = text.length
-    channel.startTyping()
-    setTimeout(() => {
-        channel.send(text)
-        channel.stopTyping()
-    }, 400 * len)
-
+    return new Promise((resolve, reject) => {
+        try {
+            let len = text.length
+            channel.startTyping()
+            setTimeout(() => {
+                channel.send(text)
+                channel.stopTyping()
+                resolve()
+            }, 100 * len)
+        } catch (err) {
+            reject(err)
+        }
+    })
 }
 
 export default {

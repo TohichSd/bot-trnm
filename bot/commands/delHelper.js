@@ -16,6 +16,7 @@ function main(msg) {
         try {
             msg.mentions.members.forEach((member) => {
                 userPermissions.set(msg.guild.id, 0, member.id)
+                    .then(() => msg.reply("Теперь " + member.displayName + " не имеет прав администратора."))
                     .catch(err => console.error(err))
             })
         } catch (err) {

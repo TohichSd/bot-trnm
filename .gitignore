@@ -113,7 +113,7 @@ jsdoc.config.json
 #vscode
 .vscode
 
-#database
+#databasegitgit 
 *.db
 *.db-journal
 databases/**
