@@ -15,7 +15,7 @@ function main(msg) {
         try {
             msg.mentions.members.forEach((member) => {
                 userPermissions.set(msg.guild.id, 1, member.id)
-                    .then(() => msg.reply("Теперь " + member.displayName + " имеет права администратора"))
+                    .then(() => msg.reply("Теперь " + member.displayName + " имеет права управлять турнирами"))
                     .catch(err => console.error(err))
             })
             resolve()
@@ -26,7 +26,7 @@ function main(msg) {
 }
 
 export default {
-    name: "админ",
+    name: "модер",
     run: main,
     description: "Дать участнику права управлять ботом. Использование: !админ @участник",
     permissions: 2

@@ -116,7 +116,6 @@ jsdoc.config.json
 #databasegitgit 
 *.db
 *.db-journal
-databases/**
 *.sqbpro
 
 #idea

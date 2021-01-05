@@ -16,9 +16,10 @@ function main(msg) {
         try {
             msg.mentions.members.forEach((member) => {
                 userPermissions.set(msg.guild.id, 0, member.id)
-                    .then(() => msg.reply("Теперь " + member.displayName + " не имеет прав администратора."))
+                    .then(() => msg.reply("Теперь " + member.displayName + " не имеет прав создавать турниры."))
                     .catch(err => console.error(err))
             })
+            resolve()
         } catch (err) {
             reject(err)
         }
@@ -26,7 +27,7 @@ function main(msg) {
 }
 
 export default {
-    name: "участник",
+    name: "не-модер",
     run: main,
     description: "Даёт участнику базовые права",
     permissions: 2
