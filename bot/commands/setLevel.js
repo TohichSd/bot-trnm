@@ -4,20 +4,28 @@ import dfname from "../../utils/__dfname.js"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
+// console.log = function() {}
+// console.error = function() {}
+
 function main(msg) {
     return new Promise((resolve, reject) => {
         try {
+            let level = msg.content.split(" ")[1]
+            if(!level) {
+                msg.reply("Не указан новый уровень. Использование: !заявка-уровень <уровень>")
+                reject("No level")
+                return
+            }
             DAO.get(`SELECT * FROM applications WHERE guild_id = $guild_id AND id = $id`, {
                     $guild_id: msg.guild.id,
                     $id: msg.member.id,
                 })
                 .then(row => {
-                    if (row == undefined) {
+                    if (row === undefined) {
                         msg.reply("У вас ещё нет заявки. Создайте её с помощью !заявка")
                         resolve()
                         return
                     }
-                    let level = msg.content.split(" ")[1]
                     DAO.run(`UPDATE applications SET level = $level WHERE id = $id AND guild_id = $guild_id`, {
                             $guild_id: msg.guild.id,
                             $id: msg.member.id,

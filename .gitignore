@@ -122,3 +122,6 @@ databases/**
 #idea
 .idea/
 .idea/**
+
+#opeNode
+.openode

@@ -4,6 +4,9 @@ import dfname from "../../utils/__dfname.js"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
+// console.log = function() {}
+// console.error = function() {}
+
 function main(msg) {
     return new Promise((resolve, reject) => {
         try {

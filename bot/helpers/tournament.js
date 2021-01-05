@@ -3,7 +3,9 @@ import DAO from "../../modules/db/index.js"
 import {
     MessageEmbed
 } from "discord.js"
-
+import {env} from "process"
+// console.log = function() {}
+// console.error = function() {}
 /**
  * Класс турнира
  */
@@ -25,6 +27,7 @@ class Tournament {
         date: "",
         guild_id: "",
         feedbackChannel: {},
+        region: ""
     }) {
         //Получить id последнего турнира из бд
         //создание embed-сообщения
@@ -33,16 +36,31 @@ class Tournament {
             return
         }
         let embed = new MessageEmbed()
-            .setColor('#18d94b')
-            .setTitle("**" + params.name.toUpperCase() + "**")
-            .setDescription(":point_right: На сервере скоро состоится новый турнир! :point_left:")
-            .addField(":fire: ОПИСАНИЕ :fire: ", params.description)
-            .addField(":first_place: НАГРАДЫ :first_place: ", params.loot)
-            .addField(":clock1: ВРЕМЯ ПРОВЕДЕНИЯ :clock1:", params.date)
-            .setAuthor("НОВЫЙ ТУРНИР", "https://cdn.discordapp.com/app-icons/788856250854277140/5b104ef35a2f808c899de065d92809f4.png?size=512")
-            .setImage(params.imgURL)
-            .setFooter("Жми на галочку чтобы принять участие")
-            .setThumbnail("https://upload.wikimedia.org/wikipedia/ru/d/da/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_%D0%B8%D0%B3%D1%80%D1%8B_Armello.png")
+        if (params.region !== "russia") {
+            embed
+                .setColor('#18d94b')
+                .setTitle("**" + params.name.toUpperCase() + "**")
+                .setDescription(":point_right: New tournament is coming :point_left:")
+                .addField(":fire: DESCRIPTION :fire: ", params.description)
+                .addField(":first_place: AWARDS :first_place: ", params.loot)
+                .addField(":clock1: Date and time :clock1:", params.date)
+                .setAuthor("NEW TOURNAMENT", "https://cdn.discordapp.com/app-icons/788856250854277140/5b104ef35a2f808c899de065d92809f4.png?size=512")
+                .setImage(params.imgURL)
+                .setFooter("Click on the checkbox to take part")
+                .setThumbnail("https://i.postimg.cc/L8grKJQV/exclamation-mark.png")
+        } else {
+            embed
+                .setColor('#18d94b')
+                .setTitle("**" + params.name.toUpperCase() + "**")
+                .setDescription(":point_right: На сервере скоро состоится новый турнир! :point_left:")
+                .addField(":fire: ОПИСАНИЕ :fire: ", params.description)
+                .addField(":first_place: НАГРАДЫ :first_place: ", params.loot)
+                .addField(":clock1: ВРЕМЯ ПРОВЕДЕНИЯ :clock1:", params.date)
+                .setAuthor("НОВЫЙ ТУРНИР", "https://cdn.discordapp.com/app-icons/788856250854277140/5b104ef35a2f808c899de065d92809f4.png?size=512")
+                .setImage(params.imgURL)
+                .setFooter("Жми на галочку чтобы принять участие")
+                .setThumbnail("https://i.postimg.cc/L8grKJQV/exclamation-mark.png")
+        }
         let messages = ""
         let channels = ""
         let event_id = 0;

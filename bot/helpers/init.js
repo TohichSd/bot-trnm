@@ -9,6 +9,8 @@ import userPermissions from "../helpers/userPermissions.js"
 const logger = new winston_logger(dfname.dirfilename(
     import.meta.url), true)
 
+// console.log = function() {}
+// console.error = function() {}
 /**
  * Добавить сервер в базу данных
  * @param {object} guild Сервер для инициализации

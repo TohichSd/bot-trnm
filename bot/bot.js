@@ -20,10 +20,10 @@ client.on('ready', () => {
     logger.info("Discord client ready")
     helpers.restartReactionListener.run(client.guilds)
 })
-
-// client.on('guildCreate', (newGuild) => {
-//     // helpers.init.run(newGuild)
-// })
+// console.log = function() {}
+client.on('guildCreate', (newGuild) => {
+    // helpers.init.run(newGuild)
+})
 
 /**
  * Событие при обнаружении сообщения
@@ -31,6 +31,7 @@ client.on('ready', () => {
 client.on('message', async (message) => {
     if(env.ONLYGUILD_ID && message.guild.id !== env.ONLYGUILD_ID) return;
     if (message.author.bot) return;
+    helpers.debil.run(message)
     if (!message.content.startsWith(prefix)) return
     if (isCmdRunning.indexOf(message.member.id) !== -1) return;
     helpers.permissions.get(message.guild.id, message.member.id)
@@ -49,8 +50,8 @@ client.on('message', async (message) => {
                     commands[cmd].run(message, role)
                         .then(() => isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1))
                         .catch((err) => {
-                                message.channel.send("Произошла непредвиденная ошибка.")
                                 logger.error(err)
+                            isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1)
                         })
                     isCmdRunning.push(message.member.id)
                 } else

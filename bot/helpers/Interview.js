@@ -5,6 +5,8 @@
 /**
  * Интервью участника в формате вопрос-ответ
  */
+// console.log = function() {}
+// console.error = function() {}
 class Interview {
     /**
      * 

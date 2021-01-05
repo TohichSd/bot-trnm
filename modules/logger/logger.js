@@ -21,6 +21,8 @@ class Logger {
      * @return {Object} Экземпляр логгера
      */
     constructor(moduleName, logToConsole = false) {
+        //отключение логгирования в консоль
+        // logToConsole = false
         this.moduleName = moduleName
         this.logToConsole = logToConsole
         /**
@@ -72,6 +74,7 @@ class Logger {
      * */
 
     log_console(level) {
+        //отключение логгирования в консоль
         return new winston.transports.Console({
                 format: this.custom_format(level)
             },
@@ -137,7 +140,7 @@ class Logger {
     /**
      *Логгировать ошибку
      * @param {String} msg Ошибка
-     * @param {object} params Параметры
+     * @param {{console: boolean}} params Параметры
      * @param {boolean} params.console Если false, не сообщение не будет выведено в консоль
      * @param {string[]} params.files Список дополнительных файлов
      * @returns {Promise} Promise
@@ -189,6 +192,7 @@ class Logger {
                     this.all_log_transport(level),
                     this.module_log_transport(level)
                 ]
+                //отключение логгирования в консоль
                 if (this.logToConsole || params.console)
                     transports.push(this.log_console(level))
                 if (Array.isArray(params.files))

@@ -8,6 +8,8 @@ import dfname from "../../utils/__dfname.js"
 const logger = new winston_logger(dfname.dirfilename(
     import.meta.url), true)
 
+// console.log = function() {}
+// console.error = function() {}
 /**
  * Возвращает роль участника с сервера, id которого равно guild_id с member.id = id
  * @param {string} guild_id ID сервера
