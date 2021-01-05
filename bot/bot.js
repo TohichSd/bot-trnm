@@ -31,7 +31,8 @@ client.on('guildCreate', (newGuild) => {
 client.on('message', async (message) => {
     if(env.ONLYGUILD_ID && message.guild.id !== env.ONLYGUILD_ID) return;
     if (message.author.bot) return;
-    helpers.debil.run(message)
+    //Функция дебила отключена
+    // helpers.debil.run(message)
     if (!message.content.startsWith(prefix)) return
     if (isCmdRunning.indexOf(message.member.id) !== -1) return;
     helpers.permissions.get(message.guild.id, message.member.id)
@@ -55,7 +56,7 @@ client.on('message', async (message) => {
                         })
                     isCmdRunning.push(message.member.id)
                 } else
-                    message.reply("Эту команду могдут выполнить только администраторы")
+                    message.reply("Ваших прав не достаточно для выполнения этой команды.")
             }
             // } else
             //     message.reply("Нет такой команды! Все команды - !help")
