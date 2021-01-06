@@ -2,14 +2,17 @@
  * @module interview
  */
 
+import winston_logger from "../../modules/logger/index.js"
+import dfname from "../../utils/__dfname.js"
+
+const logger = new winston_logger(dfname.dirfilename(import.meta.url), true)
+
 /**
  * Интервью участника в формате вопрос-ответ
  */
-// console.log = function() {}
-// console.error = function() {}
 class Interview {
     /**
-     * 
+     *
      * @param {object} questions Вопросы
      * @param {object} channel
      * @param {object} filter
@@ -22,8 +25,8 @@ class Interview {
      */
     constructor(questions, channel, filter, params = {}) {
         /**
-         * 
-         * @param {object} this.questions Вопросы 
+         *
+         * @param {object} this.questions Вопросы
          */
         this.questions = questions
         /**
@@ -31,7 +34,7 @@ class Interview {
          */
         this.channel = channel
         /**
-         * @param {object} this.filter 
+         * @param {object} this.filter
          */
         this.filter = filter
         /**
@@ -42,8 +45,10 @@ class Interview {
         if (!this.params.stop) params.stop = "!отмена"
         this.params.awaitMessagesOptions = {}
         this.params.awaitMessagesOptions.max = 1
-
+        this.params.awaitMessagesOptions.time = 120000
+        this.params.awaitMessagesOptions.errors = ['time']
     }
+
     /**
      * Начинает интервью
      * @returns {Promise<object>} результат
@@ -53,33 +58,44 @@ class Interview {
             let result = {}
             let isStopped = false
             let messagesToDelete = []
-            if (this.params.start != undefined && this.params.start != null) this.channel.send(this.params.start).then(message => messagesToDelete.push(message));
+            if (this.params.start !== undefined) this.channel.send(this.params.start).then(message => messagesToDelete.push(message));
             (async () => {
                 for (const key of Object.keys(this.questions)) {
                     await this.channel.send(this.questions[key])
                         .then(async (message) => {
+                            //Добавить сообщение в список для удаления
                             messagesToDelete.push(message)
                             await this.channel.awaitMessages(this.filter, this.params.awaitMessagesOptions)
                                 .then(collected => {
                                     console.log(collected.first().content)
+                                    //Если сообщение == слову для остановки, выполнит следующее
                                     if (collected.first().content.includes(this.params.stop))
+                                        //Остановить в конце итерации
                                         isStopped = true
                                     result[key] = collected.first()
                                     messagesToDelete.push(collected.first())
+                                })
+                                .catch(() => {
+                                    this.channel.send("Время на заполнение вышло.")
+                                        .then(message => setTimeout(() => {
+                                            message.delete()
+                                        }, 7000))
+                                    //Остановить в конце итерации
+                                    isStopped = true
                                 })
                         })
                     if (isStopped) break
                 }
                 if (!isStopped) {
-                    if (this.params.end)
-                        this.channel.send(this.params.end).then(message => setTimeout(() => message.delete()), 7000)
+                    // if (this.params.end)
+                        // this.channel.send(this.params.end).then(message => setTimeout(() => message.delete()), 7000)
                     resolve(result)
                 } else {
-                    reject("Member stopped interview")
-                    this.channel.send(this.params.cancel)
+                    reject("Stopping interview")
+                    this.channel.send(this.params.cancel).then(message => setTimeout(() => message.delete(), 7000))
                 }
                 for (const mtd of messagesToDelete) {
-                    mtd.delete()
+                    // mtd.delete()
                 }
             })()
         })
