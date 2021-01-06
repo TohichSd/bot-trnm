@@ -95,7 +95,7 @@ class Interview {
                     this.channel.send(this.params.cancel).then(message => setTimeout(() => message.delete()), 7000)
                 }
                 for (const mtd of messagesToDelete) {
-                    mtd.delete()
+                    // mtd.delete()
                 }
             })()
         })
