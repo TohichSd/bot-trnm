@@ -30,6 +30,7 @@ async function main(guilds) {
         })
         if (event === undefined) continue;
         let channelsID = event["channel_id"].split(',')
+        logger.info("restartReactionListener:" + event_id)
         for await (let channelID of channelsID) {
             let channel = guild.channels.cache.get(channelID)
             let message
