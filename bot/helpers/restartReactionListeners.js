@@ -38,7 +38,7 @@ async function main(guilds) {
                 .catch((err) => logger.warn(err))
             if(!message) continue
             let channelsToSendID = event["channelsToSendID"].split(',')
-            let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`, )
+            let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`)
             let feedbackChannel = guild.channels.cache.get(event["feedbackChannel"])
             let member
             collector.on("collect", async (reaction, user) => {
@@ -60,7 +60,8 @@ async function main(guilds) {
                 }).then(rowApp => {
                     //Иначе добавить участника в турнир
                     if (rowApp === undefined) {
-                        feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.")
+                        feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.").then(mstd => setTimeout(() => mstd.delete(),7000))
+                            .catch((err) => logger.warn(err))
                         return
                     }
                     DAO.run("INSERT INTO members (id, guild_id, event) VALUES ($id, $guild_id, $event)", {
