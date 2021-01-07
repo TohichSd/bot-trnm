@@ -33,10 +33,7 @@ function main(msg) {
                 .then(params => {
                     applicationsManager.set(msg.member.id, msg.guild.id, params.link, params.level, params.age, params.micro).then(() => {
                         logger.info(`New application ${msg.member.id}, ${msg.guild.id}, ${params.link}, ${params.level}, ${params.age}, ${params.micro}`)
-                        msg.reply("Заявка создана!").then(message => {
-                            setTimeout(() => message.delete())
-                            msg.delete()
-                        }, 7000)
+                        msg.reply("Заявка создана!")
                         resolve()
                     })
 
