@@ -38,9 +38,7 @@ async function main(guilds) {
                 .catch((err) => logger.warn(err))
             if(!message) continue
             let channelsToSendID = event["channelsToSendID"].split(',')
-            let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`, {
-                time: 432000
-            })
+            let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`, )
             let feedbackChannel = guild.channels.cache.get(event["feedbackChannel"])
             let member
             collector.on("collect", async (reaction, user) => {
