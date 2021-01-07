@@ -18,7 +18,7 @@ const logger = new winston_logger(dfname.dirfilename(
 function main(guild) {
     DAO.get(`SELECT * FROM guilds WHERE guild_id = '${guild.id}'`)
         .then((rowSelect) => {
-            if (rowSelect == undefined || rowSelect == null) {
+            if (rowSelect === undefined) {
                 DAO.run(`INSERT INTO guilds (guild_id) VALUES (${guild.id})`)
                     .then(() => logger.info("Guild added to db"))
                     .catch((error) => {
