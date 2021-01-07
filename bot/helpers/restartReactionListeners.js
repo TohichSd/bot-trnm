@@ -69,6 +69,7 @@ async function main(guilds) {
                         $guild_id: guild.id,
                         $event: (event_id + 1).toString()
                     })
+                    logger.info("New member")
                     //Послать сообщения об участии в перечисленные каналы
                     for (let channelTSID of channelsToSendID) {
                         let channelM = guild.channels.cache.get(channelTSID)
