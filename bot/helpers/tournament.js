@@ -3,6 +3,10 @@ import DAO from "../../modules/db/index.js"
 import {
     MessageEmbed
 } from "discord.js"
+import winston_logger from "../../modules/logger/index.js";
+import dfname from "../../utils/__dfname.js";
+const logger = new winston_logger(dfname.dirfilename(import.meta.url))
+
 import {env} from "process"
 // console.log = function() {}
 // console.error = function() {}
@@ -110,6 +114,7 @@ class Tournament {
                                             messagesID += message.id = ","
                                         })
                                 }
+                                logger.info("New member")
                                 DAO.run("INSERT INTO members (id, guild_id, event, messagesID) VALUES ($id, $guild_id, $event, $messagesID)", {
                                     $id: member_id,
                                     $guild_id: params.guild_id,
