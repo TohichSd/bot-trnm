@@ -22,7 +22,7 @@ client.on('ready', () => {
 })
 // console.log = function() {}
 client.on('guildCreate', (newGuild) => {
-    // helpers.init.run(newGuild)
+    helpers.init.run(newGuild)
 })
 
 /**

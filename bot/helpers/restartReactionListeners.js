@@ -6,14 +6,13 @@ import winston_logger from "../../modules/logger/index.js"
 import dfname from "../../utils/__dfname.js"
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
-// console.log = function() {}
-// console.error = function() {}
 /**
  * Добавляет слушателей реакций для всех последних сообщений о турнирах для всех серверов
  * @param {object} guilds client.guilds
  */
 async function main(guilds) {
     for await (let guild of guilds.cache) {
+        // logger.info(guild)
         guild = guild[1]
         let event_id = ""
         await DAO.get("SELECT * FROM guilds WHERE guild_id = $guild_id", {
