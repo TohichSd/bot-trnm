@@ -86,6 +86,7 @@ class Tournament {
 
                             if (user.bot) return
                             let member_id = channel.guild.members.cache.find(member => member.user.id === user.id).id
+                            let member_name = channel.guild.members.cache.find(member => member.user.id === user.id).displayName
                             //Проверка наличия участника в турнире
                             await DAO.get("SELECT * FROM members WHERE id = $id AND guild_id = $guild_id AND event = $event", {
                                 $id: member_id,
@@ -110,7 +111,16 @@ class Tournament {
                                 //Послать сообщения об участии в перечисленные каналы
                                 for (let channelM of params.channelsMembers) {
                                     channelM = channelM[1]
-                                    channelM.send(`<@${member_id}> принимает участие в турнире ${params.name}!\nСсылка на steam: ${rowApp['link']}\nУровень: ${rowApp['level']}\nВозраст: ${rowApp['age']}\nМикрофон: ${rowApp['micro']}`)
+                                    let embedNewTournmMember = new MessageEmbed()
+                                        .setThumbnail("https://i.ibb.co/H4zQ4YB/Check-mark-svg.png")
+                                        .setTitle(`**Заявка участника ${member_name} на турнир "${params.name}"**`)
+                                        .addField(":link: Ссылка на steam:", rowApp['link'])
+                                        .addField(":video_game: Уровень в игре:", rowApp['level'])
+                                        .addField(":man_mage: Возраст:", rowApp['age'])
+                                        .addField(":microphone2: Наличие микрофона:", rowApp['micro'])
+                                        .setColor("#4287f5")
+
+                                    channelM.send(embedNewTournmMember)
                                         .then(message => {
                                             messagesID += message.id = ","
                                         })

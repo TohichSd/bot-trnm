@@ -4,6 +4,8 @@
 import DAO from "../../modules/db/index.js"
 import winston_logger from "../../modules/logger/index.js"
 import dfname from "../../utils/__dfname.js"
+import {MessageEmbed} from "discord.js";
+
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
 /**
@@ -36,7 +38,7 @@ async function main(guilds) {
             let message
             await channel.messages.fetch(event["message_id"]).then(msg => message = msg)
                 .catch((err) => logger.warn(err))
-            if(!message) continue
+            if (!message) continue
             let channelsToSendID = event["channelsToSendID"].split(',')
             let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`)
             let feedbackChannel = guild.channels.cache.get(event["feedbackChannel"])
@@ -44,6 +46,7 @@ async function main(guilds) {
             collector.on("collect", async (reaction, user) => {
                 if (user.bot) return
                 let member_id = guild.members.cache.find(member => member.user.id === user.id).id
+                let member_name = guild.members.cache.find(member => member.user.id === user.id).displayName
                 //Проверка наличия участника в турнире
                 await DAO.get("SELECT * FROM members WHERE id = $id AND guild_id = $guild_id AND event = $event", {
                     $id: member_id,
@@ -60,20 +63,34 @@ async function main(guilds) {
                 }).then(rowApp => {
                     //Иначе добавить участника в турнир
                     if (rowApp === undefined) {
-                        feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.").then(mstd => setTimeout(() => mstd.delete(),7000))
+                        feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.").then(mstd => setTimeout(() => mstd.delete(), 7000))
                             .catch((err) => logger.warn(err))
                         return
                     }
-                    DAO.run("INSERT INTO members (id, guild_id, event) VALUES ($id, $guild_id, $event)", {
-                        $id: member_id,
-                        $guild_id: guild.id,
-                        $event: (event_id + 1).toString()
-                    })
                     logger.info("New member")
+                    let messagesID = ""
                     //Послать сообщения об участии в перечисленные каналы
                     for (let channelTSID of channelsToSendID) {
                         let channelM = guild.channels.cache.get(channelTSID)
-                        channelM.send(`<@${member_id}> принимает участие в турнире ${event['name']}!\nСсылка на steam: ${rowApp['link']}\nУровень: ${rowApp['level']}\nВозраст: ${rowApp['age']}\nМикрофон: ${rowApp['micro']}`)
+                        let embedNewTournmMember = new MessageEmbed()
+                            .setThumbnail("https://i.ibb.co/H4zQ4YB/Check-mark-svg.png")
+                            .setTitle(`**Заявка участника ${member_name} на турнир "${event['name']}"**`)
+                            .addField(":link: Ссылка на steam:", rowApp['link'])
+                            .addField(":video_game: Уровень в игре:", rowApp['level'])
+                            .addField(":man_mage: Возраст:", rowApp['age'])
+                            .addField(":microphone2: Наличие микрофона:", rowApp['micro'])
+                            .setColor("#4287f5")
+
+                        channelM.send(embedNewTournmMember)
+                            .then(message => {
+                                messagesID += message.id = ","
+                            })
+                        DAO.run("INSERT INTO members (id, guild_id, event, messagesID) VALUES ($id, $guild_id, $event, $messagesID)", {
+                            $id: member_id,
+                            $guild_id: guild.id,
+                            $event: (event_id + 1).toString(),
+                            $messagesID: messagesID
+                        })
                     }
                 })
             })
