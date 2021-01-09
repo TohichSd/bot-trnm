@@ -103,7 +103,7 @@ class Tournament {
                             }).then(rowApp => {
                                 //Иначе добавить участника в турнир
                                 if (rowApp === undefined) {
-                                    params.feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.").then(mstd => setTimeout(() => mstd.delete(),7000))
+                                    channel.send("У вас нет заявки! Для создания напишите !заявка.").then(mstd => setTimeout(() => mstd.delete(),7000))
                                         .catch((err) => logger.warn(err))
                                     return
                                 }
