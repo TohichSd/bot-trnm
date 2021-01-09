@@ -45,7 +45,7 @@ client.on('message', async (message) => {
             else
                 role = 0
             logger.info(`Новая команда: ${message.content}`)
-            let cmd = message.content.slice(1).split(' ')[0]
+            let cmd = message.content.slice(1).split(' ')[0].toLowerCase()
             if (commands[cmd]) {
                 if (role >= commands[cmd].permissions || commands[cmd].permissions === undefined) {
                     commands[cmd].run(message, role)

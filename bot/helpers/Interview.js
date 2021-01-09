@@ -69,7 +69,7 @@ class Interview {
                                 .then(collected => {
                                     console.log(collected.first().content)
                                     //Если сообщение == слову для остановки, выполнит следующее
-                                    if (collected.first().content.includes(this.params.stop))
+                                    if (collected.first().content.toLowerCase().includes(this.params.stop))
                                         //Остановить в конце итерации
                                         isStopped = true
                                     result[key] = collected.first()
