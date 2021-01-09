@@ -80,7 +80,7 @@ class Tournament {
                         messages += message.id + ','
                         channels += message.channel.id + ','
                         message.react("✅")
-                        let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`)
+                        let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`) 
                         //При добавлении эмодзи, выполнить следующее
                         await collector.on("collect", async (reaction, user) => {
 
