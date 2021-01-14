@@ -127,3 +127,4 @@ jsdoc.config.json
 
 #pug
 server/views/*.html
+server/views/**/*.html
