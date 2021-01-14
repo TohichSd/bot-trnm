@@ -15,7 +15,6 @@ function main(msg) {
         })
             .then(() => {
                 msg.reply("Канал для заявок установлен!")
-                    .then((message) => setTimeout(() => message.delete(), 7000))
                 resolve()
             })
             .catch((err) => {
@@ -27,7 +26,7 @@ function main(msg) {
 
 export default {
     run: main,
-    name: "здесь-турниры",
+    name: "здесь-заявки",
     permissions: 1,
     description: "Установить канал для заявок на турниры"
 }

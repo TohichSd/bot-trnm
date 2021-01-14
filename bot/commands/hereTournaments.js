@@ -15,7 +15,6 @@ function main(msg) {
         })
             .then(() => {
                 msg.reply("Канал для турниров установлен!")
-                    .then((message) => setTimeout(() => message.delete(), 7000))
                 resolve()
             })
             .catch((err) => {

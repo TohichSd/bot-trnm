@@ -45,7 +45,7 @@ class Interview {
         if (!this.params.stop) params.stop = "!отмена"
         this.params.awaitMessagesOptions = {}
         this.params.awaitMessagesOptions.max = 1
-        this.params.awaitMessagesOptions.time = 120000
+        this.params.awaitMessagesOptions.time = 300000
         this.params.awaitMessagesOptions.errors = ['time']
     }
 
@@ -77,9 +77,6 @@ class Interview {
                                 })
                                 .catch(() => {
                                     this.channel.send("Время на заполнение вышло.")
-                                        .then(message => setTimeout(() => {
-                                            message.delete()
-                                        }, 7000))
                                     //Остановить в конце итерации
                                     isStopped = true
                                 })
@@ -92,10 +89,7 @@ class Interview {
                     resolve(result)
                 } else {
                     reject("Stopping interview")
-                    this.channel.send(this.params.cancel).then(message => setTimeout(() => message.delete(), 7000))
-                }
-                for (const mtd of messagesToDelete) {
-                    // mtd.delete()
+                    this.channel.send(this.params.cancel)
                 }
             })()
         })
