@@ -162,7 +162,6 @@ class Tournament {
                 $message_id: messages.slice(0, messages.length - 1),
                 $channel_id: channels.slice(0, channels.length - 1),
                 $channelsToSendID: channelsToSendID.slice(0, channelsToSendID.length - 1),
-                $feedbackChannel: params.feedbackChannel.id
             })
             //Обновить последние сообщения и каналы в guilds
             DAO.run("UPDATE guilds SET lastEventID = $event_id WHERE guild_id = $guild_id", {
