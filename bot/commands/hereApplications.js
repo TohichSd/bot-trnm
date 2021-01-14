@@ -9,12 +9,12 @@ function main(msg) {
     return new Promise((resolve, reject) => {
         const channelID = msg.channel.id
         const guildID = msg.guild.id
-        DAO.run("UPDATE guilds SET tournament_channel = $channelID WHERE guild_id = $guildID", {
+        DAO.run("UPDATE guilds SET applications_channel = $channelID WHERE guild_id = $guildID", {
             $guildID: guildID,
             $channelID: channelID
         })
             .then(() => {
-                msg.reply("Канал для турниров установлен!")
+                msg.reply("Канал для заявок установлен!")
                     .then((message) => setTimeout(() => message.delete(), 7000))
                 resolve()
             })
@@ -29,5 +29,5 @@ export default {
     run: main,
     name: "здесь-турниры",
     permissions: 1,
-    description: "Установить канал для объявлений о турнирах"
+    description: "Установить канал для заявок на турниры"
 }
