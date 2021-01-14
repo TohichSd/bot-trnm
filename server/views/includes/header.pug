@@ -1,0 +1,9 @@
+header
+    div
+        a(href="/")
+            h1#header-name Tourick
+        -var authorised = '#{authorised}'
+        if authorised
+            div#user-data
+                h3#username #{username}
+                div#exit-button ВЫЙТИ

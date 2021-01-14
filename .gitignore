@@ -124,3 +124,6 @@ jsdoc.config.json
 
 #opeNode
 .openode
+
+#pug
+server/views/*.html

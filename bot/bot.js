@@ -8,6 +8,7 @@ import dfname from "../utils/__dfname.js"
 import commands from "./commands/index.js"
 import helpers from "./helpers/index.js"
 import {env} from "process"
+import("../server/server.js")
 
 const prefix = '!'
 const logger = new winston_logger(dfname.dirfilename(

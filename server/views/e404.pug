@@ -1,0 +1,13 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title Новый турнир
+        link(rel="stylesheet" href="/css/e404.css")
+    body
+        include includes/header.pug
+        div.err-main
+            h2.err-code 404
+            h3.err-text Страница не найдена
+            a(href="/")
+                h3.err-text На главную

@@ -1,0 +1,19 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title Новый турнир
+        link(rel="stylesheet" href="/css/new.css")
+    body
+        include includes/header.pug
+        div.form-container
+            form.pure-form-stacked.form-new-trnm
+                label(for = "trnm-name") Название
+                input#trnm-name(type = "text").pure-input-rounded
+                label(for = "trnm-description") Описание
+                textarea#trnm-description(rows = 5)
+                label(for = "trnm-awards") Награды
+                textarea#trnm-awards(rows = 5)
+                label(for = "trnm-datetime") Дата и время проведения
+                input#trnm-datetime(type = "datetime-local")
+                button.pure-button СОЗДАТЬ

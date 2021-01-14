@@ -1,0 +1,87 @@
+header {
+    background-color: #3e3e3e;
+    margin: 0;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    /*text-align: center;*/
+    padding-left: 5%;
+    box-shadow: 0 0 4px #000000;
+}
+
+header a {
+    text-decoration: none;
+}
+
+header h1 {
+    display: inline;
+    padding-right: 3%;
+}
+
+#header-name {
+    margin: 0;
+    font-size: 100pt;
+    color: #ffffff;
+    width: 100%;
+}
+
+#user-data {
+    background-color: #353434;
+    border: 1px solid white;
+    border-radius: 7px;
+    display: inline-block;
+    min-width: 10%;
+    padding: 1%;
+    margin-left: 55%;
+    text-align: center;
+}
+
+#exit-button {
+    background-color: #a25663;
+    padding: 1%;
+    border-radius:4px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+#exit-button:hover {
+    box-shadow: 0 0 3px 0 #000000;
+}
+
+#username {
+    color: white;
+}
+
+@media (max-width: 832px) {
+    #header-name {
+        font-size: 40pt;
+        margin-bottom: auto;
+    }
+    header {
+        text-align: center;
+        padding-left: 3%;
+    }
+    #user-data {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 832px) {
+    #header-name {
+        font-size: 100pt;
+        margin-bottom: auto;
+    }
+    #user-data {
+        margin-left: 15%;
+        min-width: 20%;
+    }
+    #user-data * {
+        font-size: 20pt;
+    }
+}
+
+@media (min-width: 832px) and (max-width: 1440px) {
+    #user-data {
+        margin-left: 25%;
+        min-width: 20%;
+    }
+}

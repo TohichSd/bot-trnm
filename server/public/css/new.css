@@ -1,0 +1,19 @@
+.form-container {
+    text-align: center;
+}
+.form-new-trnm {
+    display: inline-block;
+    text-align: center;
+}
+
+.form-new-trnm * {
+    width: 100%;
+}
+
+.form-new-trnm label {
+    font-size: 20pt;
+}
+
+.form-new-trnm input,textarea {
+    border-radius: 7px;
+}
