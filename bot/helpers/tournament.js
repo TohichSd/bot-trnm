@@ -137,17 +137,18 @@ class Tournament {
                 DAO.run("INSERT INTO members (id, guild_id, event) VALUES ($id, $guild_id, $event)", {
                     $id: member.id,
                     $guild_id: guild.id,
-                    $event: (event_id + 1).toString(),
+                    $event: (event_id + 1).toString()
                 })
                     .catch(error => logger.warn(error))
 
                 //Добавить турнир в бзу данных
-                DAO.run("INSERT INTO events (name, description, loot, message_id, channel_id, channelsToSendID) VALUES ($name, $description, $loot, $message_id, $channel_id, $channelsToSendID)", {
+                DAO.run("INSERT INTO events (name, description, loot, message_id, channel_id, channelsToSendID, datetime-ms) VALUES ($name, $description, $loot, $message_id, $channel_id, $channelsToSendID, $datetimeMs)", {
                     $name: params.name,
                     $description: params.description,
                     $loot: params.loot,
                     $message_id: message.id,
-                    $channel_id: channel.id
+                    $channel_id: channel.id,
+                    $datetimeMs: params.datetimeMs
                 })
             })
         })()
