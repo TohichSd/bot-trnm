@@ -6,14 +6,19 @@ html(lang='ru')
         link(rel="stylesheet" href="/css/new.css")
     body
         include includes/header.pug
+        div.page-subtitle
+            h2 Новый турнир
+            a.return-link(href="/").pure-button
+                h3 Назад
         div.form-container
-            form.pure-form-stacked.form-new-trnm
+            form.pure-form-stacked.form-new-trnm(method="POST" name="tournament" action="/new" autocomplete="off")
                 label(for = "trnm-name") Название
-                input#trnm-name(type = "text").pure-input-rounded
+                input#trnm-name(type = "text" name="name").pure-input-rounded
                 label(for = "trnm-description") Описание
-                textarea#trnm-description(rows = 5)
+                textarea#trnm-description(rows = 5 name = "description")
                 label(for = "trnm-awards") Награды
-                textarea#trnm-awards(rows = 5)
+                textarea#trnm-awards(rows = 5 name = "awards")
                 label(for = "trnm-datetime") Дата и время проведения
-                input#trnm-datetime(type = "datetime-local")
+                input#trnm-datetime(type = "datetime-local" name = "datetime")
                 button.pure-button СОЗДАТЬ
+        include includes/footer.pug

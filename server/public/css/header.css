@@ -41,11 +41,12 @@ header h1 {
     border-radius:4px;
     cursor: pointer;
     color: #ffffff;
+    width: 90%;
 }
 
-#exit-button:hover {
-    box-shadow: 0 0 3px 0 #000000;
-}
+/*#exit-button:hover {*/
+/*    box-shadow: 0 0 3px 0 #000000;*/
+/*}*/
 
 #username {
     color: white;

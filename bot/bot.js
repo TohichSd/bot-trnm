@@ -8,7 +8,7 @@ import dfname from "../utils/__dfname.js"
 import commands from "./commands/index.js"
 import helpers from "./helpers/index.js"
 import {env} from "process"
-import("../server/server.js")
+import server from "../server/server.js"
 
 const prefix = '!'
 const logger = new winston_logger(dfname.dirfilename(
@@ -19,7 +19,8 @@ client.login(env.DSTOKEN)
 
 client.on('ready', () => {
     logger.info("Discord client ready")
-    helpers.restartReactionListener.run(client.guilds)
+    server(client)
+    // helpers.restartReactionListener.run(client.guilds)
 })
 // console.log = function() {}
 client.on('guildCreate', (newGuild) => {

@@ -27,9 +27,7 @@ function main(msg) {
                         description: result.description.content,
                         loot: result.loot.content,
                         date: result.date.content,
-                        imgURL: "https://img.pngio.com/fileunknown-infobox-image-tournamentpng-call-of-duty-esports-tournament-png-700_700.png",
                         guild: msg.guild,
-                        region: msg.guild.region
                     })
                     resolve()
                 })

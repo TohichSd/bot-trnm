@@ -16,4 +16,34 @@
 
 .form-new-trnm input,textarea {
     border-radius: 7px;
+    resize: none;
+}
+
+.page-subtitle h2 {
+    display: inline-block;
+    margin-right: 1%;
+}
+
+.return-link {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.return-link h3 {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .form-new-trnm label {
+        font-size: 15pt;
+    }
+}
+
+@media (max-width: 320px) {
+    .form-new-trnm label {
+        font-size: 13pt;
+    }
+    .page-subtitle {
+        font-size: 7pt;
+    }
 }

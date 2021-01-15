@@ -13,3 +13,9 @@ footer .footer-line {
     width: 70%;
     margin: auto;
 }
+
+@media (max-width:768px) {
+    footer {
+        font-size: 10px;
+    }
+}
