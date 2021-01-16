@@ -16,7 +16,7 @@ import sessions from "client-sessions"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 const app = express()
-const port = 8709
+const port = 80
 const __dirname = dfname.__dirname(import.meta.url)
 let renderObject = {}
 let guild
