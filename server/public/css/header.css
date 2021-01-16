@@ -35,6 +35,10 @@ header h1 {
     text-align: center;
 }
 
+#user-data a {
+    text-decoration: none;
+}
+
 #exit-button {
     background-color: #a25663;
     padding: 1%;

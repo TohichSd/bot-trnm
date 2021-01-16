@@ -12,6 +12,8 @@ html(lang='ru')
                 h3 Назад
         div.form-container
             form.pure-form-stacked.form-new-trnm(method="POST" name="tournament" action="/new" autocomplete="off")
+                if notAllFilled === true
+                    h3.naf Заполните все поля!
                 label(for = "trnm-name") Название
                 input#trnm-name(type = "text" name="name").pure-input-rounded
                 label(for = "trnm-description") Описание

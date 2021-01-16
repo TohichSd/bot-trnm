@@ -1,0 +1,32 @@
+    .form-container {
+    text-align: center;
+}
+.form-login {
+    display: inline-block;
+    text-align: center;
+}
+
+.form-login {
+    width: 30%;
+}
+
+.form-login * {
+    width: 100%;
+}
+
+.form-login label {
+    font-size: 20pt;
+}
+
+.form-login input,textarea {
+    border-radius: 7px;
+    resize: none;
+}
+
+#auth-button {
+    margin-top: 4%;
+}
+
+.err {
+    color: #FF0000;
+}

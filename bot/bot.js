@@ -20,7 +20,7 @@ client.login(env.DSTOKEN)
 client.on('ready', () => {
     logger.info("Discord client ready")
     server(client)
-    // helpers.restartReactionListener.run(client.guilds)
+    helpers.restartReactionListener.run(client.guilds)
 })
 // console.log = function() {}
 client.on('guildCreate', (newGuild) => {

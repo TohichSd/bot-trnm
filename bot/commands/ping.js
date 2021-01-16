@@ -4,7 +4,7 @@
 
 /**
  * 
- * @param {object} message Сообщение
+ * @param {object} msg Сообщение
  */
 function main(msg) {
     // eslint-disable-next-line no-unused-vars

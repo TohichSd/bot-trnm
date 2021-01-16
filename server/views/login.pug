@@ -1,0 +1,20 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title Новый турнир
+        link(rel="stylesheet" href="/css/login.css")
+    body
+        include includes/header.pug
+        div.page-subtitle
+            h2 Вход
+        div.form-container
+            form.pure-form-stacked.form-login(method="POST" autocomplete="off")
+                if notFilled === true
+                    h3.err Заполните это поле!
+                if badToken === true
+                    h3.err Неверный токен!
+                label(for = "token") Токен
+                input#token(type = "text" name="token")
+                p Для получения токена напишите !токен на сервере
+                button.pure-button#auth-button Войти
