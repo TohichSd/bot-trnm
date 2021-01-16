@@ -5,10 +5,16 @@ import {
 } from "discord.js"
 import winston_logger from "../../modules/logger/index.js";
 import dfname from "../../utils/__dfname.js";
+<<<<<<< HEAD
 import tournamentListener from "./reactionListener.js"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
+=======
+const logger = new winston_logger(dfname.dirfilename(import.meta.url))
+
+import {env} from "process"
+>>>>>>> 1601a9aa3517881855a094ab2556a8a86f1d8edc
 // console.log = function() {}
 // console.error = function() {}
 /**
@@ -67,6 +73,7 @@ class Tournament {
         })
         if(isNaN(event_id)) event_id = 0
         ;(async () => {
+<<<<<<< HEAD
             const guild = params.guild
             let guildParams
             await DAO.get("SELECT * FROM guilds WHERE guild_id = $guild_id", {
@@ -81,6 +88,80 @@ class Tournament {
             await channel.send("@everyone")
             await channel.send(embed).then(sentMessage => message = sentMessage)
             DAO.run("INSERT INTO events (name, description, loot, guild_id, message_id, channel_id, datetimeMs) VALUES ($name, $description, $loot, $guild_id, $message_id, $channel_id, $datetimeMs)", {
+=======
+            for (let channel of params.channelsTrnm) {
+                channel = channel[1]
+                await channel.send(embed)
+                    .then(async (message) => {
+                        messages += message.id + ','
+                        channels += message.channel.id + ','
+                        message.react("✅")
+                        let collector = message.createReactionCollector((reaction) => reaction.emoji.name === `✅`)
+                        //При добавлении эмодзи, выполнить следующее
+                        await collector.on("collect", async (reaction, user) => {
+
+                            if (user.bot) return
+                            let member_id = channel.guild.members.cache.find(member => member.user.id === user.id).id
+                            //Проверка наличия участника в турнире
+                            await DAO.get("SELECT * FROM members WHERE id = $id AND guild_id = $guild_id AND event = $event", {
+                                $id: member_id,
+                                $guild_id: params.guild_id,
+                                $event: (event_id + 1).toString(),
+                            }).then(rowMember => {
+                                member = rowMember
+                            })
+                            //Если участник найден, прекратить
+                            if (member !== undefined) return
+                            DAO.get("SELECT * FROM applications WHERE id = $id AND guild_id = $guild_id", {
+                                $id: member_id,
+                                $guild_id: params.guild_id,
+                            }).then(rowApp => {
+                                //Иначе добавить участника в турнир
+                                if (rowApp === undefined) {
+                                    params.feedbackChannel.send("У вас нет заявки! Для создания напишите !заявка.").then(mstd => setTimeout(mstd.delete()),7000)
+                                    return
+                                }
+                                let messagesID = ""
+                                //Послать сообщения об участии в перечисленные каналы
+                                for (let channelM of params.channelsMembers) {
+                                    channelM = channelM[1]
+                                    channelM.send(`<@${member_id}> принимает участие в турнире ${params.name}!\nСсылка на steam: ${rowApp['link']}\nУровень: ${rowApp['level']}\nВозраст: ${rowApp['age']}\nМикрофон: ${rowApp['micro']}`)
+                                        .then(message => {
+                                            messagesID += message.id = ","
+                                        })
+                                }
+                                logger.info("New member")
+                                DAO.run("INSERT INTO members (id, guild_id, event, messagesID) VALUES ($id, $guild_id, $event, $messagesID)", {
+                                    $id: member_id,
+                                    $guild_id: params.guild_id,
+                                    $event: (event_id + 1).toString(),
+                                    $messagesID: messagesID
+                                })
+                            })
+                        })
+                        await collector.on("remove", (reaction, user) => {
+                            let member_id = channel.guild.members.cache.find(member => member.user.id === user.id).id
+                            DAO.get("SELECT * FROM members WHERE id = $id AND guild_id = $guild_id AND event = $event", {
+                                $id: member_id,
+                                $guild_id: params.guild_id,
+                                $event: (event_id + 1).toString(),
+                            }).then(rowMember => {
+                                let memberMessagesID = rowMember["messagesID"].split(',')
+                                for (let mmID of memberMessagesID) {
+                                    // let message =
+                                }
+                            })
+                        })
+                    })
+            }
+            //создать запись о турнире в бд
+            let channelsToSendID = ""
+            for (let channelM of params.channelsMembers) {
+                channelM = channelM[1]
+                channelsToSendID += channelM.id + ','
+            }
+            DAO.run("INSERT INTO events (name, description, loot, message_id, channel_id, channelsToSendID, feedbackChannel) VALUES ($name, $description, $loot, $message_id, $channel_id, $channelsToSendID, $feedbackChannel)", {
+>>>>>>> 1601a9aa3517881855a094ab2556a8a86f1d8edc
                 $name: params.name,
                 $description: params.description,
                 $loot: params.loot,
