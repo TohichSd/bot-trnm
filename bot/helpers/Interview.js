@@ -45,11 +45,7 @@ class Interview {
         if (!this.params.stop) params.stop = "!отмена"
         this.params.awaitMessagesOptions = {}
         this.params.awaitMessagesOptions.max = 1
-<<<<<<< HEAD
         this.params.awaitMessagesOptions.time = 300000
-=======
-        this.params.awaitMessagesOptions.time = 120000
->>>>>>> 1601a9aa3517881855a094ab2556a8a86f1d8edc
         this.params.awaitMessagesOptions.errors = ['time']
     }
 
@@ -73,11 +69,7 @@ class Interview {
                                 .then(collected => {
                                     console.log(collected.first().content)
                                     //Если сообщение == слову для остановки, выполнит следующее
-<<<<<<< HEAD
                                     if (collected.first().content.toLowerCase().includes(this.params.stop))
-=======
-                                    if (collected.first().content.includes(this.params.stop))
->>>>>>> 1601a9aa3517881855a094ab2556a8a86f1d8edc
                                         //Остановить в конце итерации
                                         isStopped = true
                                     result[key] = collected.first()
@@ -85,12 +77,6 @@ class Interview {
                                 })
                                 .catch(() => {
                                     this.channel.send("Время на заполнение вышло.")
-<<<<<<< HEAD
-=======
-                                        .then(message => setTimeout(() => {
-                                            message.delete()
-                                        }, 7000))
->>>>>>> 1601a9aa3517881855a094ab2556a8a86f1d8edc
                                     //Остановить в конце итерации
                                     isStopped = true
                                 })
@@ -99,20 +85,12 @@ class Interview {
                 }
                 if (!isStopped) {
                     // if (this.params.end)
-                        // this.channel.send(this.params.end).then(message => setTimeout(() => message.delete()), 7000)
+                    // this.channel.send(this.params.end).then(message => setTimeout(() => message.delete()), 7000)
                     resolve(result)
                 } else {
                     reject("Stopping interview")
-<<<<<<< HEAD
                     this.channel.send(this.params.cancel)
                 }
-=======
-                    this.channel.send(this.params.cancel).then(message => setTimeout(() => message.delete(), 7000))
-                }
-                for (const mtd of messagesToDelete) {
-                    // mtd.delete()
-                }
->>>>>>> 1601a9aa3517881855a094ab2556a8a86f1d8edc
             })()
         })
     }
