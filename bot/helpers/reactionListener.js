@@ -10,14 +10,20 @@ const logger = new winston_logger(dfname.dirfilename(import.meta.url))
  * @param channel канал, в который было отправлено сообщение о турнире
  * @param event_id id турнира
  * @param user пользователь, оставивший реакцию
- * @param guildParams настройки сервера из бд
  * @param tounamentName название турнира
  * @returns {Promise<void>}
  */
-async function main(guild, channel, event_id, user, guildParams, tounamentName) {
+async function main(guild, channel, event_id, user, tounamentName) {
     if (user.bot) return
     //Найти участника в guild.members.cache
     let member = channel.guild.members.cache.find(member => member.user.id === user.id)
+
+    let guildParams
+    await DAO.get("SELECT * FROM guilds WHERE guild_id = $guild_id", {
+        $guild_id: guild.id,
+    }).then(rowGuildParams => {
+        guildParams = rowGuildParams
+    })
 
     //Найти участника в списке турнира
     let memberData

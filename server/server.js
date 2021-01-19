@@ -16,7 +16,7 @@ import sessions from "client-sessions"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 const app = express()
-const port = 80
+const port = env.PORT
 const __dirname = dfname.__dirname(import.meta.url)
 let renderObject = {}
 let guild
@@ -46,7 +46,7 @@ export default async (client) => {
     // })
 
     app.use((req, res, next) => {
-        if(req.session.authorized !== true && req.url !== "/login"){
+        if (req.session.authorized !== true && req.url !== "/login") {
             res.redirect("/login")
             return
         }
@@ -74,7 +74,7 @@ export default async (client) => {
     })
 
     app.post("/new", (req, res) => {
-        if(!req.body.name || !req.body.description || !req.body.awards || !req.body.datetime) {
+        if (!req.body.name || !req.body.description || !req.body.awards || !req.body.datetime) {
             renderObject.notAllFilled = true
             const compiled = pug.renderFile(path.join(__dirname, "/views/new.pug"), renderObject)
             res.status(400).send(compiled)
@@ -89,12 +89,16 @@ export default async (client) => {
             datetimeMs: new Date(req.body.datetime).getTime(),
             guild: guild
         })
+            .catch(err => {
+                renderObject.text = err
+                res.status(400).redirect("/tournament-err")
+            })
         trnmDone = true
         res.status(200).redirect("/tournament-done")
     })
 
     app.get('/tournament-done', (req, res) => {
-        if(!trnmDone) {
+        if (!trnmDone) {
             res.redirect("/")
             return
         }
@@ -102,8 +106,18 @@ export default async (client) => {
         trnmDone = false
     })
 
+    app.get('/tournament-err', (req, res) => {
+        if (!trnmDone) {
+            res.redirect("/")
+            return
+        }
+        res.status(200).send(pug.renderFile(path.join(__dirname, "/views/tournament-done.pug"), renderObject))
+        renderObject.text = undefined
+        trnmDone = false
+    })
+
     app.get("/login", (req, res) => {
-        if(req.query["logout"]){
+        if (req.query["logout"]) {
             req.session.guild_id = undefined
             req.session.id = undefined
             req.session.authorized = false
@@ -118,7 +132,7 @@ export default async (client) => {
         req.session.guild_id = undefined
         req.session.id = undefined
         req.session.authorized = false
-        if(!req.body.token) {
+        if (!req.body.token) {
             renderObject.notFilled = true
             const compiled = pug.renderFile(path.join(__dirname, "/views/login.pug"), renderObject)
             res.status(400).send(compiled)
@@ -128,7 +142,7 @@ export default async (client) => {
         DAO.get("SELECT * FROM roles WHERE token = $token", {
             $token: req.body.token
         }).then((row) => {
-            if(row === undefined) {
+            if (row === undefined) {
                 renderObject.badToken = true
                 const compiled = pug.renderFile(path.join(__dirname, "/views/login.pug"), renderObject)
                 res.status(400).send(compiled)

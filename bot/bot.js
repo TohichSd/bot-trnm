@@ -13,16 +13,14 @@ import server from "../server/server.js"
 const prefix = '!'
 const logger = new winston_logger(dfname.dirfilename(
     import.meta.url), true)
-const client = new Discord.Client()
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 let isCmdRunning = []
 client.login(env.DSTOKEN)
 
 client.on('ready', () => {
     logger.info("Discord client ready")
     server(client)
-    helpers.restartReactionListener.run(client.guilds)
 })
-// console.log = function() {}
 client.on('guildCreate', (newGuild) => {
     helpers.init.run(newGuild)
 })
@@ -66,4 +64,8 @@ client.on('message', async (message) => {
         .catch((err) => {
             logger.error(err)
         })
+})
+
+client.on('messageReactionAdd', (reaction, user) => {
+    helpers.onReactionAdd.run(reaction, user)
 })

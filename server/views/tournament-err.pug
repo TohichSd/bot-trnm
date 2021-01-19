@@ -1,0 +1,14 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title Новый турнир
+        link(rel="stylesheet" href="/css/tournament-err.css")
+    body
+        include includes/header.pug
+        div.err-main
+            h2.err Ошибка
+            p.err-text
+                #{text}
+            a(href="/")
+                h3.back-text На главную
