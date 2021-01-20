@@ -1,12 +1,9 @@
 /**@module tournament */
 
 import DAO from "../../modules/db/index.js"
-import {
-    MessageEmbed
-} from "discord.js"
+import {MessageEmbed} from "discord.js"
 import winston_logger from "../../modules/logger/index.js";
 import dfname from "../../utils/__dfname.js";
-import tournamentListener from "./reactionListener.js"
 import onReactionAdd from "./onReactionAdd.js"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
@@ -64,13 +61,13 @@ class Tournament {
                     .setFooter("Жми на галочку чтобы принять участие")
                     .setThumbnail("https://i.postimg.cc/L8grKJQV/exclamation-mark.png")
             }
-            let event_id = 0
-            DAO.get("SELECT MAX(id) FROM events").then(event => {
-                event_id = parseInt(event['MAX(id)'])
-            })
-            if (isNaN(event_id)) event_id = 0
-            ;
             (async () => {
+                let event_id = 0
+                await DAO.get("SELECT MAX(id) FROM events").then(event => {
+                    event_id = parseInt(event['MAX(id)']) + 1
+                })
+                if (isNaN(event_id)) event_id = 0
+
                 const guild = params.guild
                 let guildParams
                 await DAO.get("SELECT * FROM guilds WHERE guild_id = $guild_id", {

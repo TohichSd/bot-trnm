@@ -13,10 +13,13 @@ let events
  * @returns {Promise<void>}
  */
 async function main(reaction, user) {
-    if(!events) await cache_events()
+    //Если записи о турнирах не кэшированы, кэшировать их
+    if (!events) await cache_events()
     if (reaction.message.partial) await reaction.message.fetch()
+    //Получить событие
     const event = events.find(e => e.message_id === reaction.message.id)
-    await tournamentListener(reaction.message.guild, reaction.message.channel, event.id, user, event.name)
+    if (event)
+        await tournamentListener(reaction.message.guild, reaction.message.channel, event.id, user, event.name)
 }
 
 /**

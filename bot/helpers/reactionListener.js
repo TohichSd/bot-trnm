@@ -30,7 +30,7 @@ async function main(guild, channel, event_id, user, tounamentName) {
     await DAO.get("SELECT * FROM members WHERE id = $id AND guild_id = $guild_id AND event = $event", {
         $id: member.id,
         $guild_id: guild.id,
-        $event: (event_id + 1).toString(),
+        $event: event_id
     }).then(rowMember => {
         memberData = rowMember
     })
@@ -64,12 +64,15 @@ async function main(guild, channel, event_id, user, tounamentName) {
         .setColor("#4287f5")
 
     //Отправить заявку участника
-    applicationsChannel.send(embedNewTournmMember)
+    let member_message
+    await applicationsChannel.send(embedNewTournmMember)
+        .then(message => member_message = message)
     //Добавить участника в базу данных
-    DAO.run("INSERT INTO members (id, guild_id, event) VALUES ($id, $guild_id, $event)", {
+    DAO.run("INSERT INTO members (id, guild_id, message_id, event) VALUES ($id, $guild_id, $message_id, $event)", {
         $id: member.id,
         $guild_id: guild.id,
-        $event: (event_id + 1).toString()
+        $message_id: member_message.id,
+        $event: event_id
     })
         .catch(error => logger.warn(error))
     logger.info("New member: " + event_id + " : " + member.user.tag)

@@ -13,7 +13,7 @@ import server from "../server/server.js"
 const prefix = '!'
 const logger = new winston_logger(dfname.dirfilename(
     import.meta.url), true)
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
+const client = new Discord.Client({partials: ['MESSAGE', 'CHANNEL', 'REACTION']})
 let isCmdRunning = []
 client.login(env.DSTOKEN)
 
@@ -29,7 +29,6 @@ client.on('guildCreate', (newGuild) => {
  * Событие при обнаружении сообщения
  */
 client.on('message', async (message) => {
-    if(env.ONLYGUILD_ID && message.guild.id !== env.ONLYGUILD_ID) return;
     if (message.author.bot) return;
     //Функция дебила отключена
     // helpers.debil.run(message)
@@ -51,7 +50,7 @@ client.on('message', async (message) => {
                     commands[cmd].run(message, role)
                         .then(() => isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1))
                         .catch((err) => {
-                                logger.error(err)
+                            logger.error(err)
                             isCmdRunning.splice(isCmdRunning.indexOf(message.member.id), 1)
                         })
                     isCmdRunning.push(message.member.id)
@@ -68,4 +67,14 @@ client.on('message', async (message) => {
 
 client.on('messageReactionAdd', (reaction, user) => {
     helpers.onReactionAdd.run(reaction, user)
+        .catch(err => logger.warn(err))
 })
+
+client.on('messageReactionRemove', (reaction, user) => {
+    helpers.onReactionRemove.run(reaction, user)
+        .catch(err => logger.warn(err))
+})
+
+// client.on('guildMemberAdd', guildMember => {
+//     helpers.newMemberMessage.run(guildMember)
+// })
