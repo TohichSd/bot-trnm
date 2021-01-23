@@ -5,7 +5,6 @@ import DAO from "../../modules/db/index.js"
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
 function main(msg) {
-    msg.delete()
     return new Promise((resolve, reject) => {
         const channelID = msg.channel.id
         const guildID = msg.guild.id
