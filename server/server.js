@@ -117,7 +117,7 @@ export default async (client) => {
     })
 
     app.get("/login", (req, res) => {
-        if (req.query["logout"]) {
+        if (req.query["logout"] && req.session.authorized) {
             req.session.guild_id = undefined
             req.session.id = undefined
             req.session.authorized = false
