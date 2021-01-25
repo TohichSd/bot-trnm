@@ -20,6 +20,7 @@ client.login(env.DSTOKEN)
 client.on('ready', () => {
     logger.info("Discord client ready")
     server(client)
+    client.user.setStatus("Управление: https://bit.ly/3cbHYr9")
 })
 client.on('guildCreate', (newGuild) => {
     helpers.init.run(newGuild)
