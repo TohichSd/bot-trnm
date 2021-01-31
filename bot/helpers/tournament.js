@@ -5,6 +5,7 @@ import {MessageEmbed} from "discord.js"
 import winston_logger from "../../modules/logger/index.js";
 import dfname from "../../utils/__dfname.js";
 import onReactionAdd from "./onReactionAdd.js"
+import {readFile} from "fs"
 
 const logger = new winston_logger(dfname.dirfilename(import.meta.url))
 
@@ -62,6 +63,13 @@ class Tournament {
                     .setThumbnail("https://i.postimg.cc/L8grKJQV/exclamation-mark.png")
             }
             (async () => {
+                await readFile("bot/config/random_props.json", (err, data) => {
+                    let props = JSON.parse(data.toString())
+                    Object.entries(props).forEach(([ctg, options]) => {
+                        const randomElement = options[Math.floor(Math.random() * options.length)]
+                        embed.addField(ctg, randomElement);
+                    })
+                })
                 let event_id = 0
                 await DAO.get("SELECT MAX(id) FROM events").then(event => {
                     event_id = parseInt(event['MAX(id)']) + 1
@@ -80,6 +88,10 @@ class Tournament {
                     reject("Не установлен канал для турниров или заявок. Для установки напишите !здесь-турниры в канале для турниров и !здесь-заявки в канале для заявок")
                 let message
                 const channel = guild.channels.cache.get(guildParams["tournament_channel"])
+                if(!channel) {
+                    reject("Установлен неверный канал для турниров")
+                    return
+                }
                 await channel.send("@everyone")
                 await channel.send(embed).then(sentMessage => message = sentMessage)
                 DAO.run("INSERT INTO events (name, description, loot, guild_id, message_id, datetimeMs) VALUES ($name, $description, $loot, $guild_id, $message_id, $datetimeMs)", {
@@ -91,13 +103,6 @@ class Tournament {
                     $datetimeMs: params.datetimeMs
                 })
                 logger.info("New tournament: " + event_id)
-                const ttl = params.datetimeMs - new Date().getTime()
-                setTimeout(() => {
-                    channel.send("@everyone, Регистрация на турнир завершается через 30 минут!")
-                }, ttl - 1800000)
-                setTimeout(() => {
-                    channel.send("@everyone, Регистрация на турнир завершена!")
-                }, ttl)
                 message.react(`✅`)
                 await onReactionAdd.cache_events()
                 resolve()

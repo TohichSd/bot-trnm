@@ -77,7 +77,7 @@ export default async (client) => {
         if (!req.body.name || !req.body.description || !req.body.awards || !req.body.datetime) {
             renderObject.notAllFilled = true
             const compiled = pug.renderFile(path.join(__dirname, "/views/new.pug"), renderObject)
-            res.status(400).send(compiled)
+            res.status(200).send(compiled)
             renderObject.notAllFilled = false
             return
         }
@@ -89,12 +89,14 @@ export default async (client) => {
             datetimeMs: new Date(req.body.datetime).getTime(),
             guild: guild
         })
+            .then(()=>{
+                trnmDone = true
+                res.status(200).redirect("/tournament-done")
+            })
             .catch(err => {
                 renderObject.text = err
                 res.status(400).redirect("/tournament-err")
             })
-        trnmDone = true
-        res.status(200).redirect("/tournament-done")
     })
 
     app.get('/tournament-done', (req, res) => {
