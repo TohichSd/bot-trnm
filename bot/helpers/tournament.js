@@ -23,6 +23,7 @@ class Tournament {
      * @param {string} params.loot Награды
      * @param {object} params.guild Сервер
      * @params {number} params.datetimeMs
+     * @params {boolean} params.isRandom
      */
     constructor(params = {
         name: "",
@@ -31,7 +32,8 @@ class Tournament {
         date: "",
         guild: {},
         region: "",
-        datetimeMs: 0
+        datetimeMs: 0,
+        isRandom: false
     }) {
         return new Promise((resolve, reject) => {
             //Получить id последнего турнира из бд
@@ -63,19 +65,20 @@ class Tournament {
                     .setThumbnail("https://i.postimg.cc/L8grKJQV/exclamation-mark.png")
             }
             (async () => {
-                await readFile("bot/config/random_props.json", (err, data) => {
-                    let props = JSON.parse(data.toString())
-                    Object.entries(props).forEach(([ctg, options]) => {
-                        const randomElement = options[Math.floor(Math.random() * options.length)]
-                        embed.addField(ctg, randomElement);
+                //Задать рандомные условия для турнира
+                if (params.isRandom)
+                    await readFile("bot/config/random_props.json", (err, data) => {
+                        let props = JSON.parse(data.toString())
+                        Object.entries(props).forEach(([ctg, options]) => {
+                            const randomElement = options[Math.floor(Math.random() * options.length)]
+                            embed.addField(ctg, randomElement);
+                        })
                     })
-                })
                 let event_id = 0
                 await DAO.get("SELECT MAX(id) FROM events").then(event => {
                     event_id = parseInt(event['MAX(id)']) + 1
                 })
                 if (isNaN(event_id)) event_id = 0
-
                 const guild = params.guild
                 let guildParams
                 await DAO.get("SELECT * FROM guilds WHERE guild_id = $guild_id", {
@@ -84,11 +87,13 @@ class Tournament {
                     .then((row) => {
                         guildParams = row
                     })
-                if (!guildParams['tournament_channel'] || !guildParams['applications_channel'])
+                if (!guildParams['tournament_channel'] || !guildParams['applications_channel']) {
                     reject("Не установлен канал для турниров или заявок. Для установки напишите !здесь-турниры в канале для турниров и !здесь-заявки в канале для заявок")
+                    return
+                }
                 let message
                 const channel = guild.channels.cache.get(guildParams["tournament_channel"])
-                if(!channel) {
+                if (!channel) {
                     reject("Установлен неверный канал для турниров")
                     return
                 }

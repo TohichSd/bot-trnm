@@ -37,6 +37,30 @@
     color: #FF0000;
 }
 
+#trnm-random {
+    margin-top: 5%;
+}
+
+#trnm-random * {
+    display: inline;
+}
+
+#trnm-random input {
+    width: auto;
+    margin-right: 5%;
+/* Double-sized Checkboxes */
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    transform: scale(2);
+    padding: 10px;
+}
+
+#trnm-create {
+    margin-top: 5%;
+}
+
 @media (max-width: 768px) {
     .form-new-trnm label {
         font-size: 15pt;

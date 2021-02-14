@@ -9,6 +9,8 @@ import Interview from "../helpers/Interview.js"
 // console.log = function() {}
 // console.error = function() {}
 function main(msg) {
+    msg.reply("Данная команда устарела. Вместо неё используйте панель управления https://arm-bot.eu.openode.io/login")
+    return
     return new Promise((resolve, reject) => {
         try {
             const filter = m => m.member.id === msg.member.id
