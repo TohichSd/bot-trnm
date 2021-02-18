@@ -77,24 +77,31 @@ export default async (client) => {
         if (!req.body.name || !req.body.description || !req.body.awards || !req.body.datetime) {
             renderObject.notAllFilled = true
             const compiled = pug.renderFile(path.join(__dirname, "/views/new.pug"), renderObject)
-            res.status(400).send(compiled)
+            res.status(200).send(compiled)
             renderObject.notAllFilled = false
             return
         }
+        logger.info(req.body)
+        let isRandom = false
+        if(req.body.isRandom === "true")
+            isRandom = true
         new Tournament({
             name: req.body.name,
             description: req.body.description,
             loot: req.body.awards,
             date: moment(req.body.datetime).format('LLL'),
             datetimeMs: new Date(req.body.datetime).getTime(),
-            guild: guild
+            guild: guild,
+            isRandom: isRandom
         })
+            .then(()=>{
+                trnmDone = true
+                res.status(200).redirect("/tournament-done")
+            })
             .catch(err => {
                 renderObject.text = err
                 res.status(400).redirect("/tournament-err")
             })
-        trnmDone = true
-        res.status(200).redirect("/tournament-done")
     })
 
     app.get('/tournament-done', (req, res) => {
@@ -107,13 +114,12 @@ export default async (client) => {
     })
 
     app.get('/tournament-err', (req, res) => {
-        if (!trnmDone) {
+        if (trnmDone) {
             res.redirect("/")
             return
         }
-        res.status(200).send(pug.renderFile(path.join(__dirname, "/views/tournament-done.pug"), renderObject))
+        res.status(200).send(pug.renderFile(path.join(__dirname, "/views/tournament-err.pug"), renderObject))
         renderObject.text = undefined
-        trnmDone = false
     })
 
     app.get("/login", (req, res) => {

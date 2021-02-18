@@ -22,5 +22,8 @@ html(lang='ru')
                 textarea#trnm-awards(rows = 5 name = "awards")
                 label(for = "trnm-datetime") Дата и время проведения
                 input#trnm-datetime(type = "datetime-local" name = "datetime")
-                button.pure-button СОЗДАТЬ
+                label#trnm-random
+                    input(type = "checkbox" name = "isRandom" value="true")
+                    p Турнир со случайными условиями
+                button.pure-button#trnm-create СОЗДАТЬ
         include includes/footer.pug
