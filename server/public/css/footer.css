@@ -1,0 +1,21 @@
+
+footer {
+    padding: 5% 1% 1%;
+    text-align: center;
+}
+footer h3 {
+    position: fixed;
+    bottom: 0;
+}
+
+footer .footer-line {
+    border-top: 1px solid #858585;
+    width: 70%;
+    margin: auto;
+}
+
+@media (max-width:768px) {
+    footer {
+        font-size: 10px;
+    }
+}

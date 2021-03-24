@@ -1,0 +1,9 @@
+header
+    div
+        a(href="/")
+            h1#header-name Armellobot
+            if authorized === true
+                div#user-data
+                    h3#username !{username}
+                    a(href="/login?logout=true")
+                        div#exit-button.pure-button ВЫЙТИ

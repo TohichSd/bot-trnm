@@ -1,0 +1,77 @@
+.form-container {
+    text-align: center;
+}
+.form-new-trnm {
+    display: inline-block;
+    text-align: center;
+}
+
+.form-new-trnm * {
+    width: 100%;
+}
+
+.form-new-trnm label {
+    font-size: 20pt;
+}
+
+.form-new-trnm input,textarea {
+    border-radius: 7px;
+    resize: none;
+}
+
+.page-subtitle h2 {
+    display: inline-block;
+    margin-right: 1%;
+}
+
+.return-link {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.return-link h3 {
+    margin: 0;
+}
+
+.naf {
+    color: #FF0000;
+}
+
+#trnm-random {
+    margin-top: 5%;
+}
+
+#trnm-random * {
+    display: inline;
+}
+
+#trnm-random input {
+    width: auto;
+    margin-right: 5%;
+/* Double-sized Checkboxes */
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    transform: scale(2);
+    padding: 10px;
+}
+
+#trnm-create {
+    margin-top: 5%;
+}
+
+@media (max-width: 768px) {
+    .form-new-trnm label {
+        font-size: 15pt;
+    }
+}
+
+@media (max-width: 320px) {
+    .form-new-trnm label {
+        font-size: 13pt;
+    }
+    .page-subtitle {
+        font-size: 7pt;
+    }
+}
