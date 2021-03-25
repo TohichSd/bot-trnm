@@ -1,0 +1,13 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title 404
+        link(rel="stylesheet" href="/css/ds-auth.css")
+    body
+        include includes/header.pug
+        div.auth-main
+            div.auth-content
+                h1.auth-text Войти с помощью Discord
+                a(href=auth_link).auth
+                    button.auth ВОЙТИ

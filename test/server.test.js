@@ -1,5 +1,7 @@
 // Тестирование базовой работы сервера
 import supertest from 'supertest'
+// eslint-disable-next-line no-unused-vars
+import regeneratorRuntime from "regenerator-runtime"
 import app from "../server/server";
 
 const request = supertest(app)
