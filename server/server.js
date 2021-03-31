@@ -15,15 +15,13 @@ import session from 'express-session'
 import _pgSession from 'connect-pg-simple'
 import bodyParser from 'body-parser'
 import pug from 'pug'
-import fs from 'fs'
 import {pool} from '../db/commondb.js'
-import router from "./routes.js";
+import router from "./routes.js"
+import values from './config/values.config.js'
 
 const PgSession = _pgSession(session)
 
 const app = express()
-let values;
-fs.readFile("server/config/values.json", (err, data) => {values = JSON.parse(data.toString())})
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
