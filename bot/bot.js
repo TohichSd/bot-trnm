@@ -1,8 +1,8 @@
 import Discord from "discord.js"
 import {env} from "process"
-import {DAccess} from '../db/commondb.js'
 
-const client = new Discord.Client({partials: ['MESSAGE', 'CHANNEL', 'REACTION']})
+const intents = new Discord.Intents([Discord.Intents.NON_PRIVILEGED ,"GUILD_MEMBERS"])
+const client = new Discord.Client({partials: ['MESSAGE', 'CHANNEL', 'REACTION'], ws: {intents}})
 
 /**
  * Запускает бота
@@ -26,20 +26,30 @@ const start = async () => {
 // Common
 
 /**
- * Находит участника и возвращает
+ * Возвращает роль участника
  * @param {string} id - id участника
- * @return {boolean}
+ * @return {Promise<Object[]>}
  */
-const isMemberAdmin = async (id) => {
+const getUserGuilds = async (id) => {
     // eslint-disable-next-line no-restricted-syntax
-    for await (const guild of client.guilds.cache) {
-        const result = await DAccess.guild.get(guild[1].id)
-            .catch(console.err)
-        if (result.rows[0].permissions[id] > 1 || id === guild[1].ownerID || id === env.SUPERUSER_ID && id !== undefined && id !== "") return true
-    }
-    return false
+    const promises = client.guilds.cache.map(async guild => {
+        const members = await guild.members.fetch()
+        if(members.find(member => member.id === id)) return {
+            id: guild.id,
+            name: guild.name,
+            icon: guild.iconURL()
+        }
+        return null
+    })
+    return Promise.all(promises)
 }
 
+start().then( () => {
+    getUserGuilds('542733341011738639').then(console.log)
+})
 
-export {start, isMemberAdmin}
+//  const guild = _guild[1]
+//  const member = await guild.members.fetch(id)
+//  if(member !== undefined) guilds.push(guild.id)
 
+export {start, getUserGuilds}
