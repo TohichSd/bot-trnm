@@ -1,62 +1,80 @@
-import pg from 'pg'
-import QueryBuilder from "./QueryBuilder.js";
+import MongoClient from 'mongodb'
+import {env} from 'process'
 
-const pool = new pg.Pool()
 const DAccess = {}
-const query = new QueryBuilder()
+const dbname = env.DB_NAME
 
-pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err)
-    process.exit(-1)
-})
 
-DAccess.guild = {}
-
-/**
- * Возвращает информацию о guild по его id
- * @param {string} id ID сервера
- * @return {Promise<Object>}
- */
-DAccess.guild.get = async (id = '') => {
-    const client = await pool.connect()
-    try {
-        query.select('guilds', ['*'], {id})
-        return await client.query(query.queryString, query.queryParams)
-    } finally {
-        client.release()
-    }
+const connect = async () => {
+    const client = await MongoClient.connect(env.CONNECTION_STRING, {useUnifiedTopology: true})
+        .catch(err => {
+            throw err
+        })
+    if (!client) throw new Error('Could not connect to database')
+    return client
 }
 
+
 /**
- * Добавляет или обновляет значение в таблице guilds
- * @param {string} id
- * @param {object} params
+ * Возвращает параметры сервера по id
+ * @param {Object} query
+ * @param {String} table
  * @return {Promise<void>}
  */
-DAccess.guild.set = async (id, params) => {
-    const client = await pool.connect()
+DAccess.get = async (query, table) => {
+    const client = await connect()
     try {
-
-        query.select('guilds', ['*'], {id})
-        const tmpResult = await client.query(query.queryString, query.queryParams)
-
-        if (params.permissions === undefined) params.permissions = tmpResult.rows[0].permissions
-        if (params.options === undefined) params.options = tmpResult.rows[0].options
-
-        if (tmpResult.rowCount === 0) {
-            query.insert('guilds', ['id', 'permissions', 'options'], [id, params.permissions, params.options])
-            await client.query(query.queryString, query.queryParams)
-        }
-        else {
-            query.update('guilds', ['id', 'permissions', 'options'], [id, params.permissions, params.options], {id})
-            await client.query(query.queryString, query.queryParams)
-        }
+        const db = client.db(dbname)
+        const collection = db.collection(table)
+        return await collection.findOne(query)
+            .catch(err => {
+                throw err
+            })
     } finally {
-        client.release()
+        await client.close()
     }
 }
 
-DAccess.guild.get("663333255855996929")
-    .then(console.dir)
+/**
+ * Задаёт параметры сервера по id
+ * @param {Object} query
+ * @param {String} table
+ * @param {Object} params
+ * @return {Promise<void>}
+ */
+DAccess.update = async (query, table, params) => {
+    const client = await connect()
+    try {
+        const db = client.db(dbname)
+        const collection = db.collection(table)
+        await collection.updateOne(query, params)
+            .catch(err => {
+                throw err
+            })
+    } finally {
+        await client.close()
+    }
+}
 
-export {DAccess, pool}
+/**
+ * Добавить новый сервер в бд
+ * @param params
+ * @param {String} table
+ * @param {Object} params
+ * @return {Promise<void>}
+ */
+DAccess.add = async (table, params) => {
+    const client = await connect()
+    try {
+        const db = client.db(dbname)
+        const collection = db.collection(table)
+        await collection.insertOne(params)
+            .catch(err => {
+                throw err
+            })
+    } finally {
+        await client.close()
+    }
+}
+
+export default DAccess
