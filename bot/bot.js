@@ -44,10 +44,6 @@ const getUserGuilds = async (id) => {
     return Promise.all(promises)
 }
 
-start().then( () => {
-    getUserGuilds('542733341011738639').then(console.log)
-})
-
 //  const guild = _guild[1]
 //  const member = await guild.members.fetch(id)
 //  if(member !== undefined) guilds.push(guild.id)
