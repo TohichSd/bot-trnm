@@ -115,4 +115,8 @@ router.get("/", onlyAuth, (req, res) => {
   })
 })
 
+router.get("/guild/:id", onlyAuth, onlyGuildAdmin, (req, res) => {
+  res.send(pug.renderFile("server/views/controls.pug", renderOptions))
+})
+
 export default router
