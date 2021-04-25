@@ -1,18 +1,24 @@
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .main-container {
-    text-align: center;
+  text-align: center;
 }
 
 .page-subtitle {
-    text-align: center;
+  text-align: center;
 }
 
 .page-subtitle h2 {
-    display: inline-block;
-    margin-right: 1%;
+  display: inline-block;
+  margin-right: 1%;
 }
 
 @media (max-width: 768px) {
-    .page-subtitle {
-        font-size: 10pt;
-    }
+  .page-subtitle {
+    font-size: 10pt;
+  }
 }

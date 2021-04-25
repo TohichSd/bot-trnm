@@ -1,21 +1,24 @@
-
 footer {
-    padding: 5% 1% 1%;
-    text-align: center;
+  padding: 1% 1% 1%;
+  text-align: center;
+  margin-top: auto;
+  background-color: #9b9b9b;
+  box-shadow: 0 0 4px #000000;
 }
+
 footer h3 {
-    position: fixed;
-    bottom: 0;
+  display: inline-block;
+  margin-left: 1%;
 }
 
 footer .footer-line {
-    border-top: 1px solid #858585;
-    width: 70%;
-    margin: auto;
+  border-top: 1px solid #858585;
+  width: 70%;
+  margin: auto;
 }
 
-@media (max-width:768px) {
-    footer {
-        font-size: 10px;
-    }
+@media (max-width: 768px) {
+  footer {
+    font-size: 10px;
+  }
 }
