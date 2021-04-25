@@ -44,8 +44,32 @@ const getUserGuilds = async (id) => {
     return Promise.all(promises)
 }
 
-//  const guild = _guild[1]
-//  const member = await guild.members.fetch(id)
-//  if(member !== undefined) guilds.push(guild.id)
+/**
+ * Отправляет отчёт пользовательлю с id == SUPERUSER_ID
+ * @param err
+ */
+const sendReport = (err) => {
+  client.users
+    .fetch(env.SUPERUSER_ID)
+    .then((user) => {
+      user.send(err)
+    })
+    .catch(console.error)
+}
 
-export {start, getUserGuilds}
+/**
+ * Сообщает, является, ли пользователь администратором бота
+ * @param userID
+ * @param guildID
+ * @return Promise<boolean>
+ */
+const isMemberAdmin = async (userID, guildID) => {
+  const guild = await client.guilds.fetch(guildID)
+  if(guild.ownerID === userID) return true
+  const memberRoles = (await guild.members.fetch(userID)).roles.cache
+  const adminRoles = (await DB.get("guilds", { guild_id: guildID })).admin_roles
+  const intersection = adminRoles.filter(role => memberRoles.has(role))
+  return intersection.length > 0
+}
+
+export { start, getUserGuilds, sendReport, isMemberAdmin }
