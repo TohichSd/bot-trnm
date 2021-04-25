@@ -6,7 +6,15 @@ html(lang='ru')
         link(rel="stylesheet" href="/css/choose-server.css")
     body
         include includes/header.pug
+        div.page-subtitle
+            h2 Выбор сервера
         div.main
-            div.container
+            div.container.guild-container
                 each guild in guilds
                     div.guild-card
+                        -let link = `/guild/${guild.id}`
+                        a(href=link)
+                            img(src=guild.icon)
+                            p
+                                strong #{guild.name}
+        include includes/footer

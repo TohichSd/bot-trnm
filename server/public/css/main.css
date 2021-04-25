@@ -1,87 +1,86 @@
 body {
-    margin: 0;
+  margin: 0;
 }
 
 .main {
-    margin: 0 5%;
+  margin: 0 5%;
 }
 
 .main a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .main .grid-cell-content {
-    border: 1px solid rgba(0,0,0,0.3);
-    border-radius: 10px;
-    margin: 1% 2%;
-    height: 100%;
-    padding: 1%;
-    cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  margin: 1% 2%;
+  height: 100%;
+  padding: 1%;
+  cursor: pointer;
 }
 
 .main .grid-cell-content:hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .main .grid-cell-title {
-    text-align: center;
-    color: #4c4c4c;
+  text-align: center;
+  color: #4c4c4c;
 }
 
 .grid-cell-icon {
-    text-align: center;
-    vertical-align: middle;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .plus-icon {
-    display:inline-block;
-    width:200px;
-    height:200px;
-    background:
-            linear-gradient(#858585,#858585),
-            linear-gradient(#858585,#858585);
-    background-position:center;
-    background-size: 75% 1%,1% 75%;
-    background-repeat:no-repeat;
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(#858585, #858585),
+    linear-gradient(#858585, #858585);
+  background-position: center;
+  background-size: 75% 1%, 1% 75%;
+  background-repeat: no-repeat;
 }
 
 .list-icon {
-    display: inline-block;
-    width:200px;
-    height:150px;
-    margin-top: 5%;
+  display: inline-block;
+  width: 200px;
+  height: 150px;
+  margin-top: 5%;
 }
 
 .list-icon div {
-    height: 33%;
-    width:100%;
-    background: linear-gradient(#858585, #858585) center;
-    background-size: 90% 3%;
-    background-repeat: no-repeat;
+  height: 33%;
+  width: 100%;
+  background: linear-gradient(#858585, #858585) center;
+  background-size: 90% 3%;
+  background-repeat: no-repeat;
 }
 
 @media (max-width: 768px) {
-    .main .grid-cell-title {
-        font-size: 10pt;
-    }
-    .main .grid-cell-content:hover {
-        box-shadow: none;
-    }
-    .main .grid-cell-content:active {
-        background-color: rgba(0,0,0,0.07);
-    }
-    .plus-icon {
-        width:50px;
-        height:50px;
-    }
-    .list-icon {
-        width: 50px;
-        height: 35px;
-    }
+  .main .grid-cell-title {
+    font-size: 10pt;
+  }
+  .main .grid-cell-content:hover {
+    box-shadow: none;
+  }
+  .main .grid-cell-content:active {
+    background-color: rgba(0, 0, 0, 0.07);
+  }
+  .plus-icon {
+    width: 50px;
+    height: 50px;
+  }
+  .list-icon {
+    width: 50px;
+    height: 35px;
+  }
 }
 
 @media (max-width: 320px) {
-    .main .grid-cell-title {
-        font-size: 7pt;
-    }
+  .main .grid-cell-title {
+    font-size: 7pt;
+  }
 }

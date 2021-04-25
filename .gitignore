@@ -2,3 +2,4 @@ node_modules
 coverage
 .eslintrc.json
 .idea
+/.prettierrc.json

@@ -1,13 +1,13 @@
 .err-main {
-    text-align: center;
+  text-align: center;
 }
 
 .err-code {
-    font-size: 70pt;
-    margin: 5% 0 0;
+  font-size: 70pt;
+  margin: 5% 0 0;
 }
 
 .err-text {
-    font-size: 20pt;
-    margin: 0.5% 0 0;
+  font-size: 20pt;
+  margin: 0.5% 0 0;
 }

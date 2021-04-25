@@ -1,9 +1,6 @@
 {
   "collectCoverage": true,
-  "moduleFileExtensions": [
-    "js",
-    "mjs"
-  ],
+  "moduleFileExtensions": ["js", "mjs"],
   "testEnvironment": "node",
   "transform": {
     "^.+\\.js$": "babel-jest",
