@@ -1,47 +1,56 @@
 import Discord from "discord.js"
-import {env} from "process"
+import { env } from "process"
+import DB from "../db/commondb.js"
 
-const intents = new Discord.Intents([Discord.Intents.NON_PRIVILEGED ,"GUILD_MEMBERS"])
-const client = new Discord.Client({partials: ['MESSAGE', 'CHANNEL', 'REACTION'], ws: {intents}})
+const intents = new Discord.Intents([
+  Discord.Intents.NON_PRIVILEGED,
+  "GUILD_MEMBERS",
+])
+const client = new Discord.Client({
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+  ws: { intents },
+})
 
 /**
  * Запускает бота
  * @return {Promise<any>}
  */
 const start = async () => {
-    if (env.DSTOKEN === undefined) throw new Error("Token is not defined")
-    await client.login(env.DSTOKEN)
-        .then(() => {
-            console.log("Discord client ready!")
-            setInterval(() => client.user.setActivity("!help"), 3 * 60 * 60 * 1000)
-        })
-        .catch(err => {
-            throw err
-        })
-    if (client.user.id !== undefined) return true
-    throw new Error('Unexpected error: user is unavailable')
+  if (env.DSTOKEN === undefined) throw new Error("Token is not defined")
+  await client
+    .login(env.DSTOKEN)
+    .then(() => {
+      console.log("Discord client ready!")
+      setInterval(() => client.user.setActivity("!help"), 3 * 60 * 60 * 1000)
+    })
+    .catch((err) => {
+      throw err
+    })
+  if (client.user.id !== undefined) return true
+  throw new Error("Unexpected error: user is unavailable")
 }
 
 
 // Common
 
 /**
- * Возвращает роль участника
+ * Возвращает список серверов, на которых находится участник в виде {id, name, icon}
  * @param {string} id - id участника
  * @return {Promise<Object[]>}
  */
 const getUserGuilds = async (id) => {
-    // eslint-disable-next-line no-restricted-syntax
-    const promises = client.guilds.cache.map(async guild => {
-        const members = await guild.members.fetch()
-        if(members.find(member => member.id === id)) return {
-            id: guild.id,
-            name: guild.name,
-            icon: guild.iconURL()
-        }
-        return null
-    })
-    return Promise.all(promises)
+  // eslint-disable-next-line no-restricted-syntax
+  const promises = client.guilds.cache.map(async (guild) => {
+    const members = await guild.members.fetch()
+    if (members.find((member) => member.id === id))
+      return {
+        id: guild.id,
+        name: guild.name,
+        icon: guild.iconURL(),
+      }
+    return null
+  })
+  return Promise.all(promises)
 }
 
 /**
