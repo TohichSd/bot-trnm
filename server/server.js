@@ -12,15 +12,13 @@
 import express from 'express'
 import {env} from 'process'
 import session from 'express-session'
-import _pgSession from 'connect-pg-simple'
 import bodyParser from 'body-parser'
 import pug from 'pug'
-import {pool} from '../db/commondb.js'
+import _MongoDBStore from 'connect-mongodb-session'
 import router from "./routes.js"
 import values from './config/values.config.js'
 
-const PgSession = _pgSession(session)
-
+const MongoDBStore = _MongoDBStore(session)
 const app = express()
 
 app.use(bodyParser.urlencoded({extended: true}))
@@ -29,18 +27,16 @@ app.set("view engine", "pug")
 app.use(express.static("server/public"))
 
 app.use(session({
-    store: new PgSession({
-        pool
-    }),
-    name: "session",
     secret: env.SESSION_SECRET,
-    resave: false,
     cookie: {
-        sameSite: 'Lax',
-        maxAge: 10 * 24 * 60 * 60 * 1000,
-        secure: false
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
     },
-    saveUninitialized: true
+    store: new MongoDBStore({
+        uri: env.CONNECTION_STRING,
+        collection: 'mySessions'
+    }),
+    resave: false,
+    saveUninitialized: false
 }))
 
 // Вызов роутера

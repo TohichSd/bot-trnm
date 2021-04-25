@@ -2,12 +2,22 @@ import express from 'express'
 import pug from 'pug'
 import fetch from 'node-fetch'
 import {env} from 'process'
-import values from './config/values.config.js'
-import {isMemberAdmin} from "../bot/bot.js"
+import {
+    ReasonPhrases,
+    StatusCodes
+} from 'http-status-codes'
+import {getUserGuilds} from "../bot/bot.js"
 
 const router = express.Router()
 const renderParams = {}
 
+const checkAuth = (req, res, next) => {
+    if (req.session.authorized !== true){
+        res.redirect("/ds-auth")
+        return
+    }
+    next()
+}
 
 
 // Для тестирования работы сервера
@@ -16,17 +26,7 @@ router.get('/ping', (req, res) => {
 })
 
 // Авторизация пользовательля с помощью Discord OAuth2
-router.get('/auth',
-    /**
-     * @param {Object} req
-     * @param {Object} res
-     * @param req.protocol
-     * @param req.get
-     * @param req.route
-     * @param req.query
-     * @param req.session сессия
-     */
-    async (req, res) => {
+router.get('/auth', async (req, res, next) => {
 
     if (req.session.authorized === true) {
         res.redirect('/')
@@ -54,8 +54,7 @@ router.get('/auth',
         body: new URLSearchParams(data),
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    })
+        }})
         .then(_accessData => _accessData.json())
         .then(_accessData => {accessData = _accessData})
 
@@ -64,15 +63,13 @@ router.get('/auth',
     await fetch('https://discord.com/api/users/@me', {
         headers: {
             authorization: `${accessData.token_type} ${accessData.access_token}`,
-        },
-    })
+        }})
         .then(_userData => {userData = _userData})
 
 
     if (userData.status !== 200) {
         req.session.authorized = false
-        res.status(401)
-        res.send(pug.renderFile('server/views/err.pug', {code: 401, text:values.error["401-ds"]}))
+        next({code: StatusCodes.UNAUTHORIZED, text: ReasonPhrases.UNAUTHORIZED})
     }
     else {
         userData = await userData.json()
@@ -94,34 +91,29 @@ router.use(
     next()
 })
 
+
 // Страница авторизации
 router.get("/ds-auth", ((req, res) => {
     res.send(pug.renderFile("server/views/ds-auth.pug", {auth_link: env.D_AUTH_URL}))
 }))
-
-// Далее находятся защищённые страницы
-
-const checkAuth = (req, res, next) => {
-    if (req.session.authorized !== true){
-        res.redirect("/ds-auth")
-        return
-    }
-    if(!isMemberAdmin(req.session.userID)) {
-        res.status(403)
-        res.send(pug.renderFile('server/views/err.pug', {code: 403, text: values.error[403], ...renderParams}))
-        return
-    }
-    next()
-}
 
 // Главная страница
 router.get('/', checkAuth, (req, res) => {
     res.send(pug.renderFile('server/views/main.pug', renderParams))
 })
 
+// Выход из сессии
 router.get('/logout', (req, res) => {
     req.session = null
     res.redirect('/ds-auth')
+})
+
+// Обработчик ошибок
+// eslint-disable-next-line no-unused-vars
+router.use((err, req, res, next) => {
+    req.body = null
+    res.status(err.status)
+    res.send(pug.renderFile('server/views/err.pug', {code: err.code, text: err.text}))
 })
 
 export default router
