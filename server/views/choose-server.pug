@@ -1,0 +1,12 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title Авторизация
+        link(rel="stylesheet" href="/css/choose-server.css")
+    body
+        include includes/header.pug
+        div.main
+            div.container
+                each guild in guilds
+                    div.guild-card

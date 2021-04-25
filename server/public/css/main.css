@@ -28,10 +28,6 @@ body {
     color: #4c4c4c;
 }
 
-.page-subtitle {
-    text-align: center;
-}
-
 .grid-cell-icon {
     text-align: center;
     vertical-align: middle;
@@ -73,9 +69,6 @@ body {
     }
     .main .grid-cell-content:active {
         background-color: rgba(0,0,0,0.07);
-    }
-    .page-subtitle {
-        font-size: 10pt;
     }
     .plus-icon {
         width:50px;

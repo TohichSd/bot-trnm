@@ -1,0 +1,18 @@
+.main-container {
+    text-align: center;
+}
+
+.page-subtitle {
+    text-align: center;
+}
+
+.page-subtitle h2 {
+    display: inline-block;
+    margin-right: 1%;
+}
+
+@media (max-width: 768px) {
+    .page-subtitle {
+        font-size: 10pt;
+    }
+}

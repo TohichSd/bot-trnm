@@ -1,6 +1,3 @@
-.form-container {
-    text-align: center;
-}
 .form-new-trnm {
     display: inline-block;
     text-align: center;
@@ -17,11 +14,6 @@
 .form-new-trnm input,textarea {
     border-radius: 7px;
     resize: none;
-}
-
-.page-subtitle h2 {
-    display: inline-block;
-    margin-right: 1%;
 }
 
 .return-link {
