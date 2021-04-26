@@ -75,7 +75,7 @@ router.get("/auth", onlyUnauthorized, async (req, res, next) => {
 
   if (userData.status !== 200) {
     req.session.authorized = false
-    next({ code: StatusCodes.UNAUTHORIZED, text: ReasonPhrases.UNAUTHORIZED })
+    next(403)
   } else {
     userData = await userData.json()
     req.session.authorized = true
