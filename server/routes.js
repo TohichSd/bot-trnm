@@ -38,7 +38,7 @@ const onlyGuildAdmin = (req, res, next) => {
 
 // Для тестирования работы сервера
 router.get("/ping", (req, res) => {
-  res.json({ status: "pass" })
+  res.json({status: "pass"})
 })
 
 // Авторизация пользовательля с помощью Discord OAuth2
@@ -100,7 +100,7 @@ router.use((req, res, next) => {
 // Страница авторизации
 router.get("/ds-auth", onlyUnauthorized, (req, res) => {
   res.send(
-    pug.renderFile("server/views/ds-auth.pug", { auth_link: env.D_AUTH_URL })
+    pug.renderFile("server/views/ds-auth.pug", {auth_link: env.D_AUTH_URL})
   )
 })
 
