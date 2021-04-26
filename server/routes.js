@@ -26,10 +26,14 @@ const onlyUnauthorized = (req, res, next) => {
 }
 
 const onlyGuildAdmin = (req, res, next) => {
-  isMemberAdmin(req.session.userID, req.params.id).then((result) => {
-    if (result) next()
-    else res.redirect("/ds-auth")
-  })
+  isMemberAdmin(req.session.userID, req.params.id)
+    .then((result) => {
+      if (result) next()
+      else res.redirect("/ds-auth")
+    })
+    .catch(err => {
+      next(err)
+    })
 }
 
 // Для тестирования работы сервера
@@ -102,7 +106,8 @@ router.get("/ds-auth", onlyUnauthorized, (req, res) => {
 
 // Выход из сессии
 router.get("/logout", (req, res) => {
-  req.session = null
+  req.session.authorized = null
+  req.session.username = null
   res.redirect("/ds-auth")
 })
 
