@@ -6,8 +6,9 @@ html(lang='ru')
         link(rel="stylesheet" href="/css/err.css")
     body
         include includes/header.pug
-        div.err-main
+        div.main
             h2.err-code #{code}
             h3.err-text #{text}
             a(href="/")
-                h3.err-text На главную
+                h3.err-link НА ГЛАВНУЮ
+        include includes/footer.pug

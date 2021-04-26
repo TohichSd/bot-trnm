@@ -3,7 +3,7 @@
 }
 
 .guild-card {
-  border: darkblue 1px solid;
+  border: 1px solid rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   display: inline-block;
   padding: 0.5%;
@@ -11,7 +11,7 @@
 }
 
 .guild-card:hover {
-  border-width: 3px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
 }
 
 .guild-card a {

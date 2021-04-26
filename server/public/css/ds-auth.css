@@ -1,12 +1,9 @@
-.auth-main {
-  text-align: center;
-  margin-top: 5%;
-}
 .auth-content {
   display: inline-block;
   border: #3e3e3e solid;
   border-radius: 10px;
   padding: 1%;
+    margin-top: 5%;
 }
 
 button.auth {
