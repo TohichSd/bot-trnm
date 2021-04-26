@@ -15,8 +15,8 @@ import session from "express-session"
 import bodyParser from "body-parser"
 import pug from "pug"
 import _MongoDBStore from "connect-mongodb-session"
+import { ReasonPhrases, StatusCodes, getReasonPhrase } from "http-status-codes"
 import router from "./routes.js"
-import values from "./config/values.config.js"
 import { sendReport } from "../bot/bot.js"
 
 const MongoDBStore = _MongoDBStore(session)
@@ -46,32 +46,40 @@ app.use(
 app.use(router)
 
 // 404
-app.use((req, res) => {
-  const err = new Error(values.error[404])
-  err.status = 404
-  const compiledPage = pug.renderFile("server/views/err.pug", {
-    code: err.status,
-    text: err.message,
-  })
-  res.status(err.status)
-  res.send(compiledPage)
+app.use((req, res, next) => {
+  const err = new Error("Тут ничего нет((")
+  err.statusCode = StatusCodes.NOT_FOUND
+  next(err)
 })
 
 // Обработчик ошибок
 // eslint-disable-next-line no-unused-vars
-router.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
   req.body = null
-  if (err.code && err.text) {
+  const renderOptions = {}
+  renderOptions.authorized = !!req.session.authorized
+  renderOptions.username = req.session.username
+  if (err.statusCode) {
+    res.status(err.statusCode)
     res.send(
-      pug.renderFile("server/views/err.pug", { code: err.code, text: err.text })
+      pug.renderFile("server/views/err.pug", {
+        ...renderOptions,
+        code: err.statusCode,
+        text: err.message ? err.message : getReasonPhrase(err.statusCode),
+      })
     )
   } else {
     res.status(500)
-    sendReport(err.stack)
+    sendReport(`${req.method}: ${req.url}
+    ${req.session.username}
+    ${req.session.authorized}
+    ${err.stack}
+    `)
     res.send(
       pug.renderFile("server/views/err.pug", {
-        code: 500,
-        text: "Произошла непредвиденная ошибка.",
+        ...renderOptions,
+        code: StatusCodes.INTERNAL_SERVER_ERROR,
+        text: ReasonPhrases.INTERNAL_SERVER_ERROR,
       })
     )
   }

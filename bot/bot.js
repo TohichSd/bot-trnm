@@ -1,4 +1,4 @@
-import Discord from "discord.js"
+﻿import Discord from "discord.js"
 import { env } from "process"
 import DB from "../db/commondb.js"
 
@@ -74,10 +74,14 @@ const sendReport = (err) => {
  */
 const isMemberAdmin = async (userID, guildID) => {
   const guild = await client.guilds.fetch(guildID)
+    .catch(err => {
+    err.statusCode = err.httpStatus
+    throw err
+  })
   if(guild.ownerID === userID) return true
   const memberRoles = (await guild.members.fetch(userID)).roles.cache
   const adminRoles = (await DB.get("guilds", { guild_id: guildID })).admin_roles
-  const intersection = adminRoles.filter(role => memberRoles.has(role))
+  const intersection = adminRoles.filter(roleID => memberRoles.has(roleID))
   return intersection.length > 0
 }
 
