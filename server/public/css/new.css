@@ -1,6 +1,7 @@
 .form-new-trnm {
   display: inline-block;
   text-align: center;
+  margin-bottom: 3%;
 }
 
 .form-new-trnm * {
@@ -11,8 +12,7 @@
   font-size: 20pt;
 }
 
-.form-new-trnm input,
-textarea {
+.form-new-trnm input, textarea {
   border-radius: 7px;
   resize: none;
 }
@@ -22,12 +22,8 @@ textarea {
   display: inline-block;
 }
 
-.return-link h3 {
-  margin: 0;
-}
-
-.naf {
-  color: #ff0000;
+.red-error {
+  /*color: #ff0000;*/
 }
 
 #trnm-random {

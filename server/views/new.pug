@@ -1,0 +1,30 @@
+doctype html
+html(lang='ru')
+    head
+        include includes/include-head.html
+        title Новый турнир
+        link(rel="stylesheet" href="/css/new.css")
+    body
+        include includes/header.pug
+        div.page-subtitle
+            h2 Новый турнир
+            a(href=".").return-link.pure-button
+                h3 Назад
+        div.main
+            form.pure-form-stacked.form-new-trnm(method="POST" name="tournament" autocomplete="off")
+                if notAllFilled === true
+                    h3.red-error Заполните все поля!
+                input(name="csrf" value=csrf hidden)
+                label(for = "trnm-name") Название
+                input#trnm-name(type = "text" name="name").pure-input-rounded
+                label(for = "trnm-description") Описание
+                textarea#trnm-description(rows = 5 name = "description")
+                label(for = "trnm-awards") Награды
+                textarea#trnm-awards(rows = 5 name = "awards")
+                label(for = "trnm-datetime") Дата и время проведения
+                input#trnm-datetime(type = "datetime-local" name = "datetime")
+                label#trnm-random
+                    input(type = "checkbox" name = "isRandom" value="true")
+                    p Турнир со случайными условиями
+                button.pure-button#trnm-create СОЗДАТЬ
+        include includes/footer.pug

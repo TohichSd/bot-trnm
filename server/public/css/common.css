@@ -17,6 +17,10 @@ body {
   margin-right: 1%;
 }
 
+.return-link h3 {
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .page-subtitle {
     font-size: 10pt;

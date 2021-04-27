@@ -12,7 +12,7 @@ html(lang='ru')
             div.container.guild-container
                 each guild in guilds
                     div.guild-card
-                        -let link = `/guild/${guild.id}`
+                        -let link = `/guild/${guild.id}/`
                         a(href=link)
                             img(src=guild.icon)
                             p
