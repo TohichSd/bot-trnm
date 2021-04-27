@@ -11,9 +11,11 @@
 
 import express from "express"
 import { env } from "process"
+import {v4 as uuid} from 'uuid'
 import session from "express-session"
 import bodyParser from "body-parser"
 import pug from "pug"
+import helmet from 'helmet'
 import _MongoDBStore from "connect-mongodb-session"
 import { ReasonPhrases, StatusCodes, getReasonPhrase } from "http-status-codes"
 import router from "./routes.js"
@@ -24,14 +26,17 @@ const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.set("view engine", "pug")
 app.use(express.static("server/public"))
+app.use(helmet())
+app.set("view engine", "pug")
+
 
 app.use(
   session({
     secret: env.SESSION_SECRET,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+      maxAge: 1000 * 60 * 60 * 24 * 7, // неделя
+      httpOnly: true,
     },
     store: new MongoDBStore({
       uri: env.CONNECTION_STRING,
@@ -41,6 +46,15 @@ app.use(
     saveUninitialized: false,
   })
 )
+
+// Создание csrf-токена для новой сессии
+app.use((req, res, next) => {
+  if (!req.session.created) {
+    req.session.created = true
+    req.session.csrfToken = uuid()
+  }
+  next()
+})
 
 // Вызов роутера
 app.use(router)
@@ -70,9 +84,12 @@ app.use((err, req, res, next) => {
     )
   } else {
     res.status(500)
-    sendReport(`${req.method}: ${req.url}
-    ${req.session.username}
-    ${req.session.authorized}
+
+    // При разработке выводить ошибку в консоль, а в проде отсылать репорт
+    if(env.NODE_ENV === 'development') console.error(err)
+    else sendReport(`${req.method}: ${req.url}
+    username: ${req.session.username}
+    authorized: ${req.session.authorized}
     ${err.stack}
     `)
     res.send(
