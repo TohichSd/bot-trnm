@@ -16,5 +16,6 @@
     <orderEntry type="library" name="@types/pg" level="application" />
     <orderEntry type="library" name="@types/pug" level="application" />
     <orderEntry type="library" name="@types/express" level="application" />
+    <orderEntry type="library" name="@types/chai" level="application" />
   </component>
 </module>

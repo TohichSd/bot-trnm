@@ -1,6 +1,7 @@
 ﻿import Discord from "discord.js"
 import { env } from "process"
-import DB from "../db/commondb.js"
+import DB from "./db/commonUtils.js"
+import commands from "./commands/index.js"
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
@@ -30,16 +31,39 @@ const start = async () => {
   throw new Error("Unexpected error: user is unavailable")
 }
 
+/**
+ * Сообщает, является, ли пользователь администратором бота
+ * @param userID
+ * @param guildID
+ * @return Promise<boolean>
+ */
+const isMemberAdmin = async (userID, guildID) => {
+  const guild = await client.guilds.fetch(guildID)
+  if (guild.ownerID === userID) return true
+  const member = await guild.members.fetch(userID)
+  if(member.hasPermission('ADMINISTRATOR')) return true
+  const memberRoles = member.roles.cache
+  const adminRoles = (await DB.get("guilds", { guild_id: guildID })).admin_roles
+  const intersection = adminRoles.filter((roleID) => memberRoles.has(roleID))
+  return intersection.length > 0
+}
+
+
+client.on("message", (message) => {
+  const cmd = message.content.slice(1).split(" ")[0].toLowerCase()
+  if (commands[cmd]) {
+    commands[cmd].run(message)
+  }
+})
+
 
 // Common
-
 /**
  * Возвращает список серверов, на которых находится участник в виде {id, name, icon}
  * @param {string} id - id участника
  * @return {Promise<Object[]>}
  */
 const getUserGuilds = async (id) => {
-  // eslint-disable-next-line no-restricted-syntax
   const promises = client.guilds.cache.map(async (guild) => {
     const members = await guild.members.fetch()
     if (members.find((member) => member.id === id))
@@ -55,34 +79,17 @@ const getUserGuilds = async (id) => {
 
 /**
  * Отправляет отчёт пользовательлю с id == SUPERUSER_ID
- * @param err
+ * @param {string} err Сообщение
  */
 const sendReport = (err) => {
-  client.users
-    .fetch(env.SUPERUSER_ID)
-    .then((user) => {
-      user.send(err)
-    })
-    .catch(console.error)
-}
-
-/**
- * Сообщает, является, ли пользователь администратором бота
- * @param userID
- * @param guildID
- * @return Promise<boolean>
- */
-const isMemberAdmin = async (userID, guildID) => {
-  const guild = await client.guilds.fetch(guildID)
-    .catch(err => {
-    err.statusCode = err.httpStatus
-    throw err
-  })
-  if(guild.ownerID === userID) return true
-  const memberRoles = (await guild.members.fetch(userID)).roles.cache
-  const adminRoles = (await DB.get("guilds", { guild_id: guildID })).admin_roles
-  const intersection = adminRoles.filter(roleID => memberRoles.has(roleID))
-  return intersection.length > 0
+  if (env.NODE_ENV === "development") console.error(err)
+  else
+    client.users
+      .fetch(env.SUPERUSER_ID)
+      .then((user) => {
+        user.send(err)
+      })
+      .catch(console.error)
 }
 
 export { start, getUserGuilds, sendReport, isMemberAdmin }

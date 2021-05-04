@@ -5,7 +5,7 @@ html(lang='ru')
         title Новый турнир
         link(rel="stylesheet" href="/css/new.css")
     body
-        include includes/header.pug
+        include includes/header
         div.page-subtitle
             h2 Новый турнир
             a(href=".").return-link.pure-button
@@ -27,4 +27,4 @@ html(lang='ru')
                     input(type = "checkbox" name = "isRandom" value="true")
                     p Турнир со случайными условиями
                 button.pure-button#trnm-create СОЗДАТЬ
-        include includes/footer.pug
+        include includes/footer

@@ -19,7 +19,7 @@ import helmet from 'helmet'
 import _MongoDBStore from "connect-mongodb-session"
 import { ReasonPhrases, StatusCodes, getReasonPhrase } from "http-status-codes"
 import router from "./routes.js"
-import { sendReport } from "../bot/bot.js"
+import { sendReport } from "../bot.js"
 
 const MongoDBStore = _MongoDBStore(session)
 const app = express()
@@ -37,7 +37,6 @@ app.use(
   })
 )
 app.set("view engine", "pug")
-
 
 app.use(
   session({
@@ -79,15 +78,16 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   req.body = null
   const renderOptions = {}
-  renderOptions.authorized = !!req.session.authorized
+  renderOptions.auth = !!req.session.auth
   renderOptions.username = req.session.username
-  if (err.statusCode) {
-    res.status(err.statusCode)
+  if (err.statusCode || err.httpStatus) {
+    const status = err.statusCode || err.httpStatus
+    res.status(status)
     res.send(
       pug.renderFile("server/views/err.pug", {
         ...renderOptions,
-        code: err.statusCode,
-        text: err.message ? err.message : getReasonPhrase(err.statusCode),
+        code: status,
+        text: err.message ? err.message : getReasonPhrase(status),
       })
     )
   } else {
@@ -97,7 +97,7 @@ app.use((err, req, res, next) => {
     if(env.NODE_ENV === 'development') console.error(err)
     else sendReport(`${req.method}: ${req.url}
     username: ${req.session.username}
-    authorized: ${req.session.authorized}
+    authorized: ${req.session.auth}
     ${err.stack}
     `)
     res.send(

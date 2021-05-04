@@ -1,5 +1,5 @@
-import MongoClient from "mongodb"
-import { env } from "process"
+import MongoClient from 'mongodb'
+import { env } from 'process'
 
 const dbname = env.DB_NAME
 
@@ -8,13 +8,13 @@ class DBUtils {
    * Выполняет подключение к бд
    * @return {Promise<MongoClient>}
    */
-   static async connect() {
+  static async connect() {
     const client = await MongoClient.connect(env.CONNECTION_STRING, {
       useUnifiedTopology: true,
-    }).catch((err) => {
+    }).catch(err => {
       throw err
     })
-    if (!client) throw new Error("Could not connect to database")
+    if (!client) throw new Error('Could not connect to database')
     return client
   }
 
@@ -29,7 +29,7 @@ class DBUtils {
     try {
       const db = client.db(dbname)
       const collection = db.collection(table)
-      return await collection.findOne(query).catch((err) => {
+      return await collection.findOne(query).catch(err => {
         throw err
       })
     } finally {
@@ -49,7 +49,7 @@ class DBUtils {
     try {
       const db = client.db(dbname)
       const collection = db.collection(table)
-      await collection.updateOne(query, params).catch((err) => {
+      await collection.updateOne(query, params).catch(err => {
         throw err
       })
     } finally {
@@ -69,7 +69,7 @@ class DBUtils {
     try {
       const db = client.db(dbname)
       const collection = db.collection(table)
-      await collection.updateMany(query, params).catch((err) => {
+      await collection.updateMany(query, params).catch(err => {
         throw err
       })
     } finally {
@@ -84,19 +84,18 @@ class DBUtils {
    * @param {Object} params
    * @return {Promise<void>}
    */
-  static async add(table, params) {
+  static async insertOne(table, params) {
     const client = await this.connect()
     try {
       const db = client.db(dbname)
       const collection = db.collection(table)
-      await collection.insertOne(params).catch((err) => {
+      await collection.insertOne(params).catch(err => {
         throw err
       })
     } finally {
       await client.close()
     }
   }
-
 }
 
 export default DBUtils

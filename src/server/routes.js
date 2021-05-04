@@ -2,14 +2,14 @@ import express from "express"
 import pug from "pug"
 import fetch from "node-fetch"
 import {env} from "process"
-import {getUserGuilds, isMemberAdmin} from "../bot/bot.js"
+import {getUserGuilds, isMemberAdmin} from "../bot.js"
 
 const router = express.Router()
 // Параметры рендера странцы
 let renderOptions = {}
 
 const onlyAuth = (req, res, next) => {
-  if (req.session.authorized !== true) {
+  if (req.session.auth !== true) {
     res.redirect("/ds-auth")
     return
   }
@@ -17,7 +17,7 @@ const onlyAuth = (req, res, next) => {
 }
 
 const onlyUnauthorized = (req, res, next) => {
-  if (req.session.authorized === true) {
+  if (req.session.auth === true) {
     res.redirect("/")
     return
   }
@@ -34,6 +34,26 @@ const onlyGuildAdmin = (req, res, next) => {
       next(err)
     })
 }
+
+// Обновление параметров рендера страницы
+router.use((req, res, next) => {
+  renderOptions = {}
+  renderOptions.auth = !!req.session.auth
+  renderOptions.username = req.session.username
+  renderOptions.csrf = req.session.csrfToken
+  next()
+})
+
+router.use((req, res, next) => {
+  if(req.method === "POST") {
+    if(req.body.csrf !== req.session.csrfToken) {
+      const err = new Error("Csrf token is invalid")
+      err.statusCode = 400
+      throw err
+    }
+  }
+  next()
+})
 
 // Для тестирования работы сервера
 router.get("/ping", (req, res) => {
@@ -77,23 +97,15 @@ router.get("/auth", onlyUnauthorized, async (req, res, next) => {
   })
 
   if (userData.status !== 200) {
-    req.session.authorized = false
+    req.session.auth = false
     next(403)
   } else {
     userData = await userData.json()
-    req.session.authorized = true
+    req.session.auth = true
     req.session.username = `${userData.username}#${userData.discriminator}`
     req.session.userID = userData.id
     res.redirect("/")
   }
-})
-
-// Обновление параметров рендера страницы
-router.use((req, res, next) => {
-  renderOptions = {}
-  renderOptions.authorized = !!req.session.authorized
-  renderOptions.username = req.session.username
-  next()
 })
 
 // Страница авторизации
@@ -105,7 +117,7 @@ router.get("/ds-auth", onlyUnauthorized, (req, res) => {
 
 // Выход из сессии
 router.get("/logout", (req, res) => {
-  req.session.authorized = null
+  req.session.auth = null
   req.session.username = null
   res.redirect("/ds-auth")
 })
@@ -121,6 +133,10 @@ router.get("/", onlyAuth, (req, res) => {
 
 router.get("/guild/:id", onlyAuth, onlyGuildAdmin, (req, res) => {
   res.send(pug.renderFile("server/views/controls.pug", renderOptions))
+})
+
+router.get("/guild/:id/new", onlyAuth, onlyGuildAdmin, (req, res) => {
+  res.send(pug.renderFile("server/views/new.pug", renderOptions))
 })
 
 export default router

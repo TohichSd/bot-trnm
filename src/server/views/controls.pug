@@ -1,0 +1,38 @@
+doctype html
+html(lang='ru')
+  head
+    include includes/include-head.html
+    title Главная
+    link(rel='stylesheet', href='/css/controls.css')
+  body
+    include includes/header
+    .page-subtitle
+      h2 Главная
+      a.return-link.pure-button(href='/')
+        h3 Назад
+    .main.pure-g
+      .pure-u-1-3.grid-cell
+        a(href='new')
+          .grid-cell-content
+            .grid-cell-title
+              h2 Список турниров (Не работает)
+            .grid-cell-icon
+              .list-icon
+                div
+                div
+                div
+      .pure-u-1-3.grid-cell
+        a(href='new')
+          .grid-cell-content
+            .grid-cell-title
+              h2 Новый турнир
+            .grid-cell-icon
+              .plus-icon
+      .pure-u-1-3.grid-cell
+        .grid-cell-content
+          .grid-cell-title
+            h2 (Хз что тут будет, но это тоже не работает)
+          .grid-cell-icon
+    include includes/footer
+
+script(src='/js/common.js')
