@@ -1,7 +1,14 @@
-// eslint-disable-next-line no-unused-vars
-import regeneratorRuntime from "regenerator-runtime"
-import {start} from '../bot/bot.js'
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
+import { start } from '../src/bot.js'
 
-describe("Bot", (() => {
-    it("Starts bot", () => expect(start()).resolves.toBe(true))
-}))
+chai.should()
+chai.use(chaiAsPromised)
+
+describe('Discord-side', function () {
+  describe('Bot', function () {
+    it('Starts bot', async function () {
+      return start().should.eventually.equal(true)
+    })
+  })
+})

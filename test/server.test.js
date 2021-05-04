@@ -1,15 +1,26 @@
-// Тестирование базовой работы сервера
-import supertest from 'supertest'
-// eslint-disable-next-line no-unused-vars
-import regeneratorRuntime from "regenerator-runtime"
-import app from "../server/server";
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
+import chaiHttp from 'chai-http'
+import app from "../src/server/server.js"
 
-const request = supertest(app)
+chai.should()
+chai.use(chaiAsPromised)
+chai.use(chaiHttp)
 
-describe("Testing server", () => {
-    it("Should return message pass", async done => {
-        const response = await request.get('/ping')
-        expect(response.body.status).toBe("pass")
-        done()
-    })
+describe("Server", function() {
+  it('Страница пинга', function() {
+    chai.request(app)
+      .get('/ping')
+      .end(((err, res) => {
+        err.should.equal(null)
+        res.should.equal('pass')
+      }))
+  })
+  it('Проверка ошибки 404', function() {
+    chai.request(app)
+      .get('/non-existed-page')
+      .end((err, res) => {
+        res.should.have.status(404)
+      })
+  })
 })
