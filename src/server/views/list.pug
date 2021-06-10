@@ -1,0 +1,25 @@
+doctype html
+html(lang='ru')
+  head
+    include includes/include-head.html
+    title Главная
+    link(rel='stylesheet', href='/css/list.css')
+  body
+    include includes/header
+    .page-subtitle
+      h2 Список турниров
+      a.return-link.pure-button(href=`/guild/${guild_id}/`)
+        h3 Назад
+    .main
+      .list
+        mixin item(name, id, csrf)
+          .item
+            .info
+              h3 #{name}
+            //form.controls(method='POST')
+            //  input(name='csrf', value=csrf, hidden)
+            //  input(name='id', value=id, hidden)
+            //  button.btn-delete(type='submit')
+            //    h3 Удалить
+        each e in events
+          +item(e.name, e._id, csrf)
