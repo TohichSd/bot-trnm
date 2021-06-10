@@ -9,34 +9,34 @@
  * D_CLIENT_SECRET - client secret из Discord
  */
 
-import express from "express"
-import { env } from "process"
-import {v4 as uuid} from 'uuid'
-import session from "express-session"
-import bodyParser from "body-parser"
-import pug from "pug"
+import express from 'express'
+import { env } from 'process'
+import { v4 as uuid } from 'uuid'
+import session from 'express-session'
+import bodyParser from 'body-parser'
+import pug from 'pug'
 import helmet from 'helmet'
-import _MongoDBStore from "connect-mongodb-session"
-import { ReasonPhrases, StatusCodes, getReasonPhrase } from "http-status-codes"
-import router from "./routes.js"
-import { sendReport } from "../bot.js"
+import _MongoDBStore from 'connect-mongodb-session'
+import { ReasonPhrases, StatusCodes, getReasonPhrase } from 'http-status-codes'
+import router from './routes.js'
+import { sendReport } from '../bot.js'
 
 const MongoDBStore = _MongoDBStore(session)
 const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(express.static("server/public"))
+app.use(express.static('src/server/public'))
 app.use(helmet())
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "img-src": ["'self'", "cdn.discordapp.com"],
+      'img-src': ["'self'", 'cdn.discordapp.com'],
     },
   })
 )
-app.set("view engine", "pug")
+app.set('view engine', 'pug')
 
 app.use(
   session({
@@ -47,7 +47,7 @@ app.use(
     },
     store: new MongoDBStore({
       uri: env.CONNECTION_STRING,
-      collection: "mySessions",
+      collection: 'mySessions',
     }),
     resave: false,
     saveUninitialized: false,
@@ -68,14 +68,13 @@ app.use(router)
 
 // 404
 app.use((req, res, next) => {
-  const err = new Error("Тут ничего нет((")
+  const err = new Error('Тут ничего нет((')
   err.statusCode = StatusCodes.NOT_FOUND
   next(err)
 })
 
-// Обработчик ошибок
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   req.body = null
   const renderOptions = {}
   renderOptions.auth = !!req.session.auth
@@ -84,7 +83,7 @@ app.use((err, req, res, next) => {
     const status = err.statusCode || err.httpStatus
     res.status(status)
     res.send(
-      pug.renderFile("server/views/err.pug", {
+      pug.renderFile('src/server/views/err.pug', {
         ...renderOptions,
         code: status,
         text: err.message ? err.message : getReasonPhrase(status),
@@ -94,20 +93,24 @@ app.use((err, req, res, next) => {
     res.status(500)
 
     // При разработке выводить ошибку в консоль, а в проде отсылать репорт
-    if(env.NODE_ENV === 'development') console.error(err)
-    else sendReport(`${req.method}: ${req.url}
+    if (env.NODE_ENV === 'development') console.error(err)
+    else
+      sendReport(`${req.method}: ${req.url}
     username: ${req.session.username}
     authorized: ${req.session.auth}
     ${err.stack}
     `)
     res.send(
-      pug.renderFile("server/views/err.pug", {
+      pug.renderFile('src/server/views/err.pug', {
         ...renderOptions,
         code: StatusCodes.INTERNAL_SERVER_ERROR,
         text: ReasonPhrases.INTERNAL_SERVER_ERROR,
       })
     )
   }
-})
+}
 
-export default app
+// Обработчик ошибок
+app.use(errorHandler)
+
+export { app, errorHandler }

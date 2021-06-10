@@ -1,15 +1,16 @@
-import DAccess from "../db/commonUtils.js"
 import { sendReport } from "../bot.js"
+import { GuildModel } from '../db/dbModels.js'
 
-const main = async (message) => {
-  await DAccess.updateOne(
-    "guilds",
-    { guild_id: message.guild.id },
-    { tournament_channel: message.channel.id }
-  ).catch((err) => {
-    sendReport(err)
-    message.reply(`Ошибка`)
-  })
+const main = async message => {
+  const Guild = await GuildModel.findOne({ guild_id: message.guild.id }).exec()
+    .catch(err => sendReport(err))
+  if(Guild === null) {
+    message.reply('Ошибка')
+    sendReport(`Guild ${message.guild.name} (${message.guild.id}) not found in db`)
+    return
+  }
+  await Guild.setTournamentChannel(message.channel.id)
+  message.reply('Готово!')
 }
 
 export default {

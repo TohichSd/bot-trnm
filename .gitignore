@@ -3,3 +3,5 @@ coverage
 .eslintrc.json
 .idea
 /.prettierrc.json
+.nyc_output
+.nycrc.json

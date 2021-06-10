@@ -1,14 +1,16 @@
 import { promises } from 'fs'
-import DAccess from '../db/commonUtils.js'
 import { sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
+import { ApplicationModel } from '../db/dbModels.js'
 
 const main = async message => {
   const questions = JSON.parse(
     await promises
-      .readFile('config/application_questions.json')
+      .readFile('src/config/application_questions.json')
       .then(data => data.toString())
+      .catch(sendReport)
   )
+  if(questions === undefined) return
   const interview = new Interview(
     questions,
     message.channel,
@@ -20,11 +22,19 @@ const main = async message => {
     else if (err.message === 'Stop') message.reply('Отменено.')
     else sendReport(err.stack)
   })
-  await DAccess.updateOne(
-    'applications',
-    { guild_id: message.guild.id },
-    { $set: { ...answers, guild_id: message.guild.id, id: message.author.id } }
-  ).catch(sendReport)
+  await ApplicationModel.updateOne(
+    { id: message.member.id },
+    { $set: { ...answers, guild_id: message.guild.id, id: message.member.id } },
+    { upsert: true }
+  )
+    .exec()
+    .then(() => {
+      message.reply('Готово!')
+    })
+    .catch(err => {
+      message.reply('Ошибка')
+      sendReport(err)
+    })
 }
 
 export default {

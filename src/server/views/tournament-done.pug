@@ -1,0 +1,13 @@
+doctype html
+html(lang='ru')
+  head
+    include includes/include-head.html
+    title #{code}
+    link(rel="stylesheet" href="/css/err.css")
+  body
+    include includes/header
+    div.main
+      h2 Готово
+      a(href="/")
+        h3.err-link НА ГЛАВНУЮ
+    include includes/footer

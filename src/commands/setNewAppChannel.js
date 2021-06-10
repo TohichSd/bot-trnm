@@ -9,15 +9,15 @@ const main = async message => {
     sendReport(`Guild ${message.guild.name} (${message.guild.id}) not found in db`)
     return
   }
-  await Guild.setApplicationsChannel(message.channel.id)
+  await Guild.setNewAppChannel(message.channel.id)
   message.reply('Готово!')
 }
 
 export default {
-  name: 'здесь-заявки',
+  name: 'здесь-заполнение',
   run: main,
   description:
-    'Установить канал для заявок на турниры. Если турнир уже объявлен, изменения будут применены к следующему турниру.',
+    'Установить канал для заполнения заявок.',
   showhelp: true,
   permissions: 1,
 }

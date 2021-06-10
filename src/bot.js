@@ -1,14 +1,16 @@
-﻿import Discord from "discord.js"
-import { env } from "process"
-import DB from "./db/commonUtils.js"
-import commands from "./commands/index.js"
+﻿import Discord from 'discord.js'
+import { env } from 'process'
+import DB from './db/commonUtils.js'
+import commands from './commands/index.js'
+import onReactionAdd from './controllers/onReactionAdd.js'
+import onReactionRemove from './controllers/onReactionRemove.js'
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
-  "GUILD_MEMBERS",
+  'GUILD_MEMBERS',
 ])
 const client = new Discord.Client({
-  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
   ws: { intents },
 })
 
@@ -17,18 +19,18 @@ const client = new Discord.Client({
  * @return {Promise<any>}
  */
 const start = async () => {
-  if (env.DSTOKEN === undefined) throw new Error("Token is not defined")
+  if (env.DSTOKEN === undefined) throw new Error('Token is not defined')
   await client
     .login(env.DSTOKEN)
     .then(() => {
-      console.log("Discord client ready!")
-      setInterval(() => client.user.setActivity("!help"), 3 * 60 * 60 * 1000)
+      if (env.NODE_ENV === 'development') console.log('Discord client ready!')
+      setInterval(() => client.user.setActivity('!help'), 3 * 60 * 60 * 1000)
     })
-    .catch((err) => {
+    .catch(err => {
       throw err
     })
   if (client.user.id !== undefined) return true
-  throw new Error("Unexpected error: user is unavailable")
+  throw new Error('Unexpected error: user is unavailable')
 }
 
 /**
@@ -41,21 +43,22 @@ const isMemberAdmin = async (userID, guildID) => {
   const guild = await client.guilds.fetch(guildID)
   if (guild.ownerID === userID) return true
   const member = await guild.members.fetch(userID)
-  if(member.hasPermission('ADMINISTRATOR')) return true
+  if (member.hasPermission('ADMINISTRATOR')) return true
   const memberRoles = member.roles.cache
-  const adminRoles = (await DB.get("guilds", { guild_id: guildID })).admin_roles
-  const intersection = adminRoles.filter((roleID) => memberRoles.has(roleID))
+  const adminRoles = (await DB.get('guilds', { guild_id: guildID })).admin_roles
+  const intersection = adminRoles.filter(roleID => memberRoles.has(roleID))
   return intersection.length > 0
 }
 
-
-client.on("message", (message) => {
-  const cmd = message.content.slice(1).split(" ")[0].toLowerCase()
+client.on('message', message => {
+  const cmd = message.content.slice(1).split(' ')[0].toLowerCase()
   if (commands[cmd]) {
     commands[cmd].run(message)
   }
 })
 
+client.on('messageReactionAdd', onReactionAdd)
+client.on('messageReactionRemove', onReactionRemove)
 
 // Common
 /**
@@ -63,10 +66,10 @@ client.on("message", (message) => {
  * @param {string} id - id участника
  * @return {Promise<Object[]>}
  */
-const getUserGuilds = async (id) => {
-  const promises = client.guilds.cache.map(async (guild) => {
+const getUserGuilds = async id => {
+  const promises = client.guilds.cache.map(async guild => {
     const members = await guild.members.fetch()
-    if (members.find((member) => member.id === id))
+    if (members.find(member => member.id === id))
       return {
         id: guild.id,
         name: guild.name,
@@ -81,15 +84,30 @@ const getUserGuilds = async (id) => {
  * Отправляет отчёт пользовательлю с id == SUPERUSER_ID
  * @param {string} err Сообщение
  */
-const sendReport = (err) => {
-  if (env.NODE_ENV === "development") console.error(err)
+const sendReport = err => {
+  if (env.NODE_ENV === 'development') console.error(err)
   else
     client.users
       .fetch(env.SUPERUSER_ID)
-      .then((user) => {
+      .then(user => {
         user.send(err)
       })
       .catch(console.error)
 }
 
-export { start, getUserGuilds, sendReport, isMemberAdmin }
+/**
+ *
+ * @param {string} guildID ID сервера
+ * @param {string} channelID ID канала
+ */
+const getChannel = async (guildID, channelID) => {
+  const guild = await client.guilds.fetch(guildID)
+  return guild.channels.cache.find(channel => channel.id === channelID)
+}
+
+const getGuildMember = async (userID, guildID) => {
+  const guild = await client.guilds.fetch(guildID)
+  return guild.members.cache.find(member => member.id === userID)
+}
+
+export { start, getUserGuilds, sendReport, isMemberAdmin, getChannel, getGuildMember }

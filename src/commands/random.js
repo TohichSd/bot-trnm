@@ -8,7 +8,7 @@ import { MessageEmbed } from "discord.js"
 const main = async (message) => {
   message.delete()
   const embed = new MessageEmbed()
-  await readFile("bot/config/random_props.json", (err, data) => {
+  await readFile("src/config/random_props.json", (err, data) => {
     const options = JSON.parse(data.toString())
     const promises = Object.keys(options).map((ctg) => {
       const randomElement =
