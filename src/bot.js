@@ -1,9 +1,9 @@
 ﻿import Discord from 'discord.js'
 import { env } from 'process'
-import DB from './db/commonUtils.js'
 import commands from './commands/index.js'
 import onReactionAdd from './controllers/onReactionAdd.js'
 import onReactionRemove from './controllers/onReactionRemove.js'
+import { GuildModel } from './db/dbModels.js'
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
@@ -45,7 +45,7 @@ const isMemberAdmin = async (userID, guildID) => {
   const member = await guild.members.fetch(userID)
   if (member.hasPermission('ADMINISTRATOR')) return true
   const memberRoles = member.roles.cache
-  const adminRoles = (await DB.get('guilds', { guild_id: guildID })).admin_roles
+  const adminRoles = (await GuildModel.findOne({guild_id: guildID}).exec()).admin_roles
   const intersection = adminRoles.filter(roleID => memberRoles.has(roleID))
   return intersection.length > 0
 }
