@@ -4,12 +4,16 @@
   border-radius: 10px;
   padding: 1%;
     margin-top: 5%;
+  background-color: #ffffff;
+  color: #466976;
 }
 
-button.auth {
-  background-color: #858585;
-  border: #676767 solid;
+.auth {
   padding: 2% 5%;
   border-radius: 10px;
   cursor: pointer;
+}
+
+.auth-text {
+  
 }

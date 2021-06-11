@@ -1,14 +1,13 @@
 doctype html
 html(lang='ru')
-    head
-        include includes/include-head.html
-        title Вход
-        link(rel="stylesheet" href="/css/ds-auth.css")
-    body
-        include includes/header
-        div.main
-            div.auth-content
-                h1.auth-text Войти с помощью Discord
-                a(href=auth_link).auth
-                    button.auth ВОЙТИ
-    include includes/footer
+  head
+    include includes/include-head.html
+    title Вход
+    link(rel='stylesheet', href='/css/ds-auth.css')
+  body
+    include includes/header
+    .main
+      a(href=auth_link)
+        .auth-content.pure-button
+          h1.auth-text Войти с помощью Discord
+  include includes/footer
