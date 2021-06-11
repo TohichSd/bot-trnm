@@ -134,11 +134,12 @@ client.on('message', async message => {
   const cmd = message.content.slice(1).split(' ')[0].toLowerCase()
   let permissions = 0
   if (await isMemberAdmin(message.member.id, message.guild.id)) permissions = 1
-  if (commands[cmd].permissions > permissions) {
-    await message.reply('Ты не можешь выполнять эту команду!')
-    return
-  }
   if (commands[cmd]) {
+    if(commands[cmd].permissions === undefined) commands[cmd].permissions = 0
+    if (commands[cmd].permissions > permissions) {
+      await message.reply('Ты не можешь выполнять эту команду!')
+      return
+    }
     commands[cmd].run(message, permissions).catch(err => {
       if (err.message === 'Invalid syntax' && commands[cmd].syntax)
         message.reply(

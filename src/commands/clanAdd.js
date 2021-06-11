@@ -15,6 +15,10 @@ const main = async message => {
     }
   )
   const answers = await interview.start()
+  if(answers.role.roles !== 1) {
+    await message.reply('Клану должна принадлежать одна роль!')
+    return
+  }
   await new ClanModel({
     name: answers.name,
     role_id: answers.role.roles.first().id,

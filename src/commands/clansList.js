@@ -5,7 +5,7 @@ const main = async message => {
   /**
    * @type {Document[]}
    */
-  const clans = await ClanModel.getAll().catch(err => {
+  const clans = await ClanModel.getAllGuildClans(message.guild.id).catch(err => {
     throw err
   })
   const embed = new MessageEmbed()
