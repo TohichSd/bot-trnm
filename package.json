@@ -1,10 +1,10 @@
 {
   "name": "armellobot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
+  "repository": "https://github.com/TohichSd/bot-trnm/tree/V2",
   "scripts": {
-    "test": "npx nyc mocha",
     "start": "node index.js"
   },
   "keywords": [],
