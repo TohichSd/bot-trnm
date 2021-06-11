@@ -20,7 +20,7 @@ export default async (req, res, next) => {
     next(err)
     throw err
   }
-  const guild = await GuildModel.findOne({ guild_id: req.params.id }).exec()
+  const guild = await GuildModel.findOneByGuildID(req.params.id)
   if (!guild.tournament_channel) {
     const err = new Error('Канал для турниров не задан!')
     err.statusCode = 400

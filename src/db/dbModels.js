@@ -1,5 +1,12 @@
 import mongoose from 'mongoose'
+import cachegoose from 'cachegoose'
 
+cachegoose(mongoose)
+
+/**
+ * Сервер
+ * @type {module:mongoose.Schema<Document, Model<any, any, any>, undefined>}
+ */
 const guildSchema = new mongoose.Schema(
   {
     guild_id: {
@@ -10,29 +17,45 @@ const guildSchema = new mongoose.Schema(
     hello_channel: String,
     new_app_channel: String,
     tournament_channel: String,
+    clan_wars_channel: String,
     admin_roles: [String],
   },
-  { collection: 'guilds', versionKey: false }
+  { collection: 'guilds' }
 )
 
-guildSchema.methods.setApplicationsChannel = function (id) {
-  mongoose
+guildSchema.statics.findOneByGuildID = function (guild_id) {
+  return this.findOne({ guild_id }).cache(1000, `guild${guild_id}`).exec()
+}
+
+guildSchema.methods.setApplicationsChannel = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
     .model('Guild')
     .updateOne({ _id: this._id }, { $set: { applications_channel: id } })
     .exec()
 }
 
-guildSchema.methods.setNewAppChannel = function (id) {
-  mongoose
+guildSchema.methods.setNewAppChannel = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
     .model('Guild')
     .updateOne({ _id: this._id }, { $set: { new_app_channel: id } })
     .exec()
 }
 
-guildSchema.methods.setTournamentChannel = function (id) {
-  mongoose
+guildSchema.methods.setTournamentChannel = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
     .model('Guild')
     .updateOne({ _id: this._id }, { $set: { tournament_channel: id } })
+    .exec()
+}
+
+guildSchema.methods.setClanWarsChannel = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
+    .model('Guild')
+    .updateOne({ _id: this._id }, { $set: { clan_wars_channel: id } })
     .exec()
 }
 
@@ -40,8 +63,9 @@ guildSchema.methods.setTournamentChannel = function (id) {
  * Добавить роли администраторов
  * @param { String[] } IDs
  */
-guildSchema.methods.addAdminRole = function (IDs) {
-  mongoose
+guildSchema.methods.addAdminRole = async function (IDs) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
     .model('Guild')
     .updateOne(
       { _id: this._id },
@@ -55,12 +79,17 @@ guildSchema.methods.addAdminRole = function (IDs) {
  * @param { String[] } IDs
  */
 guildSchema.methods.removeAdminRole = function (IDs) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
   mongoose
     .model('Guild')
     .updateOne({ _id: this._id }, { $pull: { admin_roles: { $in: IDs } } })
     .exec()
 }
 
+/**
+ * Заявка
+ * @type {module:mongoose.Schema<Document, Model<any, any, any>, undefined>}
+ */
 const applicationSchema = new mongoose.Schema(
   {
     age: {
@@ -88,8 +117,12 @@ const applicationSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { collection: 'applications', versionKey: false }
+  { collection: 'applications' }
 )
+
+applicationSchema.statics.findOneByID = async function (id) {
+  return this.findOne({ id }).exec()
+}
 
 applicationSchema.methods.updateLevel = function (level) {
   mongoose
@@ -101,6 +134,10 @@ applicationSchema.methods.updateAge = function (age) {
   mongoose.model('Application').updateOne({ _id: this._id }, { $set: { age } })
 }
 
+/**
+ * Турнир
+ * @type {module:mongoose.Schema<Document, Model<any, any, any>, undefined>}
+ */
 const eventSchema = new mongoose.Schema(
   {
     name: {
@@ -118,8 +155,16 @@ const eventSchema = new mongoose.Schema(
     id: Number,
     guild_id: String,
   },
-  { collection: 'events', versionKey: false }
+  { collection: 'events' }
 )
+
+eventSchema.statics.findOneByMessageID = function (message_id) {
+  return this.findOne({ message_id }).exec()
+}
+
+eventSchema.statics.findByGuildID = function (guild_id) {
+  return this.find({ guild_id }).exec()
+}
 
 eventSchema.methods.addMember = function (id, message_id) {
   mongoose
@@ -135,10 +180,95 @@ eventSchema.methods.removeMember = function (id) {
     .exec()
 }
 
-export const GuildModel = mongoose.model('Guild', guildSchema, 'guilds')
-export const ApplicationModel = mongoose.model(
-  'Application',
-  applicationSchema,
-  'applications'
+/**
+ * Клан
+ * @type {module:mongoose.Schema<Document, Model<any, any, any>, undefined>}
+ */
+const clanSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    role_id: {
+      type: String,
+      required: true,
+    },
+    points: Number,
+    guild_id: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    collection: 'clans',
+  }
 )
-export const EventModel = mongoose.model('Event', eventSchema, 'events')
+
+clanSchema.statics.removeClanByName = async function (name) {
+  return this.deleteOne({ name }).exec()
+}
+
+clanSchema.statics.getAllGuildClans = async function (guild_id) {
+  return this.find({ guild_id }).exec()
+}
+
+clanSchema.statics.getClanByRoleID = async function (role_id) {
+  return this.findOne({ role_id }).exec()
+}
+
+/**
+ * @param {Number} points
+ * @return {Promise<UpdateWriteOpResult>}
+ */
+clanSchema.methods.setPoints = async function (points) {
+  return mongoose
+    .model('Clan')
+    .updateOne({ _id: this._id }, { $set: { points } })
+    .exec()
+}
+
+/**
+ * Клановая война
+ * @type {module:mongoose.Schema<Document, Model<any, any, any>, undefined>}
+ */
+const clanWarSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    duration: {
+      type: String,
+      required: true,
+    },
+    message_id: String,
+    created_at: Number,
+    guild_id: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    collection: 'clan_wars',
+  }
+)
+
+clanWarSchema.statics.getLatestClanWar = async function () {
+  return this.findOne({}, {}, { sort: { created_at: -1 } })
+    .cache(1000)
+    .exec()
+}
+
+clanWarSchema.methods.setMessageID = async function (message_id) {
+  await mongoose
+    .model('ClanWar')
+    .updateOne({ _id: this._id }, { message_id })
+    .exec()
+}
+
+export const GuildModel = mongoose.model('Guild', guildSchema)
+export const ApplicationModel = mongoose.model('Application', applicationSchema)
+export const EventModel = mongoose.model('Event', eventSchema)
+export const ClanModel = mongoose.model('Clan', clanSchema)
+export const ClanWarModel = mongoose.model('ClanWar', clanWarSchema)

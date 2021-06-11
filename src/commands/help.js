@@ -1,20 +1,23 @@
 import { readdir } from "fs"
+import { MessageEmbed } from 'discord.js'
 
-const main = async (msg, role) => {
-  let answer = "```diff\n"
-  await readdir("./bot/commands/", async (err, files) => {
+const main = async (message, permissions) => {
+  const embed = new MessageEmbed()
+    .setTitle('Команды')
+    .setColor('#fffa00')
+  await readdir("./src/commands/", async (err, files) => {
     const promises = files.map(async (file) => {
       if (file === "index.js") return
       await import(`./${file}`).then((obj) => {
         if (obj.default && obj.default.showhelp !== false) {
-          if (!obj.default.permissions || role >= obj.default.permissions)
-            answer += `!${obj.default.name} - ${obj.default.description}\n`
+          if (!obj.default.permissions || permissions >= obj.default.permissions)
+            embed
+              .addField(obj.default.name, `${obj.default.description}\n${obj.default.syntax || ''}`)
         }
       })
     })
     await Promise.all(promises)
-    answer += "```"
-    msg.channel.send(answer)
+    message.channel.send(embed)
   })
 }
 export default {

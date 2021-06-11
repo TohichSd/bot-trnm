@@ -7,13 +7,14 @@ class Interview {
    * @param {string} startPhrase Фраза при начале интервью
    * @param {string} options.stop Слово для остновки интервью
    * @param {number} options.timeout Максимальное время ожидания
+   * @param {any[]} options.mentions Сообщения от которых нужно прислать id упоминаний
    */
   constructor(
     questions,
     channel,
     memberID,
     startPhrase,
-    options = { stop: '!отмена', timeout: 300000 }
+    options = { stop: '!отмена', timeout: 300000, mentions: [] }
   ) {
     this.questions = questions
     this.channel = channel
@@ -34,7 +35,12 @@ class Interview {
       .then(async collected => {
         if (collected.first().content.toLowerCase().includes(this.options.stop))
           throw new Error('Stop')
-        answers[key] = collected.first().content
+        if(this.options.mentions.includes(key)) {
+          answers[key] = collected.first().mentions
+        }
+        else {
+          answers[key] = collected.first().content
+        }
       })
       .catch(err => { throw err})
     if (keys.length > 0) return this.question(keys, answers)

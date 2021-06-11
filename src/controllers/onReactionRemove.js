@@ -10,8 +10,8 @@ export default async (reaction, user) => {
   if (user.bot) return
   if (reaction.message.partial) await reaction.message.fetch();
   if (reaction.partial) await reaction.fetch();
-  
-  const event = await EventModel.findOne({ message_id: reaction.message.id }).exec()
+  if(reaction.emoji.name !== '✅') return
+  const event = await EventModel.findOneByMessageID(reaction.message.id)
   
   // Найден ли турнир
   if (event === null) return
@@ -23,7 +23,7 @@ export default async (reaction, user) => {
   const memberReg = event.members.find(m => m.id === user.id)
   if(!memberReg) return
   
-  const guildDB = await GuildModel.findOne({ guild_id: reaction.message.guild.id }).exec()
+  const guildDB = await GuildModel.findOneByGuildID(reaction.message.guild.id)
   
   // Получен ли сервер
   if (guildDB === null) {

@@ -2,7 +2,7 @@ import { sendReport } from '../bot.js'
 import { GuildModel } from '../db/dbModels.js'
 
 const main = async message => {
-  const Guild = await GuildModel.findOne({ guild_id: message.guild.id }).exec()
+  const Guild = await GuildModel.findOneByGuildID(message.guild.id)
     .catch(err => sendReport(err))
   if(Guild === null) {
     message.reply('Ошибка')

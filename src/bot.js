@@ -4,6 +4,7 @@ import commands from './commands/index.js'
 import onReactionAdd from './controllers/onReactionAdd.js'
 import onReactionRemove from './controllers/onReactionRemove.js'
 import { GuildModel } from './db/dbModels.js'
+import onGuildCreate from './controllers/onGuildCreate.js'
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
@@ -45,22 +46,11 @@ const isMemberAdmin = async (userID, guildID) => {
   const member = await guild.members.fetch(userID)
   if (member.hasPermission('ADMINISTRATOR')) return true
   const memberRoles = member.roles.cache
-  const adminRoles = (await GuildModel.findOne({guild_id: guildID}).exec()).admin_roles
+  const adminRoles = (await GuildModel.findOneByGuildID(guildID)).admin_roles
   const intersection = adminRoles.filter(roleID => memberRoles.has(roleID))
   return intersection.length > 0
 }
 
-client.on('message', message => {
-  const cmd = message.content.slice(1).split(' ')[0].toLowerCase()
-  if (commands[cmd]) {
-    commands[cmd].run(message)
-  }
-})
-
-client.on('messageReactionAdd', onReactionAdd)
-client.on('messageReactionRemove', onReactionRemove)
-
-// Common
 /**
  * Возвращает список серверов, на которых находится участник в виде {id, name, icon}
  * @param {string} id - id участника
@@ -110,4 +100,68 @@ const getGuildMember = async (userID, guildID) => {
   return guild.members.cache.find(member => member.id === userID)
 }
 
-export { start, getUserGuilds, sendReport, isMemberAdmin, getChannel, getGuildMember }
+const digitStrings = {
+  0: 'zero',
+  1: 'one',
+  2: 'two',
+  3: 'three',
+  4: 'four',
+  5: 'five',
+  6: 'six',
+  7: 'seven',
+  8: 'eight',
+  9: 'nine',
+  '-': 'heavy_minus_sign',
+}
+
+/**
+ * @param {Number} num
+ * @return {Promise}
+ */
+const numberToEmojis = async num =>
+  Promise.all(
+    num
+      .toString()
+      .split('')
+      .map(digit => `:${digitStrings[digit]}:`)
+  )
+
+//-----------------------------------------
+// Обработчики событий
+
+client.on('message', async message => {
+  if (message.author.bot) return
+  const cmd = message.content.slice(1).split(' ')[0].toLowerCase()
+  let permissions = 0
+  if (await isMemberAdmin(message.member.id, message.guild.id)) permissions = 1
+  if (commands[cmd].permissions > permissions) {
+    await message.reply('Ты не можешь выполнять эту команду!')
+    return
+  }
+  if (commands[cmd]) {
+    commands[cmd].run(message, permissions).catch(err => {
+      if (err.message === 'Invalid syntax' && commands[cmd].syntax)
+        message.reply(
+          `Неверная команда! Использование: ${commands[cmd].syntax}`
+        )
+      else {
+        message.reply('Ошибка')
+        sendReport(err)
+      }
+    })
+  }
+})
+
+client.on('messageReactionAdd', onReactionAdd)
+client.on('messageReactionRemove', onReactionRemove)
+client.on('guildCreate', onGuildCreate)
+
+export {
+  start,
+  getUserGuilds,
+  sendReport,
+  isMemberAdmin,
+  getChannel,
+  getGuildMember,
+  numberToEmojis,
+}
