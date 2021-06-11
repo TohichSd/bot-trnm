@@ -1,8 +1,15 @@
 import { MessageEmbed } from 'discord.js'
+import { promises } from 'fs'
 import { ClanModel, ClanWarModel, GuildModel } from '../db/dbModels.js'
-import { getChannel, numberToEmojis } from '../bot.js'
+import { getChannel, numberToEmojis, sendReport } from '../bot.js'
 
 const main = async message => {
+  const cwStrings = JSON.parse(
+    await promises
+      .readFile('src/config/clan_war_message.json')
+      .then(data => data.toString())
+      .catch(sendReport)
+  )
   const args = message.content.replace(/ +(?= )/g, '').split(' ')
   if (
     message.mentions.roles.size !== 1 ||
@@ -27,10 +34,10 @@ const main = async message => {
   const cwMessage = await channel.messages.fetch(clanWar.message_id)
   const embed = new MessageEmbed()
     .setTitle(clanWar.name)
-    .setAuthor('Клановая война!')
+    .setAuthor(cwStrings.author)
     .setDescription(`Длительность: ${clanWar.duration}`)
-    .setImage('https://i.ibb.co/qmqsktv/images.png')
-    .setColor('#8127fc')
+    .setImage(cwStrings.image)
+    .setColor(cwStrings.color)
   const clans = await ClanModel.getAllGuildClans(message.guild.id)
   await Promise.all(
     clans.map(async clanEA => {

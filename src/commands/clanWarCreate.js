@@ -1,10 +1,17 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment/moment.js'
+import { promises } from 'fs'
 import { ClanModel, ClanWarModel, GuildModel } from '../db/dbModels.js'
-import { getChannel, numberToEmojis } from '../bot.js'
+import { getChannel, numberToEmojis, sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
 
 const main = async message => {
+  const cwStrings = JSON.parse(
+    await promises
+      .readFile('src/config/clan_war_message.json')
+      .then(data => data.toString())
+      .catch(sendReport)
+  )
   const guild = await GuildModel.findOneByGuildID(message.guild.id)
   if (!guild.clan_wars_channel) {
     message.reply('Канал для клановых войн не установлен!')
@@ -40,11 +47,11 @@ const main = async message => {
   // Канал с войнами кланов
   const channel = await getChannel(message.guild.id, guild.clan_wars_channel)
   const embed = new MessageEmbed()
-    .setAuthor('Клановая война!')
+    .setAuthor(cwStrings.author)
     .setTitle(name)
     .setDescription(`Длительность: ${duration}`)
-    .setImage('https://i.ibb.co/qmqsktv/images.png')
-    .setColor('#8127fc')
+    .setImage(cwStrings.image)
+    .setColor(cwStrings.color)
   await Promise.all(
     clans.map(async clan => {
       await clan.setPoints(0)
