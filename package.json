@@ -7,9 +7,8 @@
   "scripts": {
     "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "TohichSd",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cachegoose": "^8.0.0",
