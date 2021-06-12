@@ -22,7 +22,7 @@ const client = new Discord.Client({
 const start = async () => {
   if (env.D_TOKEN === undefined) throw new Error('Token is not defined')
   await client
-    .login(env.DSTOKEN)
+    .login(env.D_TOKEN)
     .then(() => {
       if (env.NODE_ENV === 'development') console.log('Discord client ready!')
       setInterval(() => client.user.setActivity('!help'), 3 * 60 * 60 * 1000)
@@ -118,13 +118,13 @@ const digitStrings = {
  * @param {Number} num
  * @return {Promise}
  */
-const numberToEmojis = async num =>
-  Promise.all(
+const numberToEmojis = async num => 
+  (await Promise.all(
     num
       .toString()
       .split('')
       .map(digit => `:${digitStrings[digit]}:`)
-  )
+  )).join().replace(/,/g, ' ')
 
 //-----------------------------------------
 // Обработчики событий

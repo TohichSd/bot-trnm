@@ -193,6 +193,7 @@ const clanSchema = new mongoose.Schema(
     role_id: {
       type: String,
       required: true,
+      unique: true,
     },
     points: Number,
     guild_id: {

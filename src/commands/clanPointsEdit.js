@@ -22,7 +22,11 @@ const main = async message => {
   const clan = await ClanModel.getClanByRoleID(role.id)
   if (sign === '-') clan.setPoints(clan.points - points)
   else clan.setPoints(clan.points + points)
-  const clanWar = await ClanWarModel.getLatestClanWar()
+  const clanWar = await ClanWarModel.getLatestClanWar(message.guild.id)
+  if(!clanWar) {
+    message.reply('Нет активной войны!')
+    return
+  }
   const guildDB = await GuildModel.findOneByGuildID(message.guild.id)
   const channel = await getChannel(
     message.guild.id,

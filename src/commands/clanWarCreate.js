@@ -12,6 +12,11 @@ const main = async message => {
       .then(data => data.toString())
       .catch(sendReport)
   )
+  const latestClanWar = await ClanWarModel.getLatestClanWar(message.guild.id)
+  if(latestClanWar) {
+    message.reply('Война уже идёт!')
+    return
+  }
   const guild = await GuildModel.findOneByGuildID(message.guild.id)
   if (!guild.clan_wars_channel) {
     message.reply('Канал для клановых войн не установлен!')
