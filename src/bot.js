@@ -146,7 +146,7 @@ client.on('message', async message => {
           `Неверная команда! Использование: ${commands[cmd].syntax}`
         )
       else {
-        message.reply('Ошибка')
+        message.reply(err.customMessage || 'Ошибка')
         sendReport(err)
       }
     })

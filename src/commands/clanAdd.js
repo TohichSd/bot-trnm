@@ -11,11 +11,11 @@ const main = async message => {
     message.member.id,
     'Создать новый клан',
     {
-      mentions: ['role']
+      mentions: ['role'],
     }
   )
   const answers = await interview.start()
-  if(answers.role.roles.size !== 1) {
+  if (answers.role.roles.size !== 1) {
     await message.reply('Клану должна принадлежать одна роль!')
     return
   }
@@ -26,6 +26,9 @@ const main = async message => {
   })
     .save()
     .catch(err => {
+      if (err.code === 11000)
+        err.customMessage =
+          'Каждая роль может использоваться только для одного клана!'
       throw err
     })
   await message.react('✅')
