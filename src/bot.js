@@ -20,7 +20,7 @@ const client = new Discord.Client({
  * @return {Promise<any>}
  */
 const start = async () => {
-  if (env.DSTOKEN === undefined) throw new Error('Token is not defined')
+  if (env.D_TOKEN === undefined) throw new Error('Token is not defined')
   await client
     .login(env.DSTOKEN)
     .then(() => {

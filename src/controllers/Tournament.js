@@ -17,7 +17,7 @@ class Tournament {
     this.name = name
     this.description = description
     this.loot = loot
-    this.datetimeMs = moment(datetime).valueOf()
+    this.datetimeMs = moment(datetime).valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
     this.random = random
     this.guildID = guildID
     this.datetimeFormated = moment(datetime).locale('ru').format('LLLL')
