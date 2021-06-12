@@ -249,15 +249,27 @@ const clanWarSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    ended: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     collection: 'clan_wars',
   }
 )
 
-clanWarSchema.statics.getLatestClanWar = async function () {
-  return this.findOne({}, {}, { sort: { created_at: -1 } })
-    .cache(1000)
+clanWarSchema.methods.end = async function () {
+  cachegoose.clearCache('ClanWar')
+  await mongoose
+    .model('ClanWar')
+    .updateOne({ _id: this._id }, { $set: { ended: true } })
+    .exec()
+}
+
+clanWarSchema.statics.getLatestClanWar = async function (guild_id) {
+  return this.findOne({ ended: false, guild_id }, {}, { sort: { created_at: -1 } })
+    .cache(1000, 'ClanWar')
     .exec()
 }
 
