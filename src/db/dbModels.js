@@ -206,8 +206,8 @@ const clanSchema = new mongoose.Schema(
   }
 )
 
-clanSchema.statics.removeClanByName = async function (name) {
-  return this.deleteOne({ name }).exec()
+clanSchema.statics.removeClanByRole = async function (role_id) {
+  return this.deleteOne({ role_id }).exec()
 }
 
 clanSchema.statics.getAllGuildClans = async function (guild_id) {

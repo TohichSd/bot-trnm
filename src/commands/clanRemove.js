@@ -1,11 +1,12 @@
 import { ClanModel } from '../db/dbModels.js'
 
 const main = async message => {
-  const args = message.content.split(' ')
-  if (args.length < 2) {
+  if (message.mentions.roles.size < 1) {
     throw new Error('Invalid syntax')
   }
-  const result = await ClanModel.removeClanByName(args[1]).catch(err => {
+  const result = await ClanModel.removeClanByRole(
+    message.mentions.roles.first().id
+  ).catch(err => {
     throw err
   })
   if (result.deletedCount === 0) message.reply('Такого клана нет!')
@@ -16,6 +17,6 @@ export default {
   run: main,
   name: 'удалить-клан',
   description: 'Удалить клан',
-  syntax: '!удалить-клан < название клана >',
+  syntax: '!удалить-клан < клановая роль >',
   permissions: 1,
 }
