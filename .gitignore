@@ -125,3 +125,6 @@ dist
 #openode
 .openode
 .openodeignore
+
+#idea
+.idea
