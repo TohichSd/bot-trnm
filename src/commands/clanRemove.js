@@ -9,7 +9,7 @@ const main = async message => {
     throw err
   })
   if (result.deletedCount === 0) message.reply('Такого клана нет!')
-  else message.reply('Готово!')
+  else await message.react('✅')
 }
 
 export default {

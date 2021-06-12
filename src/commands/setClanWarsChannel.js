@@ -11,7 +11,7 @@ const main = async message => {
       `Guild ${message.guild.name} (${message.guild.id}) not found in db`
     )
   await Guild.setClanWarsChannel(message.channel.id)
-  message.reply('Готово!')
+  await message.react('✅')
 }
 
 export default {

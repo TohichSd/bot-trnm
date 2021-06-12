@@ -10,7 +10,7 @@ const main = async message => {
     return
   }
   await Guild.setNewAppChannel(message.channel.id)
-  message.reply('Готово!')
+  await message.react('✅')
 }
 
 export default {

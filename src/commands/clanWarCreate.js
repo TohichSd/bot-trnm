@@ -70,7 +70,7 @@ const main = async message => {
 
 export default {
   run: main,
-  name: 'клановая-война',
+  name: 'война',
   description: 'Начать клановую войну',
   permissions: 1,
 }

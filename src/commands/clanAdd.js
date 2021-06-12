@@ -28,12 +28,12 @@ const main = async message => {
     .catch(err => {
       throw err
     })
-  message.reply('Готово!')
+  await message.react('✅')
 }
 
 export default {
   run: main,
-  name: 'новый-клан',
+  name: 'клан',
   description: 'Добавить новый клан',
   permissions: 1,
 }

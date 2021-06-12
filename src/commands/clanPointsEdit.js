@@ -38,7 +38,7 @@ const main = async message => {
   const cwMessage = await channel.messages.fetch(clanWar.message_id)
   const embed = new MessageEmbed()
     .setTitle(clanWar.name)
-    .setAuthor(cwStrings.author)
+    // .setAuthor(cwStrings.author)
     .setDescription(`Длительность: ${clanWar.duration}`)
     .setImage(cwStrings.image)
     .setColor(cwStrings.color)

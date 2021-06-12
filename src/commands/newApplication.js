@@ -29,7 +29,7 @@ const main = async message => {
   )
     .exec()
     .then(() => {
-      message.reply('Готово!')
+      message.react('✅')
     })
     .catch(err => {
       message.reply('Ошибка')

@@ -10,7 +10,7 @@ const main = async message => {
     return
   }
   await Guild.setTournamentChannel(message.channel.id)
-  message.reply('Готово!')
+  await message.react('✅')
 }
 
 export default {
