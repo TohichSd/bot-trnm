@@ -30,7 +30,7 @@ const Oauth = async (req, res, next) => {
 
   if (userData.status !== 200) {
     req.session.auth = false
-    next(403)
+    next(new Error('User data response status is not 200'))
   } else {
     userData = await userData.json()
     req.session.auth = true
