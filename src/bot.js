@@ -31,7 +31,7 @@ const start = async () => {
       throw err
     })
   if (client.user.id !== undefined) return true
-  throw new Error('Unexpected error: user is unavailable')
+  throw new Error('User is unavailable')
 }
 
 /**
