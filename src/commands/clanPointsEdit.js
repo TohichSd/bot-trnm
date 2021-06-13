@@ -20,10 +20,10 @@ const main = async message => {
   const sign = args[2][0]
   const points = parseInt(args[2].slice(1), 10)
   const clan = await ClanModel.getClanByRoleID(role.id)
-  if (sign === '-') clan.setPoints(clan.points - points)
-  else clan.setPoints(clan.points + points)
+  if (sign === '-') await clan.setPoints(clan.points - points)
+  else await clan.setPoints(clan.points + points)
   const clanWar = await ClanWarModel.getLatestClanWar(message.guild.id)
-  if(!clanWar) {
+  if (!clanWar) {
     message.reply('Нет активной войны!')
     return
   }
@@ -45,7 +45,11 @@ const main = async message => {
   const clans = await ClanModel.getAllGuildClans(message.guild.id)
   await Promise.all(
     clans.map(async clanEA => {
-      embed.addField(clanEA.name, await numberToEmojis(clanEA.points), true)
+      embed.addField(
+        clanEA.name,
+        `${await numberToEmojis(clanEA.points)} :star2:`,
+        true
+      )
     })
   )
   await cwMessage.edit(embed)

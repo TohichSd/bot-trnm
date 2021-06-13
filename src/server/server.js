@@ -98,7 +98,7 @@ const errorHandler = (err, req, res, next) => {
       sendReport(`${req.method}: ${req.url}
     username: ${req.session.username}
     authorized: ${req.session.auth}
-    ${err.stack}
+    ${err.toString()}
     `)
     res.send(
       pug.renderFile('src/server/views/err.pug', {

@@ -1,39 +1,31 @@
 import { env } from 'process'
-import fetch from "node-fetch"
+import fetch from 'node-fetch'
 
 const Oauth = async (req, res, next) => {
   // Данные для получения информации о пользователе из Discord
   const data = {
     client_id: env.D_CLIENT_ID,
     client_secret: env.D_CLIENT_SECRET,
-    grant_type: "authorization_code",
-    redirect_uri: `${req.protocol}://${req.get("host")}${req.route.path}`,
+    grant_type: 'authorization_code',
+    redirect_uri: `https://${req.get('host')}${req.route.path}`,
     code: req.query.code,
-    scopes: "identify%20guilds",
+    scopes: 'identify%20guilds',
   }
 
   // Данные для получения информации о пользователе
-  let accessData = {}
-  await fetch("https://discord.com/api/oauth2/token", {
-    method: "POST",
+  const accessData = await fetch('https://discord.com/api/oauth2/token', {
+    method: 'POST',
     body: new URLSearchParams(data),
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-  })
-    .then((_accessData) => _accessData.json())
-    .then((_accessData) => {
-      accessData = _accessData
-    })
+  }).then(_accessData => _accessData.json())
 
   // Информация о пользователе
-  let userData = {}
-  await fetch("https://discord.com/api/users/@me", {
+  let userData = await fetch('https://discord.com/api/users/@me', {
     headers: {
       authorization: `${accessData.token_type} ${accessData.access_token}`,
     },
-  }).then((_userData) => {
-    userData = _userData
   })
 
   if (userData.status !== 200) {
@@ -44,7 +36,7 @@ const Oauth = async (req, res, next) => {
     req.session.auth = true
     req.session.username = `${userData.username}#${userData.discriminator}`
     req.session.userID = userData.id
-    res.redirect("/")
+    res.redirect('/')
   }
 }
 

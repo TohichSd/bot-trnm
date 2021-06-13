@@ -52,7 +52,6 @@ const main = async message => {
   // Канал с войнами кланов
   const channel = await getChannel(message.guild.id, guild.clan_wars_channel)
   const embed = new MessageEmbed()
-    .setAuthor(cwStrings.author)
     .setTitle(name)
     .setDescription(`Длительность: ${duration}`)
     .setImage(cwStrings.image)
@@ -60,7 +59,7 @@ const main = async message => {
   await Promise.all(
     clans.map(async clan => {
       await clan.setPoints(0)
-      embed.addField(clan.name, await numberToEmojis(0), true)
+      embed.addField(clan.name, `${await numberToEmojis(0)} :star2:`, true)
     })
   )
   channel.send(embed).then(msg => {
