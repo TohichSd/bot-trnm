@@ -1,10 +1,10 @@
 ﻿import Discord from 'discord.js'
 import { env } from 'process'
+import discordButtons from 'discord-buttons'
 import commands from './commands/index.js'
-import onReactionAdd from './controllers/onReactionAdd.js'
-import onReactionRemove from './controllers/onReactionRemove.js'
 import { GuildModel } from './db/dbModels.js'
 import onGuildCreate from './controllers/onGuildCreate.js'
+import onButtonClick from './controllers/onButtonClick.js'
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
@@ -14,6 +14,8 @@ const client = new Discord.Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
   ws: { intents },
 })
+
+discordButtons(client)
 
 /**
  * Запускает бота
@@ -97,7 +99,7 @@ const getChannel = async (guildID, channelID) => {
 
 const getGuildMember = async (userID, guildID) => {
   const guild = await client.guilds.fetch(guildID)
-  return guild.members.cache.find(member => member.id === userID)
+  return guild.members.fetch(userID)
 }
 
 const digitStrings = {
@@ -153,14 +155,11 @@ client.on('message', async message => {
   }
 })
 
-client.on('messageReactionAdd', onReactionAdd)
-client.on('messageReactionRemove', onReactionRemove)
+// client.on('messageReactionAdd', onReactionAdd)
+// client.on('messageReactionRemove', onReactionRemove)
 client.on('guildCreate', onGuildCreate)
 
-client.on('clickButton', async (button) => {
-  await button.reply.edit('111')
-  
-});
+client.on('clickButton', onButtonClick)
 
 export {
   start,

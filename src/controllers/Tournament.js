@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment'
 import { promises } from 'fs'
+import discordButtons from 'discord-buttons'
 import { EventModel } from '../db/dbModels.js'
 import { sendReport } from '../bot.js'
 
@@ -50,10 +51,15 @@ class Tournament {
       .setImage(strings.image)
       .setFooter(strings.footer)
       // .setThumbnail(strings.thumbnail)
-    await channel.send(this.message).then(message => {
+    
+    const button = new discordButtons.MessageButton()
+      .setLabel('ПРИНЯТЬ УЧАСТНИЕ')
+      .setStyle('green')
+      .setID('trnm')
+    
+    await channel.send(this.message, button).then(message => {
       this.messageID = message.id
       this.guildID = message.guild.id
-      message.react(`✅`)
     })
   }
 
