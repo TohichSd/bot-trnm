@@ -157,6 +157,11 @@ client.on('messageReactionAdd', onReactionAdd)
 client.on('messageReactionRemove', onReactionRemove)
 client.on('guildCreate', onGuildCreate)
 
+client.on('clickButton', async (button) => {
+  await button.reply.edit('111')
+  
+});
+
 export {
   start,
   getUserGuilds,

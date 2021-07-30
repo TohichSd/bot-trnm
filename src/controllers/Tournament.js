@@ -40,7 +40,7 @@ class Tournament {
       .setColor(strings.color)
       .setTitle(`**${this.name.toUpperCase()}**`)
       .setDescription(strings.descriptionHeader)
-      .addField(strings.description, this.description)
+      .addField(strings.description, this.description, true)
       .addField(strings.loot, this.loot)
       .addField(strings.datetime, this.datetimeFormated)
       .setAuthor(
@@ -49,7 +49,7 @@ class Tournament {
       )
       .setImage(strings.image)
       .setFooter(strings.footer)
-      .setThumbnail(strings.thumbnail)
+      // .setThumbnail(strings.thumbnail)
     await channel.send(this.message).then(message => {
       this.messageID = message.id
       this.guildID = message.guild.id

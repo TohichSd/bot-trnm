@@ -8,6 +8,10 @@ const main = async message => {
   const clans = await ClanModel.getAllGuildClans(message.guild.id).catch(err => {
     throw err
   })
+  if(clans.length === 0) {
+    message.reply('Нет кланов!')
+    return
+  }
   const embed = new MessageEmbed()
   embed.setColor('#1e531e')
   await Promise.all(
@@ -22,7 +26,7 @@ const main = async message => {
 
 export default {
   run: main,
-  name: 'список-кланов',
+  name: 'кланы',
   description: 'Получить список кланов',
   permissions: 1,
 }
