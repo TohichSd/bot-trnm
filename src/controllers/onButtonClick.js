@@ -48,7 +48,7 @@ export default async button => {
   
   const application = await ApplicationModel.findOne({
     id: button.clicker.id,
-    guild_id: button.message.guild.id,
+    // guild_id: button.message.guild.id,
   }).exec()
   
   // Проверка наличия заявки у участника
