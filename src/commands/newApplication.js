@@ -1,9 +1,19 @@
 import { promises } from 'fs'
 import { sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
-import { ApplicationModel } from '../db/dbModels.js'
+import { ApplicationModel, GuildModel } from '../db/dbModels.js'
 
 const main = async message => {
+  const guildDB = await GuildModel.findOneByGuildID(message.guild.id)
+  if(message.channel.id !== guildDB.new_app_channel) {
+    const errMgs = await message.channel.send(
+      `<@${message.author.id}>, Пожалуйста, заполняйте заявку только в канале <#${guildDB.new_app_channel}>`
+    )
+    setTimeout(() => {
+      errMgs.delete()
+    }, 11000)
+    return
+  }
   const questions = JSON.parse(
     await promises
       .readFile('src/config/application_questions.json')

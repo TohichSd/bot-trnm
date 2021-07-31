@@ -3,6 +3,15 @@ import { ApplicationModel } from '../db/dbModels.js'
 
 const main = async message => {
   const application = await ApplicationModel.findOneByID(message.member.id)
+  if(application === null) {
+    const errMgs = await message.channel.send(
+      `<@${message.author.id}>, У вас ещё нет заявки!`
+    )
+    setTimeout(() => {
+      errMgs.delete()
+    }, 11000)
+    return
+  }
   const embed = new MessageEmbed()
     .setTitle(`Заявка участника ${message.member.displayName}`)
     .addField(':link: Ссылка на steam:', application.link)
