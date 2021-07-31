@@ -24,7 +24,7 @@ const main = async message => {
   })
   await ApplicationModel.updateOne(
     { id: message.member.id },
-    { $set: { ...answers, guild_id: message.guild.id, id: message.member.id } },
+    { $set: { ...answers, id: message.member.id } },
     { upsert: true }
   )
     .exec()

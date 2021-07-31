@@ -37,7 +37,7 @@ export default async (reaction, user) => {
   }
   const application = await ApplicationModel.findOne({
     id: user.id,
-    guild_id: reaction.message.guild.id,
+    // guild_id: reaction.message.guild.id,
   }).exec()
   // Проверка наличия заявки у участника
   if (application === null) {
