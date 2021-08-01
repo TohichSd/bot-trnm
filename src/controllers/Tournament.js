@@ -53,7 +53,7 @@ class Tournament {
       // .setThumbnail(strings.thumbnail)
     
     const button = new discordButtons.MessageButton()
-      .setLabel('ПРИНЯТЬ УЧАСТНИЕ')
+      .setLabel('ПРИНЯТЬ УЧАСТИЕ')
       .setStyle('green')
       .setID('trnm')
     
