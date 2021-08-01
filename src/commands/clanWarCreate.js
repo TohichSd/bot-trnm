@@ -65,6 +65,7 @@ const main = async message => {
   channel.send(embed).then(msg => {
     clanWar.setMessageID(msg.id)
   })
+  message.reply('Война начата!')
 }
 
 export default {

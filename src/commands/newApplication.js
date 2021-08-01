@@ -39,7 +39,7 @@ const main = async message => {
   )
     .exec()
     .then(() => {
-      message.react('✅')
+      message.reply('Заявка создана!')
     })
     .catch(err => {
       message.reply('Ошибка')
