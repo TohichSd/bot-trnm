@@ -24,7 +24,7 @@ const guildSchema = new mongoose.Schema(
 )
 
 guildSchema.statics.findOneByGuildID = function (guild_id) {
-  return this.findOne({ guild_id }).cache(1000, `guild${guild_id}`).exec()
+  return this.findOne({ guild_id }).cache(0, `guild${guild_id}`).exec()
 }
 
 guildSchema.methods.setApplicationsChannel = async function (id) {
@@ -94,7 +94,7 @@ const applicationSchema = new mongoose.Schema(
   {
     age: {
       type: String,
-      required: false
+      required: false,
     },
     guild_id: {
       type: String,
@@ -121,16 +121,18 @@ const applicationSchema = new mongoose.Schema(
 )
 
 applicationSchema.statics.findOneByID = async function (id) {
-  return this.findOne({ id }).exec()
+  return this.findOne({ id }).cache(0, `application/${id}`).exec()
 }
 
 applicationSchema.methods.updateLevel = function (level) {
+  cachegoose.clearCache(`application/${this.id}`)
   mongoose
     .model('Application')
     .updateOne({ _id: this._id }, { $set: { level } })
 }
 
 applicationSchema.methods.updateAge = function (age) {
+  cachegoose.clearCache(`application/${this.id}`)
   mongoose.model('Application').updateOne({ _id: this._id }, { $set: { age } })
 }
 
@@ -151,7 +153,8 @@ const eventSchema = new mongoose.Schema(
       required: true,
     },
     message_id: String,
-    members: [{ id: String, message_id: String }],
+    message_apps_id: String,
+    members: [{ id: String }],
     id: Number,
     guild_id: String,
   },
@@ -166,17 +169,18 @@ eventSchema.statics.findByGuildID = function (guild_id) {
   return this.find({ guild_id }).exec()
 }
 
-eventSchema.methods.addMember = function (id, message_id) {
-  mongoose
+eventSchema.methods.addMember = function (id) {
+  return mongoose
     .model('Event')
-    .updateOne({ _id: this._id }, { $push: { members: { id, message_id } } })
+    .findByIdAndUpdate(this._id, { $push: { members: { id } } }, { new: true })
     .exec()
 }
 
-eventSchema.methods.removeMember = function (id) {
-  mongoose
+eventSchema.methods.removeMember = async function (id) {
+  await cachegoose.clearCache(`event${this.id}`)
+  return mongoose
     .model('Event')
-    .updateOne({ _id: this._id }, { $pull: { members: { id } } })
+    .findByIdAndUpdate(this._id, { $pull: { members: { id } } }, { new: true })
     .exec()
 }
 
@@ -268,7 +272,11 @@ clanWarSchema.methods.end = async function () {
 }
 
 clanWarSchema.statics.getLatestClanWar = async function (guild_id) {
-  return this.findOne({ ended: false, guild_id }, {}, { sort: { created_at: -1 } })
+  return this.findOne(
+    { ended: false, guild_id },
+    {},
+    { sort: { created_at: -1 } }
+  )
     .cache(1000, 'ClanWar')
     .exec()
 }
