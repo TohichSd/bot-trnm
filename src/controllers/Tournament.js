@@ -22,14 +22,14 @@ class Tournament {
     this.random = random
     this.guildID = guildID
     this.datetimeFormated = moment(datetime).locale('ru').format('LLLL')
-    this.message = new MessageEmbed()
   }
 
   /**
-   * @param channel
+   * @param channelT канал с туринрами
+   * @param channelA канал с заявками
    * @return {Promise<void>}
    */
-  async send(channel) {
+  async send(channelT, channelA) {
     const strings = JSON.parse(
       await promises
         .readFile('src/config/tournament_message.json')
@@ -37,7 +37,7 @@ class Tournament {
         .catch(sendReport)
     )
     if (strings === undefined) return
-    this.message
+    const messageT = new MessageEmbed()
       .setColor(strings.color)
       .setTitle(`**${this.name.toUpperCase()}**`)
       .setDescription(strings.descriptionHeader)
@@ -57,9 +57,19 @@ class Tournament {
       .setStyle('green')
       .setID('trnm')
     
-    await channel.send(this.message, button).then(message => {
-      this.messageID = message.id
-      this.guildID = message.guild.id
+    await channelT.send(messageT, button).then(msg => {
+      this.messageID = msg.id
+      this.guildID = msg.guild.id
+    })
+
+    const messageA = new MessageEmbed()
+      .setColor('#4287f5')
+      .setTitle(`Участники турнира ${this.name}`)
+      .setDescription('Здесь появятся участники турнира.')
+    
+    await channelA.send(messageA).then(msg => {
+      this.messageAppID = msg.id
+      this.guildAppID = msg.guild.id
     })
   }
 
@@ -75,6 +85,7 @@ class Tournament {
       loot: this.loot,
       datetimeMs: this.datetimeMs,
       message_id: this.messageID,
+      message_apps_id: this.messageAppID,
       guild_id: this.guildID,
     })
     await Event.save()
