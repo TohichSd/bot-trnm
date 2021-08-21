@@ -133,6 +133,7 @@ const numberToEmojis = async num =>
 
 client.on('message', async message => {
   if (message.author.bot) return
+  if(!message.content.startsWith('!')) return
   const cmd = message.content.slice(1).split(' ')[0].toLowerCase()
   let permissions = 0
   if (await isMemberAdmin(message.member.id, message.guild.id)) permissions = 1

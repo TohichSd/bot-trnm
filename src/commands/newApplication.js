@@ -1,4 +1,5 @@
 import { promises } from 'fs'
+import cachegoose from 'cachegoose'
 import { sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
 import { ApplicationModel, GuildModel } from '../db/dbModels.js'
@@ -32,6 +33,7 @@ const main = async message => {
     else if (err.message === 'Stop') message.reply('Отменено.')
     else sendReport(err.stack)
   })
+  await cachegoose.clearCache(`application/${message.member.id}`)
   await ApplicationModel.updateOne(
     { id: message.member.id },
     { $set: { ...answers, id: message.member.id } },
