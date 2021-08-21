@@ -94,7 +94,7 @@ const applicationSchema = new mongoose.Schema(
   {
     age: {
       type: String,
-      required: true,
+      required: false
     },
     guild_id: {
       type: String,

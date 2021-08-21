@@ -16,7 +16,6 @@ const main = async message => {
     .setTitle(`Заявка участника ${message.member.displayName}`)
     .addField(':link: Ссылка на steam:', application.link)
     .addField(':video_game: Уровень в игре:', application.level)
-    .addField(':man_mage: Возраст:', application.age)
     .addField(':microphone2: Наличие микрофона:', application.micro)
     .setThumbnail('https://i.ibb.co/1Q7pQ94/podacha.png')
     .setColor('#37bbe0')
