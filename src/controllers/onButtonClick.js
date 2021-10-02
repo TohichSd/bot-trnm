@@ -32,6 +32,7 @@ export default async button => {
   const eventMember = event.members.find(m => m.id === member.id)
   if(eventMember) {
     event = await event.removeMember(member.id)
+    await member.roles.remove(event.event_role_id)
     await button.reply.send('Ваша заявка удалена :sob:', true)
   }
   else {
@@ -49,6 +50,9 @@ export default async button => {
     // Добавления участника в бд
     event = await event.addMember(button.clicker.id)
     await button.reply.send('Ваша заявка учтена! Если вы передумали, нажмите на кнопку ещё раз.', true)
+    
+    // Добавление участнику роли
+    await member.roles.add(event.event_role_id)
   }
   
   const embedMembers = new MessageEmbed()

@@ -71,6 +71,17 @@ class Tournament {
       this.messageAppID = msg.id
       this.guildAppID = msg.guild.id
     })
+    
+    // Создание роли турнира
+    await channelA.guild.roles.create({ data: {name: `Участник турнира "${this.name}"`, color: '#4287f5'} })
+      .then(role => { 
+        this.role_id = role.id
+        const dtMs = this.datetimeMs - moment().valueOf() + 3 * 60 * 1000
+        setTimeout(() => {
+          role.delete()
+        }, dtMs)
+      })
+      .catch(sendReport)
   }
 
   /**
@@ -86,6 +97,7 @@ class Tournament {
       datetimeMs: this.datetimeMs,
       message_id: this.messageID,
       message_apps_id: this.messageAppID,
+      event_role_id: this.role_id,
       guild_id: this.guildID,
     })
     await Event.save()

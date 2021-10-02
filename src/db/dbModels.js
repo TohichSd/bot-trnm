@@ -154,6 +154,7 @@ const eventSchema = new mongoose.Schema(
     },
     message_id: String,
     message_apps_id: String,
+    event_role_id: String,
     members: [{ id: String }],
     id: Number,
     guild_id: String,
@@ -162,14 +163,15 @@ const eventSchema = new mongoose.Schema(
 )
 
 eventSchema.statics.findOneByMessageID = function (message_id) {
-  return this.findOne({ message_id }).exec()
+  return this.findOne({ message_id }).cache(0,`event${this.id}`).exec()
 }
 
 eventSchema.statics.findByGuildID = function (guild_id) {
-  return this.find({ guild_id }).exec()
+  return this.find({ guild_id }).cache(0,`event${this.id}`).exec()
 }
 
-eventSchema.methods.addMember = function (id) {
+eventSchema.methods.addMember = async function (id) {
+  await cachegoose.clearCache(`event${this.id}`)
   return mongoose
     .model('Event')
     .findByIdAndUpdate(this._id, { $push: { members: { id } } }, { new: true })
