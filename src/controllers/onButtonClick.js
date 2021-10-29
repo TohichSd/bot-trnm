@@ -52,7 +52,12 @@ export default async button => {
     await button.reply.send('Ваша заявка учтена! Если вы передумали, нажмите на кнопку ещё раз.', true)
     
     // Добавление участнику роли
-    await member.roles.add(event.event_role_id)
+    try {
+      await member.roles.add(event.event_role_id)
+    }
+    catch (err) {
+      sendReport(err)
+    }
   }
   
   const embedMembers = new MessageEmbed()
