@@ -21,7 +21,8 @@ const main = async message => {
   if(args[args.length - 1][0] === '-') points *= -1
   
   await Promise.all(message.mentions.members.map(async member => {
-    const memberDB = await MemberModel.findMemberByID(member.id, member.guild.id)
+    let memberDB = await MemberModel.findMemberByID(member.id, member.guild.id)
+    if(memberDB === null) memberDB = await (new MemberModel({id: member.id, guild_id: member.guild.id}).save())
     await memberDB.editGamesCount(points)
   }))
   
