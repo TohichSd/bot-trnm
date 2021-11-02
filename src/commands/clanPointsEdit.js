@@ -33,7 +33,7 @@ const main = async message => {
     await guildDB.clan_wars_channel
   )
   /**
-   * @type {MessageEmbed}
+   * @type {Message}
    */
   const cwMessage = await channel.messages.fetch(clanWar.message_id)
   const embed = new MessageEmbed()

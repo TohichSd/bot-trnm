@@ -19,6 +19,8 @@ const guildSchema = new mongoose.Schema(
     tournament_channel: String,
     clan_wars_channel: String,
     admin_roles: [String],
+    score_table_channel: String,
+    score_table_message_id: String,
   },
   { collection: 'guilds' }
 )
@@ -56,6 +58,30 @@ guildSchema.methods.setClanWarsChannel = async function (id) {
   await mongoose
     .model('Guild')
     .updateOne({ _id: this._id }, { $set: { clan_wars_channel: id } })
+    .exec()
+}
+
+guildSchema.methods.setClanWarsChannel = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
+    .model('Guild')
+    .updateOne({ _id: this._id }, { $set: { clan_wars_channel: id } })
+    .exec()
+}
+
+guildSchema.methods.setScoreTableChannel = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
+    .model('Guild')
+    .updateOne({ _id: this._id }, { $set: { score_table_channel: id } })
+    .exec()
+}
+
+guildSchema.methods.setScoreTableMessageID = async function (id) {
+  cachegoose.clearCache(`guild${this.guild_id}`)
+  await mongoose
+    .model('Guild')
+    .updateOne({ _id: this._id }, { $set: { score_table_message_id: id } })
     .exec()
 }
 
@@ -163,11 +189,11 @@ const eventSchema = new mongoose.Schema(
 )
 
 eventSchema.statics.findOneByMessageID = function (message_id) {
-  return this.findOne({ message_id }).cache(0,`event${this.id}`).exec()
+  return this.findOne({ message_id }).cache(0, `event${this.id}`).exec()
 }
 
 eventSchema.statics.findByGuildID = function (guild_id) {
-  return this.find({ guild_id }).cache(0,`event${this.id}`).exec()
+  return this.find({ guild_id }).cache(0, `event${this.id}`).exec()
 }
 
 eventSchema.methods.addMember = async function (id) {
@@ -290,8 +316,59 @@ clanWarSchema.methods.setMessageID = async function (message_id) {
     .exec()
 }
 
+const memberSchema = new mongoose.Schema(
+  {
+    id: {
+      type: String,
+      required: true,
+    },
+    guild_id: {
+      type: String,
+      required: true,
+    },
+    games: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    wins: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
+  {
+    collection: 'members',
+  }
+)
+
+memberSchema.statics.getAllGuildMembers = async function (guild_id) {
+  return this.find({ guild_id }).sort({ wins: 1 }).exec()
+}
+
+memberSchema.statics.findMemberByID = async function (id, guild_id) {
+  return this.findOne({ id, guild_id }).cache(`member${id}${guild_id}`).exec()
+}
+
+memberSchema.methods.editGamesCount = async function (count) {
+  cachegoose.clearCache(`member${this.id}${this.guild_id}`)
+  await mongoose
+    .model('Member')
+    .updateOne({ _id: this._id }, { $inc: { games: count } })
+    .exec()
+}
+
+memberSchema.methods.editWinsCount = async function (count) {
+  cachegoose.clearCache(`member${this.id}${this.guild_id}`)
+  await mongoose
+    .model('Member')
+    .updateOne({ _id: this._id }, { $inc: { games: count, wins: count } })
+    .exec()
+}
+
 export const GuildModel = mongoose.model('Guild', guildSchema)
 export const ApplicationModel = mongoose.model('Application', applicationSchema)
 export const EventModel = mongoose.model('Event', eventSchema)
 export const ClanModel = mongoose.model('Clan', clanSchema)
 export const ClanWarModel = mongoose.model('ClanWar', clanWarSchema)
+export const MemberModel = mongoose.model('Member', memberSchema)

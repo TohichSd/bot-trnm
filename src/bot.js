@@ -91,6 +91,7 @@ const sendReport = err => {
  *
  * @param {string} guildID ID сервера
  * @param {string} channelID ID канала
+ * @return {Discord.Message}
  */
 const getChannel = async (guildID, channelID) => {
   const guild = await client.guilds.fetch(guildID)
