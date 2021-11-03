@@ -343,11 +343,11 @@ const memberSchema = new mongoose.Schema(
 )
 
 memberSchema.statics.getAllGuildMembers = async function (guild_id) {
-  return this.find({ guild_id }).sort({ wins: 1 }).exec()
+  return this.find({ guild_id, games: { $gt: 0 } }).sort({ wins: 1 }).exec()
 }
 
 memberSchema.statics.findMemberByID = async function (id, guild_id) {
-  return this.findOne({ id, guild_id }).cache(`member${id}${guild_id}`).exec()
+  return this.findOne({ id, guild_id, games: { $gt: 0 } }).cache(`member${id}${guild_id}`).exec()
 }
 
 memberSchema.methods.editGamesCount = async function (count) {
