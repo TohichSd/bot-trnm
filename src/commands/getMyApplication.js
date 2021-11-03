@@ -1,6 +1,10 @@
 import { MessageEmbed } from 'discord.js'
 import { ApplicationModel } from '../db/dbModels.js'
 
+/**
+ * @param {module:"discord.js".Message} message
+ * @return {Promise<void>}
+ */
 const main = async message => {
   const application = await ApplicationModel.findOneByID(message.member.id)
   if(application === null) {
