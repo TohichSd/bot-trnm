@@ -64,7 +64,8 @@ const update = async guildID => {
       )
       await message.edit(embedMembers)
     }
-    finally {
+    catch(err) {
+      sendReport(err)
       const msg = await stChannel.send(embedMembers)
       await guildDB.setScoreTableMessageID(msg.id)
     }

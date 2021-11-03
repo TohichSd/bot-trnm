@@ -26,7 +26,9 @@ const main = async message => {
   await Promise.all(message.mentions.members.map(async member => {
     let memberDB = await MemberModel.findMemberByID(member.id, member.guild.id)
     if(memberDB === null) memberDB = await (new MemberModel({id: member.id, guild_id: member.guild.id}).save())
-    await memberDB.editGamesCount(points)
+    // Если перед числом стоит s, не добавлять значение, а установить его
+    if(args[args.length - 1][0] === 's') await memberDB.setGamesCount(points)
+    else await memberDB.editGamesCount(points)
   }))
   
   await updateScoreTable(message.guild.id)
