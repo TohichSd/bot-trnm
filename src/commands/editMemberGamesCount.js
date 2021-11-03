@@ -11,12 +11,15 @@ const main = async message => {
     return
   }
   const args = message.content.replace(/ +(?= )/g, '').split(' ')
+  
+  // Проверка синтаксиса
   if (
     message.mentions.members.size < 1 ||
-    (args[args.length - 1][0] !== '-' && args[args.length - 1][0] !== '+')
+    (args[args.length - 1][0] !== '-' && args[args.length - 1][0] !== '+' && args[args.length - 1][0] !== 's')
   )
     throw new Error('Invalid syntax')
-
+  
+  // Количество игр
   let points = parseInt(args[args.length - 1].slice(1), 10)
   if(args[args.length - 1][0] === '-') points *= -1
   
