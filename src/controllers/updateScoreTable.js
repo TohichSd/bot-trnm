@@ -10,7 +10,7 @@ const update = async guildID => {
   lastUpdateTime = moment().valueOf()
   updatePromised = false
   const guildDB = await GuildModel.findOneByGuildID(guildID)
-  const guildMembersDB = await MemberModel.getAllGuildMembers(guildID)
+  let guildMembersDB = await MemberModel.getAllGuildMembers(guildID)
   const embedMembers = new MessageEmbed()
     .setTitle('Таблица участников')
     .setColor('#f6cf36')
@@ -22,6 +22,7 @@ const update = async guildID => {
       (a, b) =>
         (2 * b.wins) / maxWins * (b.wins / b.games) - (2 * a.wins) / maxWins * (a.wins / a.games)
     )
+    guildMembersDB = guildMembersDB.slice(0, 25)
     await Promise.all(
       guildMembersDB.map(async (mdb, i) => {
         let medal
@@ -33,7 +34,8 @@ const update = async guildID => {
           '\u200b',
           `${i < 3 ? medal : await numberToEmojis(i + 1)} <@${
             mdb.id
-          }>\n:trophy: Победы: ${mdb.wins}\n:game_die: Всего игр: ${mdb.games}`
+          }>\n:trophy: Победы: ${mdb.wins}\n:game_die: Всего игр: ${mdb.games}`,
+          true
         )
       })
     )
