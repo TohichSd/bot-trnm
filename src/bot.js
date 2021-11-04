@@ -132,6 +132,10 @@ const numberToEmojis = async num =>
 //-----------------------------------------
 // Обработчики событий
 
+// Для обработки ошибок небходимо использовать throw
+// Для того что бы написать сообщенио об ошибке в дискорде, необходимо использовать поле customMessage
+// В противном случае будет написано "ошибка"
+
 client.on('message', async message => {
   if (message.author.bot) return
   if(!message.content.startsWith('!')) return
