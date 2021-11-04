@@ -150,16 +150,12 @@ applicationSchema.statics.findOneByID = async function (id) {
   return this.findOne({ id }).cache(0, `application/${id}`).exec()
 }
 
-applicationSchema.methods.updateLevel = function (level) {
+applicationSchema.methods.updateLevel = async function (level) {
   cachegoose.clearCache(`application/${this.id}`)
-  mongoose
+  await mongoose
     .model('Application')
     .updateOne({ _id: this._id }, { $set: { level } })
-}
-
-applicationSchema.methods.updateAge = function (age) {
-  cachegoose.clearCache(`application/${this.id}`)
-  mongoose.model('Application').updateOne({ _id: this._id }, { $set: { age } })
+    .exec()
 }
 
 /**
