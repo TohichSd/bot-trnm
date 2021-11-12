@@ -331,6 +331,12 @@ const memberSchema = new mongoose.Schema(
       type: Number,
       required: true,
       default: 0,
+      index: true,
+    },
+    winIndex: {
+      type: Number,
+      default: 0,
+      index: true,
     },
   },
   {
@@ -338,12 +344,35 @@ const memberSchema = new mongoose.Schema(
   }
 )
 
+memberSchema.statics.getMaxWins = async function () {
+  const res = await this.find({}, { wins: 1, _id: 0 })
+    .sort({ wins: -1 })
+    .limit(1)
+    .cache('maxWins')
+    .exec()
+  return res[0].wins
+}
+
 memberSchema.statics.getAllGuildMembers = async function (guild_id) {
-  return this.find({ guild_id, games: { $gt: 0 } }).sort({ wins: 1 }).exec()
+  return this.find({ guild_id, games: { $gt: 0 } })
+    .exec()
+}
+
+/**
+ * Возвращает 25 лучших по winIndex учатсников
+ * @param {String} guild_id
+ * @return {Promise<[MemberModel]>}
+ */
+memberSchema.statics.getBestGuildMembers = async function (guild_id) {
+  return this.find({ guild_id, games: { $gt: 0 } })
+    .sort({ winIndex: -1 })
+    .exec()
 }
 
 memberSchema.statics.findMemberByID = async function (id, guild_id) {
-  return this.findOne({ id, guild_id, games: { $gt: 0 } }).cache(`member${id}${guild_id}`).exec()
+  return this.findOne({ id, guild_id, games: { $gt: 0 } })
+    .cache(`member${id}${guild_id}`)
+    .exec()
 }
 
 memberSchema.methods.editGamesCount = async function (count) {
@@ -352,14 +381,18 @@ memberSchema.methods.editGamesCount = async function (count) {
     .model('Member')
     .updateOne({ _id: this._id }, { $inc: { games: count } })
     .exec()
+  await this.updateWinIndex()
 }
 
 memberSchema.methods.editWinsCount = async function (count) {
   cachegoose.clearCache(`member${this.id}${this.guild_id}`)
-  await mongoose
-    .model('Member')
+  const model = await mongoose.model('Member')
+  model
     .updateOne({ _id: this._id }, { $inc: { games: count, wins: count } })
     .exec()
+  if (this.wins + count > (await model.getMaxWins()))
+    cachegoose.clearCache('maxWins')
+  await this.updateWinIndex()
 }
 
 memberSchema.methods.setGamesCount = async function (count) {
@@ -368,14 +401,29 @@ memberSchema.methods.setGamesCount = async function (count) {
     .model('Member')
     .updateOne({ _id: this._id }, { $set: { games: count } })
     .exec()
+  await this.updateWinIndex()
 }
 
 memberSchema.methods.setWinsCount = async function (count) {
   cachegoose.clearCache(`member${this.id}${this.guild_id}`)
-  await mongoose
-    .model('Member')
-    .updateOne({ _id: this._id }, { $set: { wins: count } })
-    .exec()
+  const model = await mongoose.model('Member')
+  model.updateOne({ _id: this._id }, { $set: { wins: count } }).exec()
+  if (count > (await model.getMaxWins())) cachegoose.clearCache('maxWins')
+  await this.updateWinIndex()
+}
+
+memberSchema.methods.updateWinIndex = async function () {
+  const model = await mongoose.model('Member')
+  const maxWins = await model.getMaxWins()
+  cachegoose.clearCache(`member${this.id}${this.guild_id}`)
+  await model.updateOne(
+    { _is: this._id },
+    {
+      $set: {
+        winIndex: (((2 * this.wins) / maxWins) * this.wins) / this.games,
+      },
+    }
+  )
 }
 
 export const GuildModel = mongoose.model('Guild', guildSchema)

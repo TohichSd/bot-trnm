@@ -1,8 +1,11 @@
+import { MemberModel } from '../db/dbModels.js'
+
 /**
- * @param {object} message Сообщение
+ * @param {module:"discord.js".Message} message Сообщение
  */
 async function main(message) {
-  message.channel.send("Pong")
+  await message.channel.send(await MemberModel.getMaxWins())
+  
 }
 
 const ping = {
