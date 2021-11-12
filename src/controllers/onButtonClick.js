@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js'
-import { ApplicationModel, EventModel, GuildModel } from '../db/dbModels.js'
+import { ApplicationModel, EventModel, GuildModel } from '../db/models.js'
 import { getChannel, getGuildMember, sendReport } from '../bot.js'
 
 export default async button => {

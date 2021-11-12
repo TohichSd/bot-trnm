@@ -1,4 +1,4 @@
-import { GuildModel } from '../db/dbModels.js'
+import { GuildModel } from '../db/models.js'
 
 const main = async message => {
   // Роли, упомянутые в сообщении

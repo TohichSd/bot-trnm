@@ -1,4 +1,4 @@
-import { ClanModel } from '../db/dbModels.js'
+import { ClanModel } from '../db/models.js'
 
 const main = async message => {
   if (message.mentions.roles.size < 1) {

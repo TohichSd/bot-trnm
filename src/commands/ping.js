@@ -1,4 +1,4 @@
-import { MemberModel } from '../db/dbModels.js'
+import { MemberModel } from '../db/models.js'
 
 /**
  * @param {module:"discord.js".Message} message Сообщение

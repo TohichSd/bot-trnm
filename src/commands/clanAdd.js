@@ -1,4 +1,4 @@
-import { ClanModel } from '../db/dbModels.js'
+import { ClanModel } from '../db/models.js'
 import Interview from '../controllers/Interview.js'
 
 const main = async message => {

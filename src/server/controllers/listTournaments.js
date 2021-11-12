@@ -1,5 +1,5 @@
 import pug from 'pug'
-import { EventModel } from '../../db/dbModels.js'
+import { EventModel } from '../../db/models.js'
 
 export default async (req, res) => {
   /**

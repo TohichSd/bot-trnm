@@ -1,4 +1,4 @@
-import { EventModel, GuildModel } from '../db/dbModels.js'
+import { EventModel, GuildModel } from '../db/models.js'
 import { getChannel, sendReport } from '../bot.js'
 
 /**

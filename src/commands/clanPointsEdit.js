@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js'
 import { promises } from 'fs'
-import { ClanModel, ClanWarModel, GuildModel } from '../db/dbModels.js'
+import { ClanModel, ClanWarModel, GuildModel } from '../db/models.js'
 import { getChannel, numberToEmojis, sendReport } from '../bot.js'
 
 const main = async message => {

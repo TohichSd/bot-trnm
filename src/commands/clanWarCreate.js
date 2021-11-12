@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment/moment.js'
 import { promises } from 'fs'
-import { ClanModel, ClanWarModel, GuildModel } from '../db/dbModels.js'
+import { ClanModel, ClanWarModel, GuildModel } from '../db/models.js'
 import { getChannel, numberToEmojis, sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
 

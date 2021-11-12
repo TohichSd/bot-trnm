@@ -1,4 +1,4 @@
-import { GuildModel } from '../db/dbModels.js'
+import { GuildModel } from '../db/models.js'
 
 const main = async message => {
   const Guild = await GuildModel.findOneByGuildID(message.guild.id).catch(

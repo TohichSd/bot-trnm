@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js'
-import { ClanWarModel, GuildModel } from '../db/dbModels.js'
+import { ClanWarModel, GuildModel } from '../db/models.js'
 import { getChannel } from '../bot.js'
 
 const main = async message => {

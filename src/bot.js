@@ -2,7 +2,7 @@
 import { env } from 'process'
 import discordButtons from 'discord-buttons'
 import commands from './commands/index.js'
-import { GuildModel } from './db/dbModels.js'
+import { GuildModel } from './db/models.js'
 import onGuildCreate from './controllers/onGuildCreate.js'
 import onButtonClick from './controllers/onButtonClick.js'
 

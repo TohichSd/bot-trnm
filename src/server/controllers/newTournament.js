@@ -1,6 +1,6 @@
 import { getChannel } from '../../bot.js'
 import Tournament from '../../controllers/Tournament.js'
-import { GuildModel } from '../../db/dbModels.js'
+import { GuildModel } from '../../db/models.js'
 
 export default async (req, res, next) => {
   if (

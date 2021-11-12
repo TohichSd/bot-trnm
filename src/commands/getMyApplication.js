@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js'
-import { ApplicationModel } from '../db/dbModels.js'
+import { ApplicationModel } from '../db/models.js'
 
 /**
  * @param {module:"discord.js".Message} message

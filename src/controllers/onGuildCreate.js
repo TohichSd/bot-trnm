@@ -1,4 +1,4 @@
-import { GuildModel } from '../db/dbModels.js'
+import { GuildModel } from '../db/models.js'
 
 export default async guild => {
   new GuildModel({

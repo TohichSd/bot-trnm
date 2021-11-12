@@ -2,7 +2,7 @@ import { promises } from 'fs'
 import cachegoose from 'cachegoose'
 import { sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
-import { ApplicationModel, GuildModel } from '../db/dbModels.js'
+import { ApplicationModel, GuildModel } from '../db/models.js'
 
 /**
  * @param {module:"discord.js".Message} message

@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js'
 import moment from 'moment'
 import { promises } from 'fs'
 import discordButtons from 'discord-buttons'
-import { EventModel } from '../db/dbModels.js'
+import { EventModel } from '../db/models.js'
 import { sendReport } from '../bot.js'
 
 class Tournament {

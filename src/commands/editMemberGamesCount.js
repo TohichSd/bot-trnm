@@ -1,4 +1,4 @@
-import { GuildModel, MemberModel } from '../db/dbModels.js'
+import { GuildModel, MemberModel } from '../db/models.js'
 import { sendReport } from '../bot.js'
 import updateScoreTable from '../controllers/updateScoreTable.js'
 

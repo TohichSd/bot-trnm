@@ -1,9 +1,9 @@
 import { MessageEmbed } from 'discord.js'
-import { EventModel, GuildModel, ApplicationModel } from '../db/dbModels.js'
+import { EventModel, GuildModel, ApplicationModel } from '../db/models.js'
 import { getChannel, getGuildMember, sendReport } from '../bot.js'
 
 /**
- * @param {MessageReaction} reaction
+ * @param {module:"discord.js".MessageReaction} reaction
  * @param {User} user
  * @return {Promise<void>}
  */

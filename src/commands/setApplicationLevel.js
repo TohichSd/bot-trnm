@@ -1,4 +1,4 @@
-import { ApplicationModel } from '../db/dbModels.js'
+import { ApplicationModel } from '../db/models.js'
 
 const main = async message => {
   const args = message.content.replace(/ +(?= )/g, '').split(' ')

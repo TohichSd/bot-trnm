@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment'
 import { env } from 'process'
-import { MemberModel, GuildModel } from '../db/dbModels.js'
+import { MemberModel, GuildModel } from '../db/models.js'
 import { getChannel, numberToEmojis, sendReport } from '../bot.js'
 
 // Время последнего обновления
