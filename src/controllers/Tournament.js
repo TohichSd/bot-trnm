@@ -1,9 +1,9 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment'
-import { promises } from 'fs'
 import discordButtons from 'discord-buttons'
 import { EventModel } from '../db/models.js'
 import { sendReport } from '../bot.js'
+import strings from '../config/tournament_message.js'
 
 class Tournament {
   /**
@@ -30,13 +30,6 @@ class Tournament {
    * @return {Promise<void>}
    */
   async send(channelT, channelA) {
-    const strings = JSON.parse(
-      await promises
-        .readFile('src/config/tournament_message.json')
-        .then(data => data.toString())
-        .catch(sendReport)
-    )
-    if (strings === undefined) return
     const messageT = new MessageEmbed()
       .setColor(strings.color)
       .setTitle(`**${this.name.toUpperCase()}**`)

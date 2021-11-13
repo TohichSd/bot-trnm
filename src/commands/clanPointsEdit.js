@@ -1,15 +1,9 @@
 import { MessageEmbed } from 'discord.js'
-import { promises } from 'fs'
 import { ClanModel, ClanWarModel, GuildModel } from '../db/models.js'
-import { getChannel, numberToEmojis, sendReport } from '../bot.js'
+import { getChannel, numberToEmojis } from '../bot.js'
+import cwStrings from '../config/clan_war_message.js'
 
 const main = async message => {
-  const cwStrings = JSON.parse(
-    await promises
-      .readFile('src/config/clan_war_message.json')
-      .then(data => data.toString())
-      .catch(sendReport)
-  )
   const args = message.content.replace(/ +(?= )/g, '').split(' ')
   if (
     message.mentions.roles.size !== 1 ||

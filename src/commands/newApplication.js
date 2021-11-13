@@ -1,8 +1,8 @@
-import { promises } from 'fs'
 import cachegoose from 'cachegoose'
 import { sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
 import { ApplicationModel, GuildModel } from '../db/models.js'
+import questions from '../config/application_questions.js'
 
 /**
  * @param {module:"discord.js".Message} message
@@ -19,13 +19,6 @@ const main = async message => {
     }, 11000)
     return
   }
-  const questions = JSON.parse(
-    await promises
-      .readFile('src/config/application_questions.json')
-      .then(data => data.toString())
-      .catch(sendReport)
-  )
-  if (questions === undefined) return
   const interview = new Interview(
     questions,
     message.channel,
