@@ -38,4 +38,15 @@ clanSchema.statics.getClanByRoleID = async function (role_id) {
   return this.findOne({ role_id }).exec()
 }
 
+/**
+ * @param {Number} points
+ * @return {Promise<UpdateWriteOpResult>}
+ */
+clanSchema.methods.setPoints = async function (points) {
+  return mongoose
+    .model('Clan')
+    .updateOne({ _id: this._id }, { $set: { points } })
+    .exec()
+}
+
 export default clanSchema
