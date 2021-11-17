@@ -126,6 +126,7 @@ memberSchema.methods.setWinsCount = async function (count) {
 
 memberSchema.methods.calculateWinIndex = async function () {
   const model = await mongoose.model('Member')
+  if(this.wins === 0) return 0
   const maxWins = await model.getMaxWins()
   return (((2 * this.wins) / maxWins) * this.wins) / this.games
 }
