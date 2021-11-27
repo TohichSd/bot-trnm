@@ -7,7 +7,7 @@ const Oauth = async (req, res, next) => {
     client_id: env.D_CLIENT_ID,
     client_secret: env.D_CLIENT_SECRET,
     grant_type: 'authorization_code',
-    redirect_uri: env.NODE_ENV === 'development' ? `http://${req.get('host')}${req.route.path}` : `https://${req.get('host')}${req.route.path}`,
+    redirect_uri: env.NODE_ENV === 'development' ? `http://${req.get('host')}${req.route.path}` : `https://arm-bot.openode.dev/auth`,
     code: req.query.code,
     scopes: 'identify%20guilds',
   }
@@ -29,6 +29,11 @@ const Oauth = async (req, res, next) => {
   })
 
   if (userData.status !== 200) {
+    console.log(data)
+    console.log('\n')
+    console.log(accessData)
+    console.log('\n')
+    console.log(userData)
     req.session.auth = false
     next(new Error('User data response status is not 200'))
   } else {
