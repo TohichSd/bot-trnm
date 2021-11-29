@@ -29,11 +29,6 @@ const Oauth = async (req, res, next) => {
   })
 
   if (userData.status !== 200) {
-    console.log(data)
-    console.log('\n')
-    console.log(accessData)
-    console.log('\n')
-    console.log(userData)
     req.session.auth = false
     next(new Error('User data response status is not 200'))
   } else {

@@ -64,10 +64,12 @@ export default async button => {
 
     // Добавления участника в бд
     event = await event.addMember(button.clicker.id)
-    await button.reply.send(
-      'Ваша заявка учтена! Если вы передумали, нажмите на кнопку ещё раз.',
-      true
-    )
+    await button.reply
+      .send(
+        'Ваша заявка учтена! Если вы передумали, нажмите на кнопку ещё раз.',
+        true
+      )
+      .catch(sendReport)
 
     // Добавление участнику роли
     try {
