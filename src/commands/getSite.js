@@ -1,3 +1,5 @@
+import { env } from 'process'
+
 /**
  * @module site
  */
@@ -6,13 +8,13 @@
  *
  * @param {object} message Сообщение
  */
-const main = async (message) => {
-  message.channel.send("https://arm-bot.eu.openode.io")
+const main = async message => {
+  message.channel.send(env.SELF_URL)
 }
 
 export default {
-  name: "сайт",
+  name: 'сайт',
   run: main,
-  description: "Панель управления",
+  description: 'Панель управления',
   permissions: 1,
 }

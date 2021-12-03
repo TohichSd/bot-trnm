@@ -7,7 +7,7 @@ const Oauth = async (req, res, next) => {
     client_id: env.D_CLIENT_ID,
     client_secret: env.D_CLIENT_SECRET,
     grant_type: 'authorization_code',
-    redirect_uri: env.NODE_ENV === 'development' ? `http://${req.get('host')}${req.route.path}` : env.REDIRECT_URI,
+    redirect_uri: env.NODE_ENV === 'development' ? `http://${req.get('host')}${req.route.path}` : env.SELF_URL+'auth',
     code: req.query.code,
     scopes: 'identify%20guilds',
   }
