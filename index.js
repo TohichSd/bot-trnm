@@ -16,4 +16,4 @@ mongoose
   })
   .catch(sendReport)
 
-app.listen(env.PORT)
+app.listen(env.PORT, env.SELF_URL)
