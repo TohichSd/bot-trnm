@@ -21,6 +21,7 @@ router.use((req, res, next) => {
   renderOptions.auth = !!req.session.auth
   renderOptions.username = req.session.username
   renderOptions.csrf = req.session.csrfToken
+  renderOptions.base_url = env.SELF_URL
   next()
 })
 
