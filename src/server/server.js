@@ -27,6 +27,17 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.static('src/server/public'))
+app.use(helmet({
+  hsts: false
+}))
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'img-src': ["'self'", 'cdn.discordapp.com'],
+    },
+  })
+)
 app.set('view engine', 'pug')
 
 app.use(
