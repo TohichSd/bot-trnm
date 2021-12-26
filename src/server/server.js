@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.static('src/server/public'))
 app.use(helmet())
+app.use(helmet.hsts({includeSubDomains: false}))
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
