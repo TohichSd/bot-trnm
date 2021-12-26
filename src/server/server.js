@@ -30,6 +30,9 @@ app.use(express.static('src/server/public'))
 app.use(helmet({
   hsts: false
 }))
+app.use(helmet.referrerPolicy({
+  policy: 'same-origin'
+}))
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
