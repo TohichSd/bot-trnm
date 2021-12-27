@@ -72,7 +72,7 @@ router.get('/', onlyAuth, (req, res) => {
 })
 
 router.get('/guild/:id', onlyAuth, onlyGuildAdmin, (req, res) => {
-  res.send(pug.renderFile('src/server/views/controls.pug', renderOptions))
+  res.send(pug.renderFile('src/server/views/controls.pug', {...renderOptions, guild_id: req.params.id}))
 })
 
 router
