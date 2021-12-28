@@ -20,8 +20,8 @@ mongoose
 
 if (env.SSL_CERT_PATH && env.SSL_KEY_PATH) {
   https.createServer({
-    key: readFileSync(env.SSL_CERT_PATH),
-    cert: readFileSync(env.SSL_KEY_PATH),
+    key: readFileSync(env.SSL_CERT_PATH).toString(),
+    cert: readFileSync(env.SSL_KEY_PATH).toString(),
   }, app).listen(443)
 }
 else {
