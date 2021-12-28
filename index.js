@@ -1,6 +1,8 @@
 import { env } from 'process'
 import mongoose from 'mongoose'
 // import dotenv from 'dotenv'
+import * as https from 'https'
+import { readFileSync } from 'fs'
 import { sendReport, start } from './src/bot.js'
 import { app } from './src/server/server.js'
 
@@ -16,4 +18,12 @@ mongoose
   })
   .catch(sendReport)
 
-app.listen(env.PORT)
+if (env.SSL_CERT_PATH && env.SSL_KEY_PATH) {
+  https.createServer({
+    key: readFileSync(env.SSL_CERT_PATH),
+    cert: readFileSync(env.SSL_KEY_PATH),
+  }, 443)
+}
+else {
+  app.listen(env.PORT)
+}
