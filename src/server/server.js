@@ -28,6 +28,24 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.static('src/server/public'))
 
+app.use(helmet.contentSecurityPolicy({
+  useDefaults: true,
+  directives: {
+    'default-src': "'self'",
+    'style-src': ["'self'", 'cdnjs.cloudflare.com'],
+    'img-src': ["'self'", 'cdn.discordapp.com']
+  }
+}))
+app.use(helmet.dnsPrefetchControl())
+app.use(helmet.expectCt())
+app.use(helmet.frameguard())
+app.use(helmet.hidePoweredBy())
+app.use(helmet.ieNoOpen())
+app.use(helmet.noSniff())
+app.use(helmet.permittedCrossDomainPolicies())
+app.use(helmet.referrerPolicy())
+app.use(helmet.xssFilter())
+
 app.set('view engine', 'pug')
 
 app.use(
