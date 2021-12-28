@@ -22,8 +22,11 @@ if (env.SSL_CERT_PATH && env.SSL_KEY_PATH) {
   https.createServer({
     key: readFileSync(env.SSL_CERT_PATH),
     cert: readFileSync(env.SSL_KEY_PATH),
-  }, 443)
+  }, app).listen(443)
 }
 else {
   app.listen(env.PORT)
 }
+
+// /etc/letsencrypt/live/armellobot.ru/fullchain.pem
+// /etc/letsencrypt/live/armellobot.ru/privkey.pem
