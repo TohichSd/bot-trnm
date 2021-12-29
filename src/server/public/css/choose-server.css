@@ -2,6 +2,7 @@
   align-items: center;
   justify-content: center;
   display: flex;
+  flex-direction: row; 
 }
 
 .guild-card {
@@ -14,6 +15,7 @@
   word-break: break-word;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
   transition: all 0.05s linear;
+  height: 100%;
 }
 
 .guild-card a {
