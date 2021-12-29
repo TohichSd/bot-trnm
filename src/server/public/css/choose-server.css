@@ -9,10 +9,9 @@
   padding: 0.5%;
   cursor: pointer;
   margin: 0 1%;
-}
-
-.guild-card:hover {
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+  word-break: break-word;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+  transition: all 0.05s linear;
 }
 
 .guild-card a {
@@ -22,5 +21,16 @@
 }
 
 .guild-card p {
+  color: #3E3E3E;
   margin-bottom: 3%;
+}
+
+@media (min-width: 1240px) {
+  .guild-card {
+    width: 10%;
+  }
+
+  .guild-card:hover {
+    transform: translateY(-3%);
+  }
 }

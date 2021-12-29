@@ -17,11 +17,12 @@ header h1 {
   padding-right: 3%;
 }
 
-#header-name {
+#header-title {
   margin: 0;
   font-size: 100pt;
   color: #ffffff;
   width: 100%;
+  padding: 0;
 }
 
 #user-data {
@@ -29,10 +30,12 @@ header h1 {
   border: 1px solid white;
   border-radius: 7px;
   display: inline-block;
-  min-width: 10%;
+  min-width: 8%;
   padding: 1%;
-  margin-left: 40%;
+  margin-right: 5%;
   text-align: center;
+  float: right;
+  margin-top: 1%;
 }
 
 #user-data a {
@@ -57,36 +60,40 @@ header h1 {
 }
 
 @media (max-width: 832px) {
-  #header-name {
+  #header-title {
     font-size: 40pt;
     margin-bottom: auto;
+    display: block;
   }
   header {
     text-align: center;
     padding-left: 3%;
   }
   #user-data {
-    margin-left: 0;
+    margin-left: auto;
+    display: block;
+    float: none;
+    margin-right: auto;
+    width: 30%;
   }
 }
 
 @media (max-width: 1024px) and (min-width: 832px) {
-  #header-name {
-    font-size: 100pt;
+  #header-title {
+    font-size: 70pt;
     margin-bottom: auto;
   }
   #user-data {
-    margin-left: 15%;
     min-width: 20%;
+    margin-left: 0;
   }
   #user-data * {
-    font-size: 20pt;
+    font-size: 15pt;
   }
 }
 
-@media (min-width: 832px) and (max-width: 1440px) {
+@media (min-width: 1024px) and (max-width: 1440px) {
   #user-data {
-    margin-left: 25%;
-    min-width: 20%;
+    min-width: 15%;
   }
 }
