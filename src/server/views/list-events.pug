@@ -12,14 +12,10 @@ html(lang='ru')
         h3 Назад
     .main
       .list
-        mixin item(name, id, csrf)
+        mixin item(name, id)
           .item
             .info
               h3 #{name}
-            //form.controls(method='POST')
-            //  input(name='csrf', value=csrf, hidden)
-            //  input(name='id', value=id, hidden)
-            //  button.btn-delete(type='submit')
-            //    h3 Удалить
+            a(href=`/guild/${guild_id}/events/${id}/edit`) РЕДАКТИРОВАТЬ
         each e in events
-          +item(e.name, e._id, csrf)
+          +item(e.name, e._id)

@@ -1,7 +1,7 @@
 import express from 'express'
 import pug from 'pug'
-import { env } from 'process'
-import { getUserGuilds, isMemberAdmin } from '../bot.js'
+import {env} from 'process'
+import {getUserGuilds, isMemberAdmin} from '../bot.js'
 import Oauth from './controllers/oauth.js'
 import {
   onlyUnauthorized,
@@ -10,18 +10,21 @@ import {
 } from './controllers/commonFunctions.js'
 import newTournament from './controllers/newTournament.js'
 import listTournaments from './controllers/listTournaments.js'
+import {EventModel} from "../db/models.js"
+import moment from "moment"
+import editTournament from './controllers/editTournament.js'
 
 const router = express.Router()
 // Параметры рендера странцы
-let renderOptions = {}
+let context = {}
 
 // Обновление параметров рендера страницы
 router.use((req, res, next) => {
-  renderOptions = {}
-  renderOptions.auth = !!req.session.auth
-  renderOptions.username = req.session.username
-  renderOptions.csrf = req.session.csrfToken
-  renderOptions.base_url = env.SELF_URL
+  context = {}
+  context.auth = !!req.session.auth
+  context.username = req.session.username
+  context.csrf = req.session.csrfToken
+  context.base_url = env.SELF_URL
   next()
 })
 
@@ -38,7 +41,7 @@ router.use((req, res, next) => {
 
 // Для тестирования работы сервера
 router.get('/ping', (req, res) => {
-  res.json({ status: 'pass' })
+  res.json({status: 'pass'})
 })
 
 // Авторизация пользовательля с помощью Discord OAuth2
@@ -63,16 +66,16 @@ router.get('/logout', (req, res) => {
 // Главная (выбор сервера)
 router.get('/', onlyAuth, (req, res) => {
   getUserGuilds(req.session.userID).then(guilds => {
-    renderOptions.guilds = guilds
+    context.guilds = guilds
     res.send(
-      pug.renderFile('src/server/views/choose-server.pug', renderOptions)
+      pug.renderFile('src/server/views/choose-server.pug', context)
     )
-    renderOptions.guilds = null
+    context.guilds = null
   })
 })
 
 router.get('/guild/:id', onlyAuth, onlyGuildAdmin, (req, res) => {
-  res.send(pug.renderFile('src/server/views/controls.pug', {...renderOptions, guild_id: req.params.id}))
+  res.send(pug.renderFile('src/server/views/controls.pug', {... context, guild_id: req.params.id}))
 })
 
 router
@@ -80,7 +83,7 @@ router
   .get(onlyAuth, onlyGuildAdmin, (req, res) => {
     res.send(
       pug.renderFile('src/server/views/new.pug', {
-        ...renderOptions,
+        ... context,
         guild_id: req.params.id,
       })
     )
@@ -88,13 +91,34 @@ router
   .post(onlyAuth, onlyGuildAdmin, newTournament, (req, res, next) => {
     res.send(
       pug.renderFile('src/server/views/tournament-done.pug', {
-        ...renderOptions,
+        ... context,
         guild_id: req.params.id,
       })
     )
   })
 
 
-router.route('/guild/:id/list').get(onlyAuth, onlyGuildAdmin, listTournaments)
+router.route('/guild/:id/events').get(onlyAuth, onlyGuildAdmin, listTournaments)
+
+router
+  .route('/guild/:id/events/:e_id/edit')
+  .get(onlyAuth, onlyGuildAdmin, async (req, res) => {
+    const event = await EventModel.findById(req.params.e_id)
+    res.send(
+      pug.renderFile('src/server/views/edit-tournament.pug', {
+        ... context,
+        guild_id: req.params.id,
+        trnm: {
+          name: event.name,
+          description: event.description,
+          loot: event.loot,
+          datetime: moment(event.datetimeMs).toISOString().slice(0, -1),
+          isRandom: event.isRandom,
+        }
+      })
+    )
+  })
+  .post(onlyAuth, onlyGuildAdmin, editTournament)
+router.route('/guild/:id/events/:e_id').post(onlyAuth, onlyGuildAdmin, editTournament)
 
 export default router

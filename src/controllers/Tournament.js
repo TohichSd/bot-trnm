@@ -83,7 +83,7 @@ class Tournament {
   async addToDB() {
     if (!this.messageID || !this.guildID)
       throw new Error('No message id || guild id specified')
-    const Event = new EventModel({
+    await EventModel.createEvent({
       name: this.name,
       description: this.description,
       loot: this.loot,
@@ -92,8 +92,8 @@ class Tournament {
       message_apps_id: this.messageAppID,
       event_role_id: this.role_id,
       guild_id: this.guildID,
+      isRandom: this.random
     })
-    await Event.save()
   }
 }
 

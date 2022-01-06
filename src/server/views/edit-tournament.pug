@@ -1,0 +1,34 @@
+doctype html
+html(lang='ru')
+  head
+    include includes/include-head.html
+    title Редактировать
+    link(rel='stylesheet', href='/css/new.css')
+  body
+    include includes/header
+    .page-subtitle
+      h2 Новый турнир
+      a.return-link.pure-button(href=`/guild/${guild_id}/`)
+        h3 Назад
+    .main
+      form.pure-form-stacked.form-new-trnm(
+        method='POST',
+        name='tournament',
+        autocomplete='off'
+      )
+        if notAllFilled === true
+          h3.red-error Заполните все поля!
+        input(name='csrf', value=csrf, hidden)
+        label(for='trnm-name') Название
+        input#trnm-name.pure-input-rounded(type='text', name='name', value=trnm.name)
+        label(for='trnm-description') Описание
+        textarea#trnm-description(rows=5, name='description') #{trnm.description}
+        label(for='trnm-awards') Награды
+        textarea#trnm-awards(rows=5, name='awards') #{trnm.loot}
+        label(for='trnm-datetime') Дата и время проведения
+        input#trnm-datetime(type='datetime-local', name='datetime', value=trnm.datetime)
+        label#trnm-random
+          input(type='checkbox', name='isRandom', value=trnm.isRandom)
+          p Турнир со случайными условиями
+        button#trnm-create.pure-button СОХРАНИТЬ
+    include includes/footer
