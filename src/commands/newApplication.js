@@ -1,7 +1,7 @@
 import cachegoose from 'cachegoose'
-import { sendReport } from '../bot.js'
+import {sendReport} from '../bot.js'
 import Interview from '../controllers/Interview.js'
-import { ApplicationModel, GuildModel } from '../db/models.js'
+import {ApplicationModel, GuildModel} from '../db/models.js'
 import questions from '../config/application_questions.js'
 
 /**
@@ -32,18 +32,25 @@ const main = async message => {
     if (err._array === null) {
       message.reply('Время на заполнение заявки вышло.')
       return
-    } 
+    }
     if (err.message === 'Stop') {
       message.reply('Отмена')
       return
-    } 
+    }
     throw err.stack
   }
   await cachegoose.clearCache(`application/${message.member.id}`)
   await ApplicationModel.updateOne(
-    { id: message.member.id },
-    { $set: { ...answers, id: message.member.id } },
-    { upsert: true }
+    {id: message.member.id},
+    {
+      $set: {
+        level: answers.level.content,
+        micro: answers.micro.content,
+        link: answers.link.content,
+        id: message.member.id
+      }
+    },
+    {upsert: true}
   )
     .exec()
     .then(() => {

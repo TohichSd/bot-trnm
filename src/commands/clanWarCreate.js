@@ -36,10 +36,10 @@ const main = async message => {
   const answers = await interview.start()
   const { name } = answers
   const { duration } = answers
-  // записьв бд
+  // запись в бд
   const clanWar = await new ClanWarModel({
-    name,
-    duration,
+    name: name.content,
+    duration: duration.content,
     created_at: moment().valueOf(),
     guild_id: message.guild.id,
   }).save()

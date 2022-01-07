@@ -1,31 +1,32 @@
 class Interview {
   /**
-   * @param {object} questions Вопросы
-   * @param {ChannelType} channel
+   * @param {object} questions Вопросы в формате ключ:вопрос
+   * @param {TextChannel | DMChannel | NewsChannel} channel канал, куда отправить интервью
    * @param {Object} options Дополнительные параметры
-   * @param {string} memberID ID участника
+   * @param {string} memberID ID участника, отвечающего на вопросы
    * @param {string} startPhrase Фраза при начале интервью
    * @param {string} options.stop Слово для остновки интервью
    * @param {number} options.timeout Максимальное время ожидания
-   * @param {any[]} options.mentions Сообщения от которых нужно прислать id упоминаний
    */
   constructor(
     questions,
     channel,
     memberID,
     startPhrase,
-    options = { stop: '!отмена', timeout: 300000, mentions: [] }
+    options = {stop: '!отмена', timeout: 300000, deleteQuestions: false}
   ) {
     this.questions = questions
     this.channel = channel
     this.options = options
     this.memberID = memberID
     this.startPhrase = startPhrase
+    this.messagesToDelete = []
   }
 
   async question(keys, answers = []) {
     const key = await keys.shift()
-    await this.channel.send(this.questions[key])
+    const q_message = await this.channel.send(this.questions[key])
+    this.messagesToDelete.push(q_message)
     await this.channel
       .awaitMessages(m => m.author.id === this.memberID, {
         max: 1,
@@ -33,17 +34,19 @@ class Interview {
         errors: ['time'],
       })
       .then(async collected => {
+        answers[key] = collected.first()
         if (collected.first().content.toLowerCase().includes(this.options.stop))
           throw new Error('Stop')
-        if(this.options.mentions.includes(key)) {
-          answers[key] = collected.first().mentions
-        }
-        else {
-          answers[key] = collected.first().content
+        if (this.options.deleteQuestions) {
+          this.messagesToDelete.push(collected.first())
         }
       })
-      .catch(err => { throw err})
+      .catch(err => {
+        throw err
+      })
     if (keys.length > 0) return this.question(keys, answers)
+    if (this.options.deleteQuestions)
+      this.messagesToDelete.forEach(m => m.delete())
     return answers
   }
 
