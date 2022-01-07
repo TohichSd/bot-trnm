@@ -6,6 +6,7 @@ import clanWarSchema from './ClanWarSchema.js'
 import eventSchema from './EventSchema.js'
 import guildSchema from './GuildSchema.js'
 import memberSchema from './MemberSchema.js'
+import gameReportSchema from "./gameReportSchema.js";
 
 cachegoose(mongoose)
 
@@ -15,3 +16,4 @@ export const ClanWarModel = mongoose.model('ClanWar', clanWarSchema)
 export const EventModel = mongoose.model('Event', eventSchema)
 export const GuildModel = mongoose.model('Guild', guildSchema)
 export const MemberModel = mongoose.model('Member', memberSchema)
+export const GameReportModel = mongoose.model('GameReport', gameReportSchema)
