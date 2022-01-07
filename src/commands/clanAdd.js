@@ -10,9 +10,6 @@ const main = async message => {
     message.channel,
     message.member.id,
     'Создать новый клан',
-    {
-      mentions: ['role'],
-    }
   )
   const answers = await interview.start()
   if (answers.role.roles.size !== 1) {
@@ -20,8 +17,8 @@ const main = async message => {
     return
   }
   await new ClanModel({
-    name: answers.name,
-    role_id: answers.role.roles.first().id,
+    name: answers.name.content,
+    role_id: answers.role.mentions.roles.first().id,
     guild_id: message.guild.id,
   })
     .save()
