@@ -35,10 +35,10 @@ class Interview {
       })
       .then(async collected => {
         answers[key] = collected.first()
-        if (collected.first().content.toLowerCase().includes(this.options.stop))
-          throw new Error('Stop')
-        if (this.options.deleteQuestions) {
-          this.messagesToDelete.push(collected.first())
+        if (collected.first().content.toLowerCase().includes(this.options.stop)){
+          const error = new Error('Stop')
+          error.customMessage = 'Отменено'
+          throw error
         }
       })
       .catch(err => {
@@ -51,7 +51,7 @@ class Interview {
   }
 
   /**
-   * @return {Promise<Object>}
+   * @return {Promise<[Object]>}
    */
   async start() {
     return this.question(Object.keys(this.questions))
