@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import discordButtons from 'discord-buttons'
 import { EventModel } from '../db/models.js'
 import { sendReport } from '../bot.js'
@@ -18,10 +18,10 @@ class Tournament {
     this.name = name
     this.description = description
     this.loot = loot
-    this.datetimeMs = moment(datetime).valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
+    this.datetimeMs = moment(datetime).tz('Europe/Moscow').valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
     this.random = random
     this.guildID = guildID
-    this.datetimeFormated = moment(datetime).locale('ru').format('LLLL')
+    this.datetimeFormated = moment(datetime).tz('Europe/Moscow').locale('ru').format('LLLL') + ' по мск'
   }
 
   /**
@@ -69,7 +69,7 @@ class Tournament {
     await channelA.guild.roles.create({ data: {name: `Участник турнира "${this.name}"`, color: '#4287f5'} })
       .then(role => { 
         this.role_id = role.id
-        const dtMs = this.datetimeMs - moment().valueOf() + 3 * 60 * 1000
+        const dtMs = this.datetimeMs - moment().tz('Europe/Moscow').valueOf() + 3 * 60 * 1000
         setTimeout(() => {
           role.delete()
         }, dtMs)

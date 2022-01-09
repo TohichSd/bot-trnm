@@ -1,18 +1,12 @@
+import moment from "moment-timezone";
+import {MessageEmbed} from "discord.js";
+import randomColor from 'randomcolor'
 import Interview from "../controllers/Interview.js";
 import {GameReportModel, GuildModel} from "../db/models.js";
-import moment from "moment";
-import {MessageEmbed, Message} from "discord.js";
 import {getChannel} from "../bot.js";
-import randomColor from 'randomcolor'
 
 const main = async message => {
   let valid = false
-  /**
-   * @param {Object} answers
-   * @param {Message} answers.members
-   * @param {Message} answers.winner
-   * @param {Message} answers.image
-   */
   let answers
   while (!valid) {
     const interview = new Interview(
@@ -56,7 +50,7 @@ const main = async message => {
     author: message.member.id,
     members: game_members,
     winner: answers.winner.mentions.members.first().id,
-    datetimeMs: moment().valueOf(),
+    datetimeMs: moment().tz('Europe/Moscow').valueOf(),
     message_id: 0,
   })
   await doc.save()
@@ -78,7 +72,7 @@ const main = async message => {
   })
 
   const embedReport = new MessageEmbed()
-    .setTitle(`**Рейтинговая игра** ${moment().format('DD.MM.YYYY HH:mm')}`)
+    .setTitle(`**Рейтинговая игра** ${moment().tz('Europe/Moscow').format('DD.MM.YYYY HH:mm')}`)
     .addField('Участники:', members_string)
     .addField('\u200b', `Создано участником <@${doc.author}>`)
     .setFooter('Поздравляем победителя! Победа будет засчитана в ближайшее время!')
@@ -87,7 +81,7 @@ const main = async message => {
   // Отправка скрина для хранения
   await imageChannel.send({files: [answers.image.attachments.first().url]})
     .then(m => {
-      embedReport.setThumbnail(m.attachments.first().url)
+      embedReport.setImage(m.attachments.first().url)
     })
 
   await answers.image.delete()
