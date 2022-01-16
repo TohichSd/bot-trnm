@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js'
-import moment from 'moment-timezone'
+import moment from 'moment'
 import discordButtons from 'discord-buttons'
 import { EventModel } from '../db/models.js'
 import { sendReport } from '../bot.js'
@@ -18,10 +18,10 @@ class Tournament {
     this.name = name
     this.description = description
     this.loot = loot
-    this.datetimeMs = moment(datetime).tz('Europe/Moscow').valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
+    this.datetimeMs = moment(datetime).valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
     this.random = random
     this.guildID = guildID
-    this.datetimeFormated = moment(datetime).tz('Europe/Moscow').locale('ru').format('LLLL') + ' по мск'
+    this.datetimeFormated = moment(datetime).locale('ru').format('LLLL') + 'по МСК'
   }
 
   /**
