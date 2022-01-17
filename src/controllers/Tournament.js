@@ -35,10 +35,9 @@ class Tournament {
     const messageT = new MessageEmbed()
       .setColor(randomColor({ hue: 'green', luminosity: 'light' }))
       .setTitle(`**${this.name.toUpperCase()}**`)
-      .setDescription(strings.descriptionHeader)
       .addField(strings.description, this.description, true)
       .addField(strings.loot, this.loot)
-      .addField(strings.datetime, this.datetimeFormatted)
+      .addField(strings.datetime, this.datetimeFormatted+'\n')
       .setThumbnail(strings.image)
       .setFooter(strings.footer)
     // .setThumbnail(strings.thumbnail)
@@ -53,15 +52,15 @@ class Tournament {
       this.guildID = msg.guild.id
     })
 
-    const messageA = new MessageEmbed()
-      .setColor('#4287f5')
-      .setTitle(`Участники турнира ${this.name}`)
-      .setDescription('Здесь появятся участники турнира.')
+    // const messageA = new MessageEmbed()
+    //   .setColor('#4287f5')
+    //   .setTitle(`Участники турнира ${this.name}`)
+    //   .setDescription('Здесь появятся участники турнира.')
 
-    await channelA.send(messageA).then(msg => {
-      this.messageAppID = msg.id
-      this.guildAppID = msg.guild.id
-    })
+    // await channelA.send(messageA).then(msg => {
+    //   this.messageAppID = msg.id
+    //   this.guildAppID = msg.guild.id
+    // })
 
     // Создание роли турнира
     await channelA.guild.roles
@@ -93,7 +92,7 @@ class Tournament {
       loot: this.loot,
       datetimeMs: this.datetimeMs,
       message_id: this.messageID,
-      message_apps_id: this.messageAppID,
+      // message_apps_id: this.messageAppID,
       event_role_id: this.role_id,
       guild_id: this.guildID,
       isRandom: this.random,

@@ -1,6 +1,8 @@
 import { MessageEmbed } from 'discord.js'
+import moment from 'moment'
 import { ApplicationModel, EventModel, GuildModel } from '../db/models.js'
 import { getChannel, getGuildMember, sendReport } from '../bot.js'
+import strings from '../config/tournament_message.js'
 
 export default async button => {
   const member = await getGuildMember(
@@ -17,7 +19,9 @@ export default async button => {
     return
   }
   if (event.datetimeMs < new Date().getMilliseconds() - 60 * 60 * 1000) return
+
   const guildDB = await GuildModel.findOneByGuildID(button.message.guild.id)
+
   // Получен ли сервер
   if (guildDB === null) {
     sendReport(
@@ -34,12 +38,6 @@ export default async button => {
     )
     return
   }
-
-  // Канал с заявками
-  const channelApps = await getChannel(
-    button.message.guild.id,
-    guildDB.applications_channel
-  )
 
   // Если заявка уже отправлена
   const eventMember = event.members.find(m => m.id === member.id)
@@ -79,22 +77,36 @@ export default async button => {
     }
   }
 
-  const embedMembers = new MessageEmbed()
-    .setTitle(`Участники турнира ${event.name}`)
-    .setColor('#4287f5')
-    .setThumbnail('https://i.ibb.co/H4zQ4YB/Check-mark-svg.png')
-
-  await Promise.all(
-    event.members.map(async (evMember, index) => {
-      const memberApplication = await ApplicationModel.findOneByID(evMember.id)
-      embedMembers.addField(
-        `${index + 1}.`,
-        `|- <@${memberApplication.id}> (${memberApplication.level} уровень, :loud_sound:: ${memberApplication.micro})\n|- ${memberApplication.link}`
-      )
-    })
+  const trnmChannel = await getChannel(
+    button.message.guild.id,
+    guildDB.tournament_channel
   )
-  const messageApps = await channelApps.messages.fetch(event.message_apps_id)
-  if (messageApps === undefined)
-    await button.reply.send('Ошибка. Обратитесь к администрации сервера.')
-  await messageApps.edit(embedMembers)
+  const trnmMessage = await trnmChannel.messages.fetch(event.message_id)
+
+  const datetimeFormatted =
+    moment(event.datetimeMs).locale('ru').format('LLLL') + ' по мск'
+
+  const embedTrnm = new MessageEmbed()
+    .setColor(trnmMessage.embeds[0].color)
+    .setTitle(`**${event.name.toUpperCase()}**`)
+    .addField(strings.description, event.description)
+    .addField(strings.loot, event.loot)
+    .addField(strings.datetime, datetimeFormatted+'\n')
+    .setThumbnail(strings.image)
+    .setFooter(strings.footer)
+
+  // Добавление участников
+  if (event.members.length > 0) {
+    let membersString = ''
+    await Promise.all(
+      event.members.map(async (evMember, index) => {
+        const memberApplication = await ApplicationModel.findOneByID(evMember.id)
+        membersString += `**${index+1}. **<@${memberApplication.id}> ${memberApplication.link}`
+      })
+    )
+
+    embedTrnm.addField(':game_die: УЖЕ УЧАСТВУЮТ: :game_die:', membersString)
+  }
+
+  await trnmMessage.edit(embedTrnm)
 }
