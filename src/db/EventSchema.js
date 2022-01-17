@@ -34,15 +34,14 @@ const eventSchema = new mongoose.Schema(
 )
 
 eventSchema.statics.findOneByMessageID = function (message_id) {
-  return this.findOne({message_id}).cache(0, `event${this.id}`).exec()
+  return this.findOne({message_id}).exec()
 }
 
 eventSchema.statics.findByGuildID = function (guild_id) {
-  return this.find({guild_id}).sort({datetimeMs: -1}).cache(0, `events`).exec()
+  return this.find({guild_id}).sort({datetimeMs: -1}).exec()
 }
 
 eventSchema.statics.createEvent = async function (doc) {
-  cachegoose.clearCache('events')
   return this.create(doc)
 }
 
