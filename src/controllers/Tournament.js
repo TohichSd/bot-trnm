@@ -3,7 +3,6 @@ import moment from 'moment'
 import discordButtons from 'discord-buttons'
 import randomColor from 'randomcolor'
 import { EventModel } from '../db/models.js'
-import { sendReport } from '../bot.js'
 import strings from '../config/tournament_message.js'
 
 class Tournament {
@@ -28,10 +27,9 @@ class Tournament {
 
   /**
    * @param channelT канал с туринрами
-   * @param channelA канал с заявками
    * @return {Promise<void>}
    */
-  async send(channelT, channelA) {
+  async send(channelT) {
     const messageT = new MessageEmbed()
       .setColor(randomColor({ hue: 'green', luminosity: 'light' }))
       .setTitle(`**${this.name.toUpperCase()}**`)
@@ -51,33 +49,6 @@ class Tournament {
       this.messageID = msg.id
       this.guildID = msg.guild.id
     })
-
-    // const messageA = new MessageEmbed()
-    //   .setColor('#4287f5')
-    //   .setTitle(`Участники турнира ${this.name}`)
-    //   .setDescription('Здесь появятся участники турнира.')
-
-    // await channelA.send(messageA).then(msg => {
-    //   this.messageAppID = msg.id
-    //   this.guildAppID = msg.guild.id
-    // })
-
-    // Создание роли турнира
-    await channelA.guild.roles
-      .create({
-        data: { name: `Участник турнира "${this.name}"`, color: '#4287f5' },
-      })
-      .then(role => {
-        this.role_id = role.id
-        const dtMs =
-          this.datetimeMs -
-          moment().tz('Europe/Moscow').valueOf() +
-          3 * 60 * 1000
-        setTimeout(() => {
-          role.delete()
-        }, dtMs)
-      })
-      .catch(sendReport)
   }
 
   /**

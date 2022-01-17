@@ -27,7 +27,6 @@ export default async (req, res, next) => {
     next(err)
   }
   const channelT = await getChannel(guild.guild_id, guild.tournament_channel)
-  const channelA = await getChannel(guild.guild_id, guild.applications_channel)
   const tournament = new Tournament(
     req.body.name,
     req.body.description,
@@ -36,7 +35,7 @@ export default async (req, res, next) => {
     req.body.random,
     req.params.id
   )
-  await tournament.send(channelT, channelA)
+  await tournament.send(channelT)
   await tournament.addToDB()
   req.body = null
   next()
