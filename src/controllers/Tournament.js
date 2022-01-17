@@ -18,10 +18,10 @@ class Tournament {
     this.name = name
     this.description = description
     this.loot = loot
-    this.datetimeMs = moment(datetime).valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
+    this.datetimeMs = moment(datetime).valueOf()
     this.random = random
     this.guildID = guildID
-    this.datetimeFormated = moment(datetime).locale('ru').format('LLLL') + 'по МСК'
+    this.datetimeFormatted = moment(datetime).locale('ru').format('LLLL') + ' по МСК'
   }
 
   /**
@@ -36,12 +36,8 @@ class Tournament {
       .setDescription(strings.descriptionHeader)
       .addField(strings.description, this.description, true)
       .addField(strings.loot, this.loot)
-      .addField(strings.datetime, this.datetimeFormated)
-      .setAuthor(
-        this.random ? strings.newTRandom : strings.newT,
-        strings.authorIcon
-      )
-      .setImage(strings.image)
+      .addField(strings.datetime, this.datetimeFormatted)
+      .setThumbnail(strings.image)
       .setFooter(strings.footer)
       // .setThumbnail(strings.thumbnail)
     

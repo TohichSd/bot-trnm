@@ -16,7 +16,7 @@ export default async button => {
     )
     return
   }
-  if (event.datetimeMs < new Date().getMilliseconds()) return
+  if (event.datetimeMs < new Date().getMilliseconds() - 60 * 60 * 1000) return
   const guildDB = await GuildModel.findOneByGuildID(button.message.guild.id)
   // Получен ли сервер
   if (guildDB === null) {

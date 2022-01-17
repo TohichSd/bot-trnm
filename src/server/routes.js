@@ -1,7 +1,7 @@
 import express from 'express'
 import pug from 'pug'
 import {env} from 'process'
-import {getUserGuilds, isMemberAdmin} from '../bot.js'
+import {getUserGuilds} from '../bot.js'
 import Oauth from './controllers/oauth.js'
 import {
   onlyUnauthorized,
@@ -11,7 +11,7 @@ import {
 import newTournament from './controllers/newTournament.js'
 import listTournaments from './controllers/listTournaments.js'
 import {EventModel} from "../db/models.js"
-import moment from "moment"
+import moment from "moment-timezone"
 import editTournament from './controllers/editTournament.js'
 
 const router = express.Router()
@@ -88,7 +88,7 @@ router
       })
     )
   })
-  .post(onlyAuth, onlyGuildAdmin, newTournament, (req, res, next) => {
+  .post(onlyAuth, onlyGuildAdmin, newTournament, (req, res) => {
     res.send(
       pug.renderFile('src/server/views/tournament-done.pug', {
         ... context,
@@ -104,6 +104,7 @@ router
   .route('/guild/:id/events/:e_id/edit')
   .get(onlyAuth, onlyGuildAdmin, async (req, res) => {
     const event = await EventModel.findById(req.params.e_id)
+    const dt = moment(event.datetimeMs).tz('Europe/Moscow').format('YYYY-MM-DDTHH:mm')
     res.send(
       pug.renderFile('src/server/views/edit-tournament.pug', {
         ... context,
@@ -112,13 +113,19 @@ router
           name: event.name,
           description: event.description,
           loot: event.loot,
-          datetime: moment(event.datetimeMs).toISOString().slice(0, -1),
+          datetime: dt,
           isRandom: event.isRandom,
         }
       })
     )
   })
-  .post(onlyAuth, onlyGuildAdmin, editTournament)
-router.route('/guild/:id/events/:e_id').post(onlyAuth, onlyGuildAdmin, editTournament)
+  .post(onlyAuth, onlyGuildAdmin, editTournament, (req, res) => {
+    res.send(
+      pug.renderFile('src/server/views/tournament-done.pug', {
+        ... context,
+        guild_id: req.params.id,
+      })
+    )
+  })
 
 export default router
