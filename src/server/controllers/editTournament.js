@@ -1,7 +1,7 @@
-import {GuildModel, EventModel} from "../../db/models.js";
-import moment from "moment";
-import {getChannel} from "../../bot.js";
 import {MessageEmbed} from "discord.js";
+import moment from "moment";
+import {GuildModel, EventModel} from "../../db/models.js";
+import {getChannel} from "../../bot.js";
 import strings from "../../config/tournament_message.js";
 
 export default async (req, res, next) => {
@@ -36,7 +36,7 @@ export default async (req, res, next) => {
     datetimeMs: moment(req.body.datetime).valueOf(),
     isRandom: req.body.random,
   })
-  const datetimeFormatted = moment(req.body.datetime).locale('ru').format('LLLL') + ' по МСК'
+  const datetimeFormatted = moment(req.body.datetime).locale('ru').format('LLLL') + ' по мск'
 
   const guildDB = await GuildModel.findOneByGuildID(req.params.id)
   const trnmChannel = await getChannel(req.params.id, guildDB.tournament_channel)

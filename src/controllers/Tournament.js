@@ -21,7 +21,7 @@ class Tournament {
     this.datetimeMs = moment(datetime).valueOf()
     this.random = random
     this.guildID = guildID
-    this.datetimeFormatted = moment(datetime).locale('ru').format('LLLL') + ' по МСК'
+    this.datetimeFormatted = moment(datetime).locale('ru').format('LLLL') + ' по мск'
   }
 
   /**
