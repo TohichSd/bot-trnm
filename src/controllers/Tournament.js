@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment'
 import discordButtons from 'discord-buttons'
+import randomColor from 'randomcolor'
 import { EventModel } from '../db/models.js'
 import { sendReport } from '../bot.js'
 import strings from '../config/tournament_message.js'
@@ -21,7 +22,8 @@ class Tournament {
     this.datetimeMs = moment(datetime).valueOf()
     this.random = random
     this.guildID = guildID
-    this.datetimeFormatted = moment(datetime).locale('ru').format('LLLL') + ' по мск'
+    this.datetimeFormatted =
+      moment(datetime).locale('ru').format('LLLL') + ' по мск'
   }
 
   /**
@@ -31,7 +33,7 @@ class Tournament {
    */
   async send(channelT, channelA) {
     const messageT = new MessageEmbed()
-      .setColor(strings.color)
+      .setColor(randomColor({ hue: 'green', luminosity: 'light' }))
       .setTitle(`**${this.name.toUpperCase()}**`)
       .setDescription(strings.descriptionHeader)
       .addField(strings.description, this.description, true)
@@ -39,13 +41,13 @@ class Tournament {
       .addField(strings.datetime, this.datetimeFormatted)
       .setThumbnail(strings.image)
       .setFooter(strings.footer)
-      // .setThumbnail(strings.thumbnail)
-    
+    // .setThumbnail(strings.thumbnail)
+
     const button = new discordButtons.MessageButton()
       .setLabel('ПРИНЯТЬ УЧАСТИЕ')
       .setStyle('green')
       .setID('trnm')
-    
+
     await channelT.send(messageT, button).then(msg => {
       this.messageID = msg.id
       this.guildID = msg.guild.id
@@ -55,17 +57,23 @@ class Tournament {
       .setColor('#4287f5')
       .setTitle(`Участники турнира ${this.name}`)
       .setDescription('Здесь появятся участники турнира.')
-    
+
     await channelA.send(messageA).then(msg => {
       this.messageAppID = msg.id
       this.guildAppID = msg.guild.id
     })
-    
+
     // Создание роли турнира
-    await channelA.guild.roles.create({ data: {name: `Участник турнира "${this.name}"`, color: '#4287f5'} })
-      .then(role => { 
+    await channelA.guild.roles
+      .create({
+        data: { name: `Участник турнира "${this.name}"`, color: '#4287f5' },
+      })
+      .then(role => {
         this.role_id = role.id
-        const dtMs = this.datetimeMs - moment().tz('Europe/Moscow').valueOf() + 3 * 60 * 1000
+        const dtMs =
+          this.datetimeMs -
+          moment().tz('Europe/Moscow').valueOf() +
+          3 * 60 * 1000
         setTimeout(() => {
           role.delete()
         }, dtMs)
@@ -88,7 +96,7 @@ class Tournament {
       message_apps_id: this.messageAppID,
       event_role_id: this.role_id,
       guild_id: this.guildID,
-      isRandom: this.random
+      isRandom: this.random,
     })
   }
 }

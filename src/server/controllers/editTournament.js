@@ -42,7 +42,7 @@ export default async (req, res, next) => {
   const trnmChannel = await getChannel(req.params.id, guildDB.tournament_channel)
   const trnmMessage = await trnmChannel.messages.fetch(tournament.message_id)
   const embedTrnm = new MessageEmbed()
-    .setColor(strings.color)
+    .setColor(trnmMessage.embeds[0].color)
     .setTitle(`**${req.body.name.toUpperCase()}**`)
     .setDescription(strings.descriptionHeader)
     .addField(strings.description, req.body.description)
