@@ -19,60 +19,13 @@ const guildSchema = new mongoose.Schema(
     admin_roles: [String],
     score_table_channel: String,
     score_table_message_id: String,
+    game_report_images_channel: String
   },
   { collection: 'guilds' }
 )
 
 guildSchema.statics.findOneByGuildID = function (guild_id) {
   return this.findOne({ guild_id }).cache(0, `guild${guild_id}`).exec()
-}
-
-guildSchema.methods.setApplicationsChannel = async function (id) {
-  cachegoose.clearCache(`guild${this.guild_id}`)
-  await mongoose
-    .model('Guild')
-    .updateOne({ _id: this._id }, { $set: { applications_channel: id } })
-    .exec()
-}
-
-guildSchema.methods.setNewAppChannel = async function (id) {
-  cachegoose.clearCache(`guild${this.guild_id}`)
-  await mongoose
-    .model('Guild')
-    .updateOne({ _id: this._id }, { $set: { new_app_channel: id } })
-    .exec()
-}
-
-guildSchema.methods.setTournamentChannel = async function (id) {
-  cachegoose.clearCache(`guild${this.guild_id}`)
-  await mongoose
-    .model('Guild')
-    .updateOne({ _id: this._id }, { $set: { tournament_channel: id } })
-    .exec()
-}
-
-guildSchema.methods.setClanWarsChannel = async function (id) {
-  cachegoose.clearCache(`guild${this.guild_id}`)
-  await mongoose
-    .model('Guild')
-    .updateOne({ _id: this._id }, { $set: { clan_wars_channel: id } })
-    .exec()
-}
-
-guildSchema.methods.setClanWarsChannel = async function (id) {
-  cachegoose.clearCache(`guild${this.guild_id}`)
-  await mongoose
-    .model('Guild')
-    .updateOne({ _id: this._id }, { $set: { clan_wars_channel: id } })
-    .exec()
-}
-
-guildSchema.methods.setScoreTableChannel = async function (id) {
-  cachegoose.clearCache(`guild${this.guild_id}`)
-  await mongoose
-    .model('Guild')
-    .updateOne({ _id: this._id }, { $set: { score_table_channel: id } })
-    .exec()
 }
 
 guildSchema.methods.setScoreTableMessageID = async function (id) {

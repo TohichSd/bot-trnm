@@ -19,10 +19,14 @@ const main = async message => {
     else message.reply(`У <@${member.id}> ещё нет ни одной сыгранной рейтинговой игры!`)
     return
   }
+  const winRate =
+    memberDB.games !== 0
+      ? `(${Math.round((memberDB.wins / memberDB.games) * 100)}%)`
+      : ''
   const statEmbed = new MessageEmbed()
     .setDescription(`Статистика игрока <@${member.id}>`)
     .setColor('#3e76b2')
-    .addField(':trophy: Победы:', memberDB.wins)
+    .addField(':trophy: Победы:', `${memberDB.wins} *${winRate}*`)
     .addField(':game_die: Всего игр:', memberDB.games)
   await message.reply(statEmbed)
 }

@@ -21,7 +21,7 @@ class Tournament {
     this.datetimeMs = moment(datetime).valueOf() + 1000 * 60 * 35 // на турнир можно зарегистрироваться ещё спустя 35 мин после начала
     this.random = random
     this.guildID = guildID
-    this.datetimeFormated = moment(datetime).locale('ru').format('LLLL')
+    this.datetimeFormated = moment(datetime).locale('ru').format('LLLL') + 'по МСК'
   }
 
   /**
@@ -69,7 +69,7 @@ class Tournament {
     await channelA.guild.roles.create({ data: {name: `Участник турнира "${this.name}"`, color: '#4287f5'} })
       .then(role => { 
         this.role_id = role.id
-        const dtMs = this.datetimeMs - moment().valueOf() + 3 * 60 * 1000
+        const dtMs = this.datetimeMs - moment().tz('Europe/Moscow').valueOf() + 3 * 60 * 1000
         setTimeout(() => {
           role.delete()
         }, dtMs)
