@@ -101,7 +101,7 @@ export default async button => {
     await Promise.all(
       event.members.map(async (evMember, index) => {
         const memberApplication = await ApplicationModel.findOneByID(evMember.id)
-        membersString += `**${index+1}. **<@${memberApplication.id}> ${memberApplication.link}`
+        membersString += `**${index+1}. **<@${memberApplication.id}> ${memberApplication.link}\n`
       })
     )
 
