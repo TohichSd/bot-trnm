@@ -43,7 +43,6 @@ export default async button => {
   const eventMember = event.members.find(m => m.id === member.id)
   if (eventMember) {
     event = await event.removeMember(member.id)
-    await member.roles.remove(event.event_role_id)
     await button.reply.send('Ваша заявка удалена :sob:', true)
   } else {
     const application = await ApplicationModel.findOne({
@@ -68,13 +67,6 @@ export default async button => {
         true
       )
       .catch(sendReport)
-
-    // Добавление участнику роли
-    try {
-      await member.roles.add(event.event_role_id)
-    } catch (err) {
-      sendReport(err)
-    }
   }
 
   const trnmChannel = await getChannel(
