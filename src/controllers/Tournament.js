@@ -40,12 +40,17 @@ class Tournament {
       .setFooter(strings.footer)
     // .setThumbnail(strings.thumbnail)
 
-    const button = new discordButtons.MessageButton()
+    const buttonAddMember = new discordButtons.MessageButton()
       .setLabel('ПРИНЯТЬ УЧАСТИЕ')
       .setStyle('green')
       .setID('trnm')
 
-    await channelT.send(messageT, button).then(msg => {
+    const buttonShowApps = new discordButtons.MessageButton()
+      .setLabel('Показать заявки')
+      .setStyle('blurple')
+      .setID('apps')
+
+    await channelT.send(messageT, {buttons: [buttonAddMember, buttonShowApps]}).then(msg => {
       this.messageID = msg.id
       this.guildID = msg.guild.id
     })
