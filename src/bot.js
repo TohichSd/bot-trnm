@@ -82,7 +82,11 @@ const sendReport = err => {
     client.users
       .fetch(env.SUPERUSER_ID)
       .then(user => {
-        user.send(err)
+        let message = ''
+        message += err.message || ' '
+        message += '\n' + err.customMessage || ''
+        message += '\n' + err.stack || ''
+        user.send(message)
       })
       .catch(console.error)
 }
@@ -133,7 +137,7 @@ const numberToEmojis = async num =>
 // Обработчики событий
 
 // Для обработки ошибок небходимо использовать throw
-// Для того что бы написать сообщенио об ошибке в дискорде, необходимо использовать поле customMessage
+// Для того что бы написать сообщение об ошибке в дискорде, необходимо использовать поле customMessage
 // В противном случае будет написано "ошибка"
 
 client.on('message', async message => {
