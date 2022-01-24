@@ -1,6 +1,6 @@
+import cachegoose from "cachegoose"
 import {GuildModel} from "../db/models.js"
 import GuildSchema from "../db/GuildSchema.js"
-import cachegoose from "cachegoose"
 
 const main = async message => {
   const args = message.content.replace(/ +(?= )/g, '').split(' ')

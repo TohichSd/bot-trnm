@@ -20,7 +20,8 @@ const guildSchema = new mongoose.Schema(
     score_table_channel: String,
     score_table_message_id: String,
     game_report_channel: String,
-    game_report_images_channel: String
+    game_report_images_channel: String,
+    logs_channel: String,
   },
   { collection: 'guilds' }
 )

@@ -102,11 +102,7 @@ const errorHandler = (err, req, res, next) => {
     )
   } else {
     res.status(500)
-
-    // При разработке выводить ошибку в консоль, а в проде отсылать репорт
-    if (env.NODE_ENV === 'development') console.error(err)
-    else
-      sendReport(`${req.method}: ${req.url}
+    sendReport(`${req.method}: ${req.url}
     username: ${req.session.username}
     authorized: ${req.session.auth}
     ${err.toString()}

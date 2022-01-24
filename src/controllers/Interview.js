@@ -13,7 +13,7 @@ class Interview {
     channel,
     memberID,
     startPhrase,
-    options = {stop: '!отмена', timeout: 300000, deleteQuestions: false}
+    options = { stop: '!отмена', timeout: 300000, deleteQuestions: false }
   ) {
     this.questions = questions
     this.channel = channel
@@ -21,6 +21,7 @@ class Interview {
     this.memberID = memberID
     this.startPhrase = startPhrase
     this.messagesToDelete = []
+    this.stopped = false
   }
 
   async question(keys, answers = []) {
@@ -35,10 +36,12 @@ class Interview {
       })
       .then(async collected => {
         answers[key] = collected.first()
-        if (collected.first().content.toLowerCase().includes(this.options.stop)){
-          const error = new Error('Stop')
-          error.customMessage = 'Отменено'
-          throw error
+        if (
+          collected.first().content.toLowerCase().includes(this.options.stop)
+        ) {
+          Object.values(answers).map(msg => msg.delete())
+          this.messagesToDelete.forEach(m => m.delete())
+          throw new Error('Stop')
         }
       })
       .catch(err => {
@@ -51,7 +54,7 @@ class Interview {
   }
 
   /**
-   * @return {Promise<[Object]>}
+   * @return {Promise<Object>}
    */
   async start() {
     return this.question(Object.keys(this.questions))

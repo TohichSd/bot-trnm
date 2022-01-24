@@ -4,6 +4,7 @@ import discordButtons from 'discord-buttons'
 import randomColor from 'randomcolor'
 import { EventModel } from '../db/models.js'
 import strings from '../config/tournament_message.js'
+import { botLog } from '../bot.js'
 
 class Tournament {
   /**
@@ -35,7 +36,7 @@ class Tournament {
       .setTitle(`**${this.name.toUpperCase()}**`)
       .addField(strings.description, this.description, true)
       .addField(strings.loot, this.loot)
-      .addField(strings.datetime, this.datetimeFormatted+'\n')
+      .addField(strings.datetime, this.datetimeFormatted + '\n')
       .setThumbnail(strings.image)
       .setFooter(strings.footer)
     // .setThumbnail(strings.thumbnail)
@@ -50,10 +51,14 @@ class Tournament {
       .setStyle('blurple')
       .setID('apps')
 
-    await channelT.send(messageT, {buttons: [buttonAddMember, buttonShowApps]}).then(msg => {
-      this.messageID = msg.id
-      this.guildID = msg.guild.id
-    })
+    await channelT
+      .send(messageT, { buttons: [buttonAddMember, buttonShowApps] })
+      .then(msg => {
+        this.messageID = msg.id
+        this.guildID = msg.guild.id
+      })
+
+    await botLog(`Создан турнир "${this.name}"`, this.guildID, 1, channelT.id)
   }
 
   /**

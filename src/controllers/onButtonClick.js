@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment'
 import { ApplicationModel, EventModel, GuildModel } from '../db/models.js'
-import { getChannel, getGuildMember, sendReport } from '../bot.js'
+import { botLog, getChannel, getGuildMember, sendReport } from '../bot.js'
 import strings from '../config/tournament_message.js'
 
 export default async button => {
@@ -20,7 +20,8 @@ export default async button => {
   if (event === null) {
     sendReport(
       new Error(
-        `Tournament not found. Message ID: ${button.message.id}. Clicker: ${member.displayName} ${button.clicker.id}`
+        `Tournament not found. Message ID: ${button.message.id}. Clicker: ${member.displayName} ${button.clicker.id}`,
+        button.message.guild.id
       )
     )
     return
@@ -36,8 +37,7 @@ export default async button => {
       await button.reply.send('Никто не пришёл на сходку(((', true)
       return
     }
-    const embedApps = new MessageEmbed()
-      .setColor('#e5b53d')
+    const embedApps = new MessageEmbed().setColor('#e5b53d')
     await Promise.all(
       event.members.map(async (evMember, index) => {
         const memberApplication = await ApplicationModel.findOneByID(
@@ -61,7 +61,8 @@ export default async button => {
     if (guildDB === null) {
       sendReport(
         new Error(
-          `Guild not found. Message ID: ${button.message.id}. Clicker: ${member.displayName} ${button.clicker.id}`
+          `Guild not found. Message ID: ${button.message.id}. Clicker: ${member.displayName} ${button.clicker.id}`,
+          button.message.guild.id
         )
       )
       return
@@ -74,11 +75,24 @@ export default async button => {
       return
     }
 
+    const trnmChannel = await getChannel(
+      button.message.guild.id,
+      guildDB.tournament_channel
+    )
+
     // Если заявка уже отправлена
     const eventMember = event.members.find(m => m.id === member.id)
     if (eventMember) {
       event = await event.removeMember(member.id)
       await button.reply.send('Ваша заявка удалена :sob:', true)
+      
+      await botLog(
+        `TRNM: - участник на турнир "${event.name}"`,
+        button.message.guild.id,
+        1,
+        trnmChannel.id,
+        button.clicker.id
+      )
     } else {
       const application = await ApplicationModel.findOne({
         id: button.clicker.id,
@@ -101,13 +115,17 @@ export default async button => {
           'Ваша заявка учтена! Если вы передумали, нажмите на кнопку ещё раз.',
           true
         )
-        .catch(sendReport)
+        .catch(err => sendReport(err, button.message.guild.id))
+      
+      await botLog(
+        `TRNM: + участник на турнир "${event.name}"`,
+        button.message.guild.id,
+        1,
+        trnmChannel.id,
+        button.clicker.id
+      )
     }
 
-    const trnmChannel = await getChannel(
-      button.message.guild.id,
-      guildDB.tournament_channel
-    )
     const trnmMessage = await trnmChannel.messages.fetch(event.message_id)
 
     const datetimeFormatted =
@@ -131,16 +149,21 @@ export default async button => {
             evMember.id
           )
           membersString += `<@${memberApplication.id}>`
-          if(index !== event.members.length - 1) membersString += ', '
+          if (index !== event.members.length - 1) membersString += ', '
         })
       )
 
       // игрок_ || игрокА || игрокОВ
       let a_ov_ = ''
-      if(event.members.length === 0) a_ov_ = ''
-      else if(event.members.length > 1 && event.members.length < 5) a_ov_ = 'А'
-      else if(event.members.length > 4) a_ov_ = 'ОВ'
-      embedTrnm.addField(`:game_die: УЖЕ УЧАСТВУ${event.members.length > 1 ? 'ЮТ' : 'ЕТ'} ${event.members.length} ИГРОК${a_ov_}:game_die:`, membersString)
+      if (event.members.length === 0) a_ov_ = ''
+      else if (event.members.length > 1 && event.members.length < 5) a_ov_ = 'А'
+      else if (event.members.length > 4) a_ov_ = 'ОВ'
+      embedTrnm.addField(
+        `:game_die: УЖЕ УЧАСТВУ${event.members.length > 1 ? 'ЮТ' : 'ЕТ'} ${
+          event.members.length
+        } ИГРОК${a_ov_}:game_die:`,
+        membersString
+      )
     }
 
     await trnmMessage.edit(embedTrnm)

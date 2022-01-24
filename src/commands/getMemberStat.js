@@ -7,16 +7,21 @@ import { MemberModel } from '../db/models.js'
  */
 const main = async message => {
   let member
-  if(message.mentions.members.size > 1) {
-    message.reply('Слишком много упоминаний')
-    return 
+  if (message.mentions.members.size > 1) {
+    await message.reply('Слишком много упоминаний')
+    return
   }
-  if(message.mentions.members.size === 1) member = message.mentions.members.first()
+  if (message.mentions.members.size === 1)
+    member = message.mentions.members.first()
   else member = message.member
   const memberDB = await MemberModel.findMemberByID(member.id, member.guild.id)
   if (memberDB === null) {
-    if(member.id === message.member.id) message.reply('Вы ещё не сыграли ни одной рейтиноговой игры!')
-    else message.reply(`У <@${member.id}> ещё нет ни одной сыгранной рейтинговой игры!`)
+    if (member.id === message.member.id)
+      await message.reply('Вы ещё не сыграли ни одной рейтиноговой игры!')
+    else
+      await message.reply(
+        `У <@${member.id}> ещё нет ни одной сыгранной рейтинговой игры!`
+      )
     return
   }
   const winRate =

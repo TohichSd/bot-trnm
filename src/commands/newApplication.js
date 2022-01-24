@@ -1,7 +1,7 @@
 import cachegoose from 'cachegoose'
-import {sendReport} from '../bot.js'
+import { sendReport } from '../bot.js'
 import Interview from '../controllers/Interview.js'
-import {ApplicationModel, GuildModel} from '../db/models.js'
+import { ApplicationModel, GuildModel } from '../db/models.js'
 import questions from '../config/application_questions.js'
 
 /**
@@ -30,27 +30,35 @@ const main = async message => {
     answers = await interview.start()
   } catch (err) {
     if (err._array === null) {
-      message.reply('Время на заполнение заявки вышло.')
+      await message.reply('Время вышло.').then(m => {
+        setTimeout(() => {
+          m.delete()
+        }, 15000)
+      })
       return
     }
     if (err.message === 'Stop') {
-      message.reply('Отмена')
+      await message.reply('Отменено').then(m => {
+        setTimeout(() => {
+          m.delete()
+        }, 15000)
+      })
       return
     }
-    throw err.stack
+    throw err
   }
   await cachegoose.clearCache(`application/${message.member.id}`)
   await ApplicationModel.updateOne(
-    {id: message.member.id},
+    { id: message.member.id },
     {
       $set: {
         level: answers.level.content,
         micro: answers.micro.content,
         link: answers.link.content,
-        id: message.member.id
-      }
+        id: message.member.id,
+      },
     },
-    {upsert: true}
+    { upsert: true }
   )
     .exec()
     .then(() => {
@@ -58,7 +66,7 @@ const main = async message => {
     })
     .catch(err => {
       message.reply('Ошибка')
-      sendReport(err)
+      sendReport(err, message.guild.id)
     })
 }
 

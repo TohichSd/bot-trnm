@@ -47,7 +47,7 @@ const update = async guildID => {
 
   // Если канал для таблицы не задан
   if (guildDB.score_table_channel === undefined) {
-    sendReport('Score table channel is not defined')
+    sendReport('Score table channel is not defined', guildID)
     return
   }
   const stChannel = await getChannel(guildID, guildDB.score_table_channel)
@@ -60,7 +60,7 @@ const update = async guildID => {
       )
       await message.edit(embedMembers)
     } catch (err) {
-      sendReport(err)
+      sendReport(err, guildID)
       const msg = await stChannel.send(embedMembers)
       await guildDB.setScoreTableMessageID(msg.id)
     }
@@ -69,7 +69,7 @@ const update = async guildID => {
       const msg = await stChannel.send(embedMembers)
       await guildDB.setScoreTableMessageID(msg.id)
     } catch (err) {
-      sendReport(err)
+      sendReport(err, guildID)
     }
   }
 }

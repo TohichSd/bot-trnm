@@ -7,8 +7,10 @@ import { getChannel } from '../bot.js'
 
 const main = async message => {
   const guildDB = await GuildModel.findOneByGuildID(message.guild.id)
-  if(message.channel.id !== guildDB.game_report_channel) {
-    const m = await message.reply(`Эту команду можно использовать в канале <#${guildDB.game_report_channel}>`)
+  if (message.channel.id !== guildDB.game_report_channel) {
+    const m = await message.reply(
+      `Эту команду можно использовать в канале <#${guildDB.game_report_channel}>`
+    )
     setTimeout(() => {
       message.delete()
       m.delete()
@@ -32,23 +34,33 @@ const main = async message => {
     )
 
     // Валидация ответов
-    answers = await interview.start()
+    try {
+      answers = await interview.start()
+    } catch (err) {
+      if (err._array === null) {
+        await message.reply('Время на заполнение заявки вышло.')
+        return
+      }
+      if (err.message === 'Stop') {
+        await message.reply('Отменено')
+        return
+      }
+      throw err
+    }
     if (
       answers.members.mentions.members.size === 3 &&
       answers.winner.mentions.members.size === 1 &&
-      answers.image.attachments.size === 1
+      answers.image.attachments.size === 1 &&
+      !answers.stopped
     ) {
       valid = true
     } else {
-      message
-        .reply(
-          'Неверное заполнение. Пожалуйста, ответьте на вопросы заново или напишите !отмена'
-        )
-        .then(m => {
-          setTimeout(() => {
-            m.delete()
-          }, 10000)
-        })
+      const m = await message.reply(
+        'Неверное заполнение. Пожалуйста, ответьте на вопросы заново или напишите !отмена'
+      )
+      setTimeout(() => {
+        m.delete()
+      }, 10000)
       await answers.image.delete()
       await answers.members.delete()
       await answers.winner.delete()
@@ -61,7 +73,7 @@ const main = async message => {
     answers.members.mentions.members.map(mention => mention.id)
   )
   game_members.push(message.member.id)
-  
+
   // канал для хранения скринов
   const imageChannel = await getChannel(
     message.guild.id,

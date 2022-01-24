@@ -4,10 +4,10 @@ import updateScoreTable from '../controllers/updateScoreTable.js'
 
 const main = async message => {
   const Guild = await GuildModel.findOneByGuildID(message.guild.id)
-    .catch(err => sendReport(err))
+    .catch(err => sendReport(err, message.guild.id))
   if(Guild === null) {
     message.reply('Ошибка')
-    sendReport(`Guild ${message.guild.name} (${message.guild.id}) not found in db`)
+    sendReport(`Guild ${message.guild.name} (${message.guild.id}) not found in db`, message.guild.id)
     return
   }
   const args = message.content.replace(/ +(?= )/g, '').split(' ')

@@ -27,7 +27,7 @@ export default async (reaction, user) => {
   
   // Получен ли сервер
   if (guildDB === null) {
-    sendReport(new Error('Guild not found'))
+    sendReport(new Error('Guild not found'), reaction.message.guild.id)
     return
   }
   
