@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{armellobot/node_modules}" />
-    <file url="PROJECT" libraries="{@types/node, armellobot/node_modules}" />
+    <file url="PROJECT" libraries="{@types/express, @types/express-session, @types/node, @types/pug, armellobot/node_modules}" />
     <includedPredefinedLibrary name="HTTP Response Handler" />
     <includedPredefinedLibrary name="Node.js Core" />
   </component>

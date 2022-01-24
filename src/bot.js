@@ -5,6 +5,7 @@ import commands from './commands/index.js'
 import { GuildModel } from './db/models.js'
 import onGuildCreate from './controllers/onGuildCreate.js'
 import onButtonClick from './controllers/onButtonClick.js'
+import onReactionAdd from './controllers/onReactionAdd.js'
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
@@ -165,7 +166,7 @@ client.on('message', async message => {
   }
 })
 
-// client.on('messageReactionAdd', onReactionAdd)
+client.on('messageReactionAdd', onReactionAdd)
 // client.on('messageReactionRemove', onReactionRemove)
 client.on('guildCreate', onGuildCreate)
 

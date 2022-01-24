@@ -83,7 +83,7 @@ memberSchema.methods.editGamesCount = async function (count) {
 memberSchema.methods.editWinsCount = async function (count) {
   cachegoose.clearCache(`member${this.id}${this.guild_id}`)
   const model = await mongoose.model('Member')
-  model
+  await model
     .updateOne(
       { _id: this._id },
       {
@@ -115,7 +115,7 @@ memberSchema.methods.setGamesCount = async function (count) {
 memberSchema.methods.setWinsCount = async function (count) {
   cachegoose.clearCache(`member${this.id}${this.guild_id}`)
   const model = await mongoose.model('Member')
-  model
+  await model
     .updateOne(
       { _id: this._id },
       { $set: { wins: count, winIndex: await this.calculateWinIndex() } }
