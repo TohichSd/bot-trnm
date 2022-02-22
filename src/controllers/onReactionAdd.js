@@ -8,6 +8,7 @@ import {
   getChannel,
   botLog,
 } from '../bot.js'
+import updateScoreTable from './updateScoreTable.js'
 
 /**
  * @param {module:"discord.js".MessageReaction} reaction
@@ -33,7 +34,7 @@ export default async (reaction, user) => {
     if (gameReportDB.is_accepted) return
 
     await botLog(
-      `RTG: игра ${moment(gameReportDB.datetimeMs).format('DD.MM.YYYY HH:mm')} - победа засчитана`,
+      `Рейтинговая игра ${moment(gameReportDB.datetimeMs).format('DD.MM.YYYY HH:mm')} - победа засчитана`,
       reaction.message.guild.id,
       2,
       guildDB.game_report_channel,
@@ -76,6 +77,7 @@ export default async (reaction, user) => {
       )
     })
     await reportMessage.edit(embedReportEdit)
+    updateScoreTable()
   } catch (e) {
     sendReport(e, reaction.message.guild.id)
   }
