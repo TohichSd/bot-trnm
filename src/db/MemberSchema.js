@@ -58,7 +58,7 @@ memberSchema.statics.getBestGuildMembers = async function (guild_id) {
 }
 
 memberSchema.statics.findMemberByID = async function (id, guild_id) {
-  return this.findOne({ id, guild_id, games: { $gt: 0 } })
+  return this.findOne({ id, guild_id})
     .cache(`member${id}${guild_id}`)
     .exec()
 }

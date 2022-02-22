@@ -31,7 +31,7 @@ const main = async message => {
   const statEmbed = new MessageEmbed()
     .setDescription(`Статистика игрока <@${member.id}>`)
     .setColor('#3e76b2')
-    .addField(':trophy: Победы:', `${memberDB.wins} *${winRate}*`)
+    .addField(':trophy: Победы:', `${memberDB.wins} ${winRate}`)
     .addField(':game_die: Всего игр:', memberDB.games)
   await message.reply(statEmbed)
 }
