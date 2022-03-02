@@ -12,7 +12,7 @@ const main = async message => {
     'Создать новый клан',
   )
   const answers = await interview.start()
-  if (answers.role.roles.size !== 1) {
+  if (answers.role.mentions.roles.size !== 1) {
     await message.reply('Клану должна принадлежать одна роль!')
     return
   }
