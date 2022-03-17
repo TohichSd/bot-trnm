@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noEmitHelpers": true,
+    "moduleResolution": "Node",
+    "outDir": "./dist",
+    "lib": [
+      "es6",
+      "dom",
+      "esnext",
+      "es2020",
+      "es5"
+    ],
+    "baseUrl": "./src"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
