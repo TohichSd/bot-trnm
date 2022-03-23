@@ -19,7 +19,7 @@ class Application {
     @prop({ required: true })
     public micro: string
 
-    public static async findOneByID(this: ReturnModelType<typeof Application>, id: string) {
+    public static async findOneByMemberID(this: ReturnModelType<typeof Application>, id: string) {
         return this.findOne({ id }).exec()
     }
 }

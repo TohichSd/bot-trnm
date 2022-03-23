@@ -1,5 +1,6 @@
-import { Client, Intents, Permissions } from 'discord.js'
+import { Client, Intents, Message, MessageEmbed, Permissions } from 'discord.js'
 import CommandsLoader from './classes/commandsLoader'
+import { CommandError } from './classes/CommandErrors'
 
 export default class Bot {
     private client: Client
@@ -19,7 +20,13 @@ export default class Bot {
         })
     }
 
-    public async init(token: string, username: string = undefined): Promise<void> {
+    /**
+     * Выполняет логин клиента, устанавливает имя бота
+     * @param token
+     * @param commands
+     * @param username
+     */
+    public async init(token: string, commands?: CommandsLoader, username?: string): Promise<void> {
         await new Promise<void>((resolve, reject) => {
             this.client.login(token).catch(e => {
                 reject(e)
@@ -32,10 +39,7 @@ export default class Bot {
 
         if (username) await this.client.user.setUsername(username)
         this.setEvents()
-        this.commands = new CommandsLoader()
-        await this.commands.load(__dirname + '/commands').catch(err => {
-            throw err
-        })
+        this.commands = commands
     }
 
     public createInvite(): string {
@@ -46,36 +50,47 @@ export default class Bot {
     }
 
     private setEvents() {
-        this.client.on('messageCreate', async message => {
-            if (message.author.bot) return
-            if (!message.content.startsWith('!')) return
-            const commandName = message.content.slice(1).split(' ')[0].toLowerCase()
-            const command = await this.commands.get(commandName)
-            if(!command) return
-            try {
-                await command.execute(message)
-            }
-            catch (e) {
-                await message.reply('Ошибка')
-            }
-        })
+        this.client.on('messageCreate', message => this.onMessageCreate(message))
     }
 
-    /*private async registerSlashCommands() {
-        const rest = new REST({ version: '9' }).setToken(this.client.token)
-        const slashCommands = this.commands.getJson()
-        try {
-            await this.client.guilds.fetch()
-            await Promise.all(
-                this.client.guilds.cache.map(async guild => {
-                    // @ts-ignore
-                    await rest.put(Routes.applicationGuildCommands(env.D_CLIENT_ID, guild.id), {
-                        body: slashCommands,
-                    })
-                })
+    private async helpCommand(message: Message): Promise<void> {
+        const embed = new MessageEmbed().setColor('#2fdeff')
+        this.commands.getAllCommands().map(_command => {
+            if (_command.showHelp === false) return
+            embed.addField(
+                _command.syntax ? _command.syntax : '!' + _command.name,
+                _command.description || '\u200b'
             )
-        } catch (err) {
-            console.error(err)
+        })
+        await message.reply({ embeds: [embed] })
+    }
+
+    private async onMessageCreate(message: Message) {
+        if (message.author.bot) return
+        if (!message.content.startsWith('!')) return
+        const commandName = message.content.slice(1).split(' ')[0].toLowerCase()
+        if (['help', 'хелп'].includes(commandName)) {
+            await this.helpCommand(message)
+            return
         }
-    }*/
+        const command = await this.commands.get(commandName)
+        if (!command) return
+        try {
+            await command.execute(message)
+        } catch (e) {
+            if (e instanceof CommandError) {
+                if (e.replyText) {
+                    await message.reply(e.replyText).then(errorMessage => {
+                        if (e.deleteTimeout)
+                            setTimeout(() => {
+                                errorMessage.delete()
+                            }, e.deleteTimeout)
+                    })
+                }
+            } else {
+                await message.reply('Ошибка')
+                throw e
+            }
+        }
+    }
 }
