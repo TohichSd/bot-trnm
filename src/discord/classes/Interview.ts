@@ -1,8 +1,9 @@
 import { GuildMember, Message, TextChannel } from 'discord.js'
-import { CommandError, TimeoutError } from './CommandErrors'
+import { CommandError, TimeoutError } from '../../classes/CommandErrors'
+import Logger from '../../classes/Logger'
 
 type questionOptions = {
-    timeout?: number,
+    timeout?: number
     validator?: (answer: Message) => boolean
 }
 
@@ -25,35 +26,52 @@ export default class Interview {
         this.messagesToDelete = new Array<Message>()
     }
 
-    public async ask(question: string, options: questionOptions = { timeout: 200000 }): Promise<Message> {
+    public async ask(
+        question: string,
+        options: questionOptions = { timeout: 200000 }
+    ): Promise<Message> {
         const qMessage = await this.channel.send(`<@${this.respondent.id}>, ${question}`)
         const filter = message => message.member.id === this.respondent.id
         let answer: Message
         try {
-            answer = await this.channel.awaitMessages({filter, time: options.timeout || 200000, max: 1, errors: ['time']})
+            answer = await this.channel
+                .awaitMessages({
+                    filter,
+                    time: options.timeout || 200000,
+                    max: 1,
+                    errors: ['time'],
+                })
                 .then(collected => collected.first())
             this.messagesToDelete.push(answer)
-        }
-        catch (e) {
-            if (e.message === 'time')
-                throw new TimeoutError(`<@${this.respondent.id}>, время на ответ вышло, попробуйте ещё раз.`)
-            throw e
-        }
-        finally {
+        } catch (e) {
+            throw new TimeoutError(
+                `<@${this.respondent.id}>, время на ответ вышло, попробуйте ещё раз.`
+            )
+        } finally {
             this.messagesToDelete.push(qMessage)
         }
-        if(options.validator)
-            if(!options.validator(answer)) throw new CommandError('Invalid answer', 'Некорректный ответ')
+        if (options.validator)
+            if (!options.validator(answer)) {
+                this.cleanMessages(15000)
+                throw new CommandError('Invalid answer', 'Некорректный ответ. Попробуйте снова.')
+            }
         if (answer.content.includes(this.canselWord)) {
             await answer.react('❌')
             throw new CommandError('Aborted')
         }
         return answer
     }
-    
+
     public cleanMessages(timeout = 0): void {
         setTimeout(() => {
-            this.messagesToDelete.forEach(async message => { await message.delete() })
+            this.messagesToDelete.forEach(async message => {
+                try {
+                    await message.delete()
+                }
+                catch (e) {
+                    Logger.warn(e)
+                }
+            })
         }, timeout)
     }
 }

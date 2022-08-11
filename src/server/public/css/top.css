@@ -1,0 +1,87 @@
+.main-container {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.member-card {
+  /*color: #000000;*/
+  margin: 1% 1%;
+  border: #ffffff 1px solid;
+  background-size: 110%;
+}
+
+.member-card > div {
+  padding: 5px 60px;
+  transition: width .5s;
+}
+
+.member-card .member-info {
+  text-align: center;
+}
+
+.member-card > div h2 {
+  margin-top: 3px;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .member-card > div h3 {
+    font-size: 200%;
+  }
+  .member-card > div h2 {
+    font-size: 200%;
+  }
+  .member-card {
+    display: block;
+    width: 100%;
+  }
+}
+
+.place {
+  color: #fdaf00;
+  border-bottom: 1px solid white;
+}
+
+.top3 {
+  border: #fdaf00 2px solid;
+}
+
+.top3 .place {
+  border-bottom: 1px solid #fdaf00;
+}
+
+.popup h2 {
+  display: inline-block;
+  font-size: 35px;
+  border-bottom: 1px solid white;
+  padding: 0 2% 2% 2%;
+}
+
+.popup .name-wrapper {
+  display: block;
+}
+
+.popup .stat-wrapper {
+  display: inline-block;
+  border: 1px solid white;
+  margin: 1.5% 3%;
+  padding: 2%;
+  border-radius: 5px;
+  background-color: white;
+  color: #606060;
+  font-size: 20px;
+}
+
+.popup .stat-wrapper span {
+  color: #d59200;
+  text-decoration: underline;
+}
+
+.popup #close {
+  font-size: 23px;
+  color: #47c0c3;
+}
+
+.popup #close:hover {
+  text-decoration: underline;
+}

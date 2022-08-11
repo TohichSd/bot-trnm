@@ -1,0 +1,27 @@
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.message-container {
+  min-width: 20%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  color: white;
+  border: 2px solid white;
+  padding: 20px
+}
+
+.message-container p, .message-container .btn {
+  font-size: 20px;
+}
+
+.message-container .btn {
+  padding-left: 30px;
+  padding-right: 30px;
+  color: #c0bfbf;
+}

@@ -1,0 +1,29 @@
+html(lang='ru')
+  head
+    title= guild.name
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/guild.css')
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+  body
+    include includes/header
+    main
+      .main-container
+        a(href='events/')
+          .card.card-zoom.card-dark(style={ 'background-image': 'url(\'/img/ArmelloSwitchRevBanner.webp\')' })
+            div
+              h3 Турниры
+        a(href='clans/')
+          .card.card-zoom.card-dark(style={ 'background-image': 'url(\'/img/clans.webp\')' })
+            div
+              h3 Война кланов
+        a(href='top/')
+          .card.card-zoom.card-dark(style={ 'background-image': 'url(\'/img/crown.webp\')' })
+            div
+              h3 Лучшие игроки
+        //if admin
+        //  a(href='controls/')
+        //    .card.card-zoom.card-dark(style={ 'background-image': 'url(\'/img/14.webp\')' })
+        //      div
+        //        h3 Управление
+    include includes/footer
+  

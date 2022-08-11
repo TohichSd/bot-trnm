@@ -1,0 +1,35 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: flex-start;
+  color: #fff;
+}
+
+.error-container {
+  margin: auto;
+  width: 40%;
+}
+
+.error-container > div {
+  display: inline-block;
+  border: 3px solid white;
+  border-radius: 10px;
+  padding: 3%;
+  background-color: rgba(0, 0, 0, 0.6);
+  font-size: 20px;
+}
+
+.error-container h2, h3 {
+  font-size: 30px;
+}
+
+.error-container a {
+  color: #47c0c3;
+  text-decoration: none;
+}
+
+.error-container a:hover {
+  text-decoration: underline;
+}

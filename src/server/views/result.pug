@@ -1,0 +1,13 @@
+doctype html
+html(lang='ru')
+  head
+    title= title
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/result.css')
+  body
+    main
+      .message-container
+        h2= title
+        p= message
+        a(href=backLink)
+          button.btn.warn Назад

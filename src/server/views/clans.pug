@@ -1,0 +1,28 @@
+html(lang='ru')
+  head
+    title= 'Война кланов | ' + guild.name
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/clans.css')
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+  body
+    span#guildID.d-none= guild.id
+    include includes/header
+    main
+      .content-title
+        h2 ВОЙНА КЛАНОВ
+        a(href='..')
+          button.btn.warn Назад
+        br
+      .main-container
+        .clans-container
+          each clan in clans
+            .card.clan-card.card-dark
+              div
+                h3= clan.name
+                p.points(title='Очки клана')= clan.points + ' о.к.'
+                div.link-wrapper
+                  a(href=`${clan.role_id}/members`) Список участников
+                if admin
+                  div.link-wrapper
+                    a(href=`${clan.role_id}/edit`) Настройки
+    include includes/footer

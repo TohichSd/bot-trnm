@@ -5,7 +5,7 @@ const command: ICommand = {
     name: 'ping',
     aliases: ['пинг'],
     showHelp: false,
-    
+
     async execute(message: Message): Promise<void> {
         await message.reply('Pong!')
     },

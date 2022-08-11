@@ -1,0 +1,22 @@
+.oauth2 {
+  display: inline-block;
+  border: 3px solid white;
+  border-radius: 10px;
+  margin-top: 10%;
+  padding: 3%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+}
+
+.oauth2 button {
+  padding: 2% 8%;
+  background-color: #530ae3;
+  border: 3px solid #530ae3;
+  border-radius: 10px;
+  font-size: 25px;
+  color: white;
+}
+
+.oauth2 button:hover {
+  border: 3px solid white;
+}

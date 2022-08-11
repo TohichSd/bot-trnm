@@ -1,0 +1,17 @@
+html(lang='ru')
+  head
+    title= code
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/error.css')
+    meta(content="width=device-width, initial-scale=1", name="viewport", charset="utf-8")
+  body
+    main
+      .main-container
+        .error-container
+          h2 Тут такое дело...
+          div
+            h3= errorTitle
+            p
+              strong= errorDescription
+            a(href='/') На главную
+    include includes/footer

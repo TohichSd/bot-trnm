@@ -14,7 +14,8 @@
       "es2020",
       "es5"
     ],
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "typeRoots": ["./src/typings", "./node_modules/@types"],
   },
   "exclude": [
     "node_modules"

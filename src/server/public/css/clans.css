@@ -1,0 +1,24 @@
+.clan-card > div {
+  padding-top: 10%;
+  padding-bottom: 10%;
+  display: flex;
+  flex-direction: column;
+}
+
+.clan-card .link-wrapper {
+  padding-bottom: 10px;
+}
+
+.clan-card a {  
+  color: #ffd6d6;
+  text-decoration: none;
+}
+
+.clan-card .points {
+  font-size: 30px;
+  color: #d59200;
+}
+
+.clan-card a:hover {
+  text-decoration: underline;
+}

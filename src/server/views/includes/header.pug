@@ -1,0 +1,14 @@
+header
+  nav
+    if guild
+      p.static= guild.name
+    a(href='/?reset=1').page Сменить сервер
+    if username
+      a.logout(href='/logout') Выйти
+      p.user.static= username
+    else
+      a(href='/login').login Войти
+  div.name
+    h1
+      a(href='/') 🏆 Armello Community RUS 🏆
+  

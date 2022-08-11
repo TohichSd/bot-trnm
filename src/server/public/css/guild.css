@@ -1,0 +1,27 @@
+.card:hover {
+  background-size: 140%;
+  /*border: 2px solid rgba(0,0,0,0.5);*/
+}
+
+.card:hover > div {
+  /*background-color: rgba(0,0,0,0.5);*/
+}
+
+.card > div {
+  /*background-color: rgba(0,0,0,0.3);*/
+  backdrop-filter: none;
+}
+
+.main-container {
+  padding-top: 5%;
+}
+
+@media screen and (max-width: 768px) {
+  .card {
+    width: 90%;
+    font-size: 20px;
+    border: 1px solid white;
+    background-size: 130%;
+    text-decoration: underline;
+  }
+}

@@ -1,4 +1,4 @@
 export interface IBotConfiguration {
-  username?: string
-  avatarUrl?: string
+    username?: string
+    avatarUrl?: string
 }

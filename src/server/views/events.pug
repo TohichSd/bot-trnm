@@ -1,0 +1,49 @@
+html(lang='ru')
+  head
+    title= 'Турниры | ' + guild.name
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/events.css')
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+  body
+    span#guildID.d-none= guild.id
+    include includes/header
+    main
+      .content-title
+        h2 ТУРНИРЫ
+        a(href='..')
+          button.btn.warn Назад
+        br
+      .main-container
+        .new-events
+          if manageEventsPermission
+            .card.event-card.card-dark.pointer#create-event
+              div
+                a(href='create/')
+                  .plus-icon
+          .events-container
+            strong.placeholder#ph-new-events Загрузка...
+
+        h2#old-events Прошедшие турниры
+        p#show-old-events.pointer Показать старые турниры
+        .old-events
+          strong.placeholder.d-none#ph-old-events Загрузка...
+          strong.error#old-events-error Ошибка, попробуйте обновить список.
+    include includes/footer
+      
+    #popup.popup.d-none
+      div
+        div
+          strong.error Ошибка. Повторите попытку.
+          strong.placeholder Загрузка...
+          div.name-wrapper
+            h2#name ...
+          div.description-wrapper
+            p#description ...
+          div.description-wrapper
+            p#datetime ...
+          div.controls-wrapper
+            a#repeat-link(title='Повторить этот турнир')
+              if manageEventsPermission
+                button().btn.action.pointer Повторить
+            button#close.btn.warn.pointer Закрыть
+script(src='/script/events.js', defer=true)

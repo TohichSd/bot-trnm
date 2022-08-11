@@ -1,0 +1,302 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  font-family: OpenSans, sans-serif;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: auto;
+  background-size: 100%;
+  margin: 0;
+}
+
+header {
+  flex: 0 1 auto;
+  color: #fff;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/armello-bkg-2.webp');
+  background-size: 100%;
+  background-position: 0 50%;
+  border-bottom: 2px dashed;
+}
+
+header nav {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.16);
+}
+
+header nav * {
+  padding: 10px 1%;
+  text-decoration: none;
+  color: #fff;
+  margin: 0;
+  font-size: 24px;
+}
+
+header nav .logout:hover {
+  background-color: rgb(220, 31, 31);
+  color: #fff;
+}
+
+header nav .static {
+  background-color: #081218;
+  color: #ffffff;
+}
+
+header > nav a:hover {
+  background-color: #fff;
+  color: #2a2a2a;
+}
+
+header .name {
+  padding: 2% 0 3% 5%;
+  font-size: 25px;
+}
+
+header .name a {
+  color: white;
+  text-decoration: none;
+}
+
+header h1 {
+  filter: none;
+  margin: 0;
+}
+
+.content-title {
+  text-align: center;
+  color: #ffffff;
+  padding: 1% 0;
+}
+
+.content-title * {
+  font-size: 30px;
+  margin: 0;
+}
+
+main {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../img/armello_background_2.webp');
+  background-position: top;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 1 auto;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+.main-container {
+  height: 100%;
+  padding-bottom: 50px;
+}
+
+/*Блюр фона*/
+.main-container, .content-title {
+  /*backdrop-filter: blur(5px);*/
+}
+
+.btn {
+  display: inline-block;
+  margin: 10px 0 0;
+  cursor: pointer;
+  border: 0;
+  border-radius: 7px;
+  color: #363636;
+}
+
+.btn.warn {
+  background-color: rgba(220, 105, 105, 0.5);
+  border-bottom: rgba(220, 105, 105, 0.5) 3px solid;
+  border-left: rgba(220, 105, 105, 0.5) 3px solid;
+}
+
+.btn.action {
+  background-color: rgba(162, 203, 176, 0.5);
+  border-bottom: 3px solid rgb(162, 203, 176);
+  border-left: 3px solid rgba(162, 203, 176, 0.5);
+}
+
+.btn.action-2 {
+  background-color: #A2CBB0;
+  border-bottom: 3px solid rgb(200, 255, 214);
+  border-left: 3px solid rgb(200, 255, 214);
+}
+
+.btn:hover {
+  border: none !important;
+  margin-top: 13px;
+  margin-right: 3px;
+}
+
+/*Карточки*/
+
+.card {
+  display: inline-block;
+  border-radius: 7px;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 1% 2%;
+  transition: background-size .5s;
+  box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  background-size: 115%;
+}
+
+.card > div {
+  border-radius: 7px;
+  padding: 70px 70px;
+  word-wrap: break-word;
+  /*backdrop-filter: blur(2px);*/
+}
+
+.card.card-zoom:hover {
+  background-size: 130%;
+}
+
+.card.card-dark > div {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.card.card-dark:hover > div {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.card h3 {
+  margin: 0;
+  text-decoration: none;
+  font-size: 200%;
+}
+
+footer {
+  width: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/armello-bkg-2.webp');
+  background-position: bottom;
+  background-size: 100%;
+  margin: 0;
+  background-repeat: no-repeat;
+  font-size: 20px;
+  color: white;
+  text-align: center;
+  padding: 2% 0;
+  border-top: 2px dashed;
+}
+
+footer * {
+  display: inline-block;
+  margin: 0 1%;
+}
+
+footer > a {
+  color: white;
+}
+
+.error {
+  color: #cb2000;
+  font-size: 25px;
+  display: none;
+}
+
+.d-none {
+  display: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.placeholder {
+  font-size: 30px;
+  color: #a1a1a1;
+}
+
+input[type="text"] {
+  font-family: inherit; /* 1 */
+  font-size: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  margin: 0; /* 2 */
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  backdrop-filter: blur(2px);
+}
+
+.popup > div {
+  display: inline-block;
+  margin: 15% auto;
+  border: 3px solid #d59200;
+  border-radius: 10px;
+  background-position: center;
+}
+
+.popup > div > div {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  min-height: 20%;
+  color: #e7e7e7;
+  text-align: center;
+  padding-bottom: 4%;
+}
+
+.popup .btn {
+  color: #cccccc;
+  padding: 10px;
+  font-size: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  header {
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 100%;
+  }
+  
+  header nav {
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5);
+  }
+  
+  header nav * {
+    width: 100%;
+    text-decoration: underline;
+  }
+
+  .content-title .btn {
+    display: block;
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  main a {
+    text-decoration: none;
+  }
+
+  .card {
+    box-shadow: none
+  }
+}

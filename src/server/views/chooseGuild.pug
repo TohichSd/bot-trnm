@@ -1,0 +1,23 @@
+doctype html
+html(lang='ru')
+  head
+    title Выберите сервер
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/chooseGuild.css')
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+  body
+    include includes/header
+    main
+      .content-title
+        h2 МОИ СЕРВЕРЫ
+      .main-container
+        each guild, i in guilds
+          if (i % 3 === 0)
+            br
+          a(href=`/guild/${guild.id}/`)
+            .card.card-dark(style={ 'background-image': `url(${guild.iconURL()})` })
+              div
+                h3= guild.name
+        else
+          strong Пока что тут пусто...
+    include includes/footer

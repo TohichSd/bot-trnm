@@ -1,0 +1,39 @@
+html(lang='ru')
+  head
+    title= 'Лучшие игроки | ' + guild.name
+    link(rel='stylesheet', href='/css/common.css')
+    link(rel='stylesheet', href='/css/top.css')
+    meta(content="width=device-width, initial-scale=1", name="viewport")
+  body
+    span#guildID.d-none= guild.id
+    include includes/header
+    main
+      .content-title
+        a(href='..')
+          button.btn.warn Назад
+        br
+        button#refresh.btn.action Обновить
+        br
+        strong.placeholder Загрузка...
+        br
+        strong.error#members-error Ошибка, попробуйте обновить список.
+      .main-container
+    
+    #popup.popup.d-none
+      div
+        div
+          strong.error#member-info-error Ошибка. Повторите попытку.
+          strong.placeholder Загрузка...
+          div.name-wrapper
+            h2#name
+          div.stat-wrapper
+            strong#games
+          div.stat-wrapper
+            strong#wins
+          div.stat-wrapper
+            strong#points
+          p#close.pointer Закрыть
+              
+        
+    include includes/footer
+script(src='/script/top.js', defer=true)

@@ -1,16 +1,33 @@
-import Bot from './discord/bot'
-import { env } from 'process'
+import Bot from './discord/Bot'
+import { env, exit } from 'process'
 import * as mongoose from 'mongoose'
-import CommandsLoader from './discord/classes/commandsLoader'
+import CommandsManager from './discord/classes/CommandsManager'
 import { join } from 'path'
-import { Config } from "./config/BotConfig"
+import { Config } from './config/BotConfig'
+import Logger from './classes/Logger'
+import Server from './server/Server'
 
-(async () => {
+;(async () => {
     await mongoose
         .connect(env.CONNECTION_STRING)
-    
-    const commands = await CommandsLoader.load(join(__dirname, '/discord/commands'))
-    const bot = new Bot()
-    await bot.init(env.D_TOKEN, commands, Config.Bot.username)
-    console.log('Discord client ready')
+        .then(() => {
+            Logger.info('Connected to DB')
+        })
+        .catch(e => {
+            Logger.error(e)
+            exit()
+        })
+    try {
+        const server = Server.getInstance()
+        await server.loadRoutes(join(__dirname, '/server/routes'))
+        server.startHTTP(parseInt(env.PORT))
+
+        const commands = await CommandsManager.load(join(__dirname, '/discord/commands'))
+        const bot = Bot.getInstance()
+        await bot.init(env.D_TOKEN, commands, Config.Bot.username)
+        console.log('Discord client ready')
+    }
+    catch (e) {
+        Logger.error(e)
+    }
 })()

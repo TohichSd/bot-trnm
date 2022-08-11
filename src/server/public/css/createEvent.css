@@ -1,0 +1,70 @@
+.create-event {
+  margin: 1% auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  padding: 1% 2% 2% 2%;
+  width: 550px;
+  color: white;
+  background-color: #505050;
+}
+
+.create-event label {
+  width: 100%;
+}
+
+.create-event input, textarea {
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #bdbdbd;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-size: 22px;
+  width: 100%;
+}
+
+.create-event input {
+  height: 30px;
+  padding: 4px;
+}
+
+.create-event input:focus, textarea:focus, label:hover input, label:hover textarea {
+  color: #212529;
+  background-color: #fff;
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.45);
+}
+
+.create-event textarea {
+  height: 300px;
+  resize: vertical;
+}
+
+.create-event ::placeholder {
+  color: #212529;
+  opacity: 0.4;
+}
+
+.create-event button {
+  font-size: 27px;
+  display: inline-block;
+  margin-top: 5%;
+}
+
+.create-event button:hover {
+  margin-top: calc(5% + 3px);
+}
+
+#image-preview {
+  margin: 20px auto auto auto;
+  max-width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .create-event {
+    width: 100%;
+    border-radius: 0;
+    margin-top: 7%;
+  }
+}

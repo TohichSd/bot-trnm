@@ -1,0 +1,9 @@
+.card {
+  background-size: 100%;
+  border: 1px solid white;
+  font-size: 15px;
+}
+
+.card > div {
+  padding: 50px 30px;
+}

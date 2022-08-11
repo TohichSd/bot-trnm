@@ -53,3 +53,4 @@ dist
 .pnp.*
 .eslintrc.json
 .prettierrc.json
+/profiling/
