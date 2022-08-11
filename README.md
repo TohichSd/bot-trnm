@@ -7,4 +7,3 @@
 
 Applications contain information about the steam account, age, level in the game, as well as the presence of a microphone
 
-<a href="https://www.openode.io/">Cloud hosted on opeNode.io</a>
