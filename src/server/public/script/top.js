@@ -62,7 +62,7 @@ function showPopup(id) {
             return
         }
         container.parentElement.style.backgroundImage = `url(/img/cards/${Math.floor(
-            Math.random() * 50
+            Math.random() * 10
         )}.png)`
         popupName.innerText = memberData.name
         popupGames.innerHTML = 'Сыграл(а) <span>' + memberData.games + '</span> игр'
