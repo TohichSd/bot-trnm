@@ -30,12 +30,14 @@ const command: ICommand = {
             )
         if (args[2].startsWith('+') || args[2].startsWith('-')) {
             await memberData.editPoints(memberData.points + points)
-            await clan[0].updateOne({ $set: { points: clan[0].points + points } })
+            if (clan.length == 1)
+                await clan[0].updateOne({ $set: { points: clan[0].points + points } })
         } else {
             await memberData.editPoints(points)
-            await clan[0].updateOne({
-                $set: { points: clan[0].points + points - memberData.points },
-            })
+            if (clan.length == 1)
+                await clan[0].updateOne({
+                    $set: { points: clan[0].points + points - memberData.points },
+                })
         }
         await message.react('✅')
     },

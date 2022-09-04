@@ -3,7 +3,7 @@ import { IBotConfiguration } from './ConfigTypes'
 export namespace Config {
     export const BotConfig: IBotConfiguration = {
         username: 'test-bot',
-        prefix: '!!'
+        prefix: '!'
     }
 
     export enum Permissions {
