@@ -16,6 +16,9 @@ export class Clan {
 
     @prop({ required: true, default: 0 })
     public points: number
+    
+    @prop()
+    public imageUrl: string
 
     @prop()
     public deleted?: boolean

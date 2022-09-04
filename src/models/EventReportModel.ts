@@ -1,4 +1,4 @@
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import { getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose'
 
 @modelOptions({ schemaOptions: { collection: 'event_reports' } })
 export class EventReport {
@@ -11,11 +11,17 @@ export class EventReport {
     @prop({ required: true })
     public moderator: string
 
-    @prop({ required: true })
+    @prop({ required: true})
     public members: string[]
 
     @prop({ required: true })
     public winner: string
+    
+    @prop({ required: true })
+    public points: number[]
+
+    @prop({ required: true, ref: () => Event })
+    public event: Ref<Event>
 }
 
 export const EventReportModel = getModelForClass(EventReport)

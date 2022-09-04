@@ -66,6 +66,7 @@ router.get('/api/:guild_id/events/:event_id', async (req, res, next) => {
         description: event.description,
         imageUrl: event.imageUrl,
         datetimeMs: event.datetimeMs,
+        message_id: event.message_id,
         _id: event._id,
         datetime,
     })

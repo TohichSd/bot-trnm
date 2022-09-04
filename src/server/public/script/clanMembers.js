@@ -1,5 +1,6 @@
 const membersContainer = document.querySelector('.main-container')
 const guildID = document.querySelector('#guildID').innerText
+const roleID = document.querySelector('#roleID').innerText
 const ph = document.querySelector('.placeholder')
 const memberError = document.querySelector('#members-error')
 const memberInfoError = document.querySelector('#member-info-error')
@@ -8,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => updateMembers())
 
 function updateMembers() {
     memberError.style.display = 'none'
-    fetch(`/api/${guildID}/top`).then(async res => {
+    fetch(`/api/${guildID}/clans/${roleID}/members`).then(async res => {
         res = await res.json()
         ph.style.display = 'none'
         if (res.error) {

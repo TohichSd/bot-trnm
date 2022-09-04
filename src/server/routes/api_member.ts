@@ -18,6 +18,7 @@ router.get('/api/:guild_id/member/:member_id', async (req, res) => {
         wins: memberData.wins,
         points: memberData.points,
         name: memberDiscordData.displayName,
+        imageUrl: memberDiscordData.displayAvatarURL()
     })
 })
 

@@ -58,7 +58,7 @@ const command: ICommand = {
     description: 'Показать заявку участника',
 
     async execute(message: Message) {
-        const args = message.content.split(' ')
+        const args = message.content.replace(/ +(?= )/g, '').split(' ')
 
         // Заполнить заявку
         if (args[1] == 'создать') {

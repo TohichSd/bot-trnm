@@ -13,18 +13,21 @@ class Popup {
         this.element = element
     }
 
-    setEventInfo(name, description, datetime, datetimeMs, imageUrl) {
+    setEventInfo(name, description, datetime, datetimeMs, imageUrl, messageID) {
         this.element.querySelector('#name').innerText = name
         this.element.querySelector('#description').innerText = description
         this.element.querySelector('#datetime').innerText = datetime
         this.element.querySelector('.placeholder').classList.add('d-none')
         this.element.firstChild.style.backgroundImage = `url('${imageUrl}')`
-        const url = new URL('create/', document.baseURI)
-        url.searchParams.set('name', encodeURIComponent(name))
-        url.searchParams.set('description', encodeURIComponent(description))
-        url.searchParams.set('datetimeMs', encodeURIComponent(datetimeMs))
-        url.searchParams.set('imageUrl', encodeURIComponent(imageUrl))
-        this.element.querySelector('#repeat-link').setAttribute('href', url.toString())
+        const urlRepeat = new URL('create/', document.baseURI)
+        urlRepeat.searchParams.set('name', encodeURIComponent(name))
+        urlRepeat.searchParams.set('description', encodeURIComponent(description))
+        urlRepeat.searchParams.set('datetimeMs', encodeURIComponent(datetimeMs))
+        urlRepeat.searchParams.set('imageUrl', encodeURIComponent(imageUrl))
+        this.element.querySelector('#repeat-link').setAttribute('href', urlRepeat.toString())
+
+        const urlEnd = new URL(`${messageID}/end/`, document.baseURI)
+        this.element.querySelector('#end-link').setAttribute('href', urlEnd.toString())
     }
 
     show() {
@@ -55,7 +58,8 @@ function showPopup(id) {
             event.description,
             event.datetime,
             event.datetimeMs,
-            event.imageUrl
+            event.imageUrl,
+            event.message_id
         )
     })
 }

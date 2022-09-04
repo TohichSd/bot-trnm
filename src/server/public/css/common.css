@@ -120,10 +120,16 @@ main {
   color: #363636;
 }
 
-.btn.warn {
+.btn.danger {
   background-color: rgba(220, 105, 105, 0.5);
   border-bottom: rgba(220, 105, 105, 0.5) 3px solid;
   border-left: rgba(220, 105, 105, 0.5) 3px solid;
+}
+
+.btn.warn {
+  background-color: rgba(231, 226, 102, 0.5);
+  border-bottom: rgba(220, 205, 105, 0.5) 3px solid;
+  border-left: rgba(220, 210, 105, 0.5) 3px solid;
 }
 
 .btn.action {

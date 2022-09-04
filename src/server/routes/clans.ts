@@ -11,7 +11,6 @@ router.get('/guild/:guild_id/clans', async (req, res) => {
     const discordGuildData = await Bot.getInstance().getGuild(req.params.guild_id)
     res.render('clans', {
         guild,
-        admin: true,
         clans: await Promise.all(
             clans.map(async clan => {
                 if (discordGuildData.roles.cache.has(clan.role_id))
@@ -27,11 +26,19 @@ router.get('/guild/:guild_id/clans', async (req, res) => {
                     name: roleName,
                     points: clan.points,
                     role_id: clan.role_id,
+                    imageUrl: clan.imageUrl,
                 }
             })
         ),
         username: req.session.username,
     })
+})
+
+router.get('/guild/:guild_id/clans/:role_id/members', async (req, res) => {
+    const guild = await Bot.getInstance().getGuild(req.params.guild_id)
+    const discordGuildData = await Bot.getInstance().getGuild(req.params.guild_id)
+    const roleName = discordGuildData.roles.cache.get(req.params.role_id).name
+    res.render('clanMembers', { clan: { name: roleName, role_id: req.params.role_id }, guild })
 })
 
 export default router

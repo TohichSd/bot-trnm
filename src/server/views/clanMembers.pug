@@ -1,11 +1,12 @@
 html(lang='ru')
   head
-    title= 'Лучшие игроки | ' + guild.name
+    title= 'Участники клана ' + clan.name + ' | ' + guild.name
     link(rel='stylesheet', href='/css/common.css')
     link(rel='stylesheet', href='/css/top.css')
     meta(content="width=device-width, initial-scale=1", name="viewport")
   body
     span#guildID.d-none= guild.id
+    span#roleID.d-none= clan.role_id
     include includes/header
     main
       .content-title
@@ -18,7 +19,7 @@ html(lang='ru')
         br
         strong.error#members-error Ошибка, попробуйте обновить список.
       .main-container
-    
+
     #popup.popup.d-none
       div
         div
@@ -33,7 +34,7 @@ html(lang='ru')
           div.stat-wrapper
             strong#points
           p#close.pointer Закрыть
-              
-        
+
+
     include includes/footer
-script(src='/script/top.js', defer=true)
+script(src='/script/clanMembers.js', defer=true)

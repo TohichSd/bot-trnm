@@ -28,6 +28,9 @@ class GuildChannels {
     
     @prop()
     public notifications_channel?: string
+    
+    @prop()
+    public event_voice_ctg_channel: string
 }
 
 

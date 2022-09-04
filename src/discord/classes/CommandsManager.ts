@@ -3,6 +3,10 @@ import ICommand from './ICommand'
 import { Message, MessageEmbed } from 'discord.js'
 import { CommandError } from '../../classes/CommandErrors'
 import logger from '../../classes/Logger'
+import Bot from '../Bot'
+import { Config } from '../../config/BotConfig'
+import Permissions = Config.Permissions
+import BotConfig = Config.BotConfig
 
 export default class CommandsManager {
     private readonly commands: ICommand[]
@@ -22,7 +26,6 @@ export default class CommandsManager {
                 const cmd = await import(`${path}/${file}`)
                 if (typeof cmd.default !== 'object')
                     throw new Error('Invalid command file default export type (' + file + ')')
-                if (cmd.default.disabled) return
                 return cmd.default
             })
         )
@@ -31,6 +34,7 @@ export default class CommandsManager {
 
     public get(name: string): ICommand {
         const command = this.commands.find(_command => {
+            if (_command.disabled) return false
             if (_command.name === name) return true
             else if (_command.aliases) if (_command.aliases.includes(name)) return true
             return false
@@ -47,7 +51,7 @@ export default class CommandsManager {
      * Обрабатывает сообщения, если сообщение является командой, вызывает её.
      */
     public async handleMessage(message: Message): Promise<void> {
-        const prefix = '!!'
+        const prefix = BotConfig.prefix
         
         if (message.author.bot) return
         if (!message.content.startsWith(prefix)) return
@@ -58,6 +62,15 @@ export default class CommandsManager {
         }
         const command = await this.get(commandName)
         if (!command) return
+        const permissions = await Bot.getInstance().getMemberPermissions(message.guild.id, message.member.id)
+        
+        if (command.permissions) {
+            const tf = command.permissions.map(p => {
+                return permissions.includes(p)
+            })
+            if (!permissions.includes(Permissions.ADMIN) && tf.includes(false)) return
+        }
+        
         try {
             logger.info(`${message.author.tag} used command "${message.content}"`)
             await command.execute(message)

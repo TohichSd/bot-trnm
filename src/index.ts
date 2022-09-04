@@ -24,7 +24,7 @@ import Server from './server/Server'
 
         const commands = await CommandsManager.load(join(__dirname, '/discord/commands'))
         const bot = Bot.getInstance()
-        await bot.init(env.D_TOKEN, commands, Config.Bot.username)
+        await bot.init(env.D_TOKEN, commands, Config.BotConfig.username)
         console.log('Discord client ready')
     }
     catch (e) {

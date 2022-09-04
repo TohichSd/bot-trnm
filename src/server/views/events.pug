@@ -11,7 +11,7 @@ html(lang='ru')
       .content-title
         h2 ТУРНИРЫ
         a(href='..')
-          button.btn.warn Назад
+          button.btn.danger Назад
         br
       .main-container
         .new-events
@@ -29,7 +29,7 @@ html(lang='ru')
           strong.placeholder.d-none#ph-old-events Загрузка...
           strong.error#old-events-error Ошибка, попробуйте обновить список.
     include includes/footer
-      
+
     #popup.popup.d-none
       div
         div
@@ -42,8 +42,9 @@ html(lang='ru')
           div.description-wrapper
             p#datetime ...
           div.controls-wrapper
-            a#repeat-link(title='Повторить этот турнир')
-              if manageEventsPermission
+            if manageEventsPermission
+              a#repeat-link(title='Повторить этот турнир')
                 button().btn.action.pointer Повторить
-            button#close.btn.warn.pointer Закрыть
+
+            button#close.btn.danger.pointer Закрыть
 script(src='/script/events.js', defer=true)
