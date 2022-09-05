@@ -59,13 +59,10 @@ const command: ICommand = {
             const embedClans = new MessageEmbed().setTitle('Список кланов').setColor('#42b9d2')
             await Promise.all(
                 clans.map(async clan => {
-                    const boolMembers = await Promise.all(
-                        message.guild.members.cache.map(async m => {
-                            if (m.partial) await m.fetch()
-                            return m.roles.cache.has(clan.role_id)
-                        })
-                    )
-                    const membersCount = boolMembers.filter(m => m).length
+                    await message.guild.members.fetch()
+                    
+                    const clanRole = await message.guild.roles.fetch(clan.role_id)
+                    const membersCount = clanRole.members.size
                     embedClans.addField(
                         '\u200b',
                         `<@&${clan.role_id}>\n${membersCount} участников\n${clan.points} очков`,

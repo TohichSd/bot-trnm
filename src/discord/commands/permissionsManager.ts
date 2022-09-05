@@ -75,7 +75,7 @@ const printMemberRoleInfo = async (message: Message) => {
     const translate = {
         admin: 'Админ (все разрешения)',
         accept_game_reports: 'Принимать рейтинговые игры',
-        access_dashboard: 'Доступ к панели упрвления',
+        access_dashboard: 'Доступ к панели управления',
         manage_clan_wars: 'Управлять клановыми войнами',
     }
 
