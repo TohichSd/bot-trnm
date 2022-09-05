@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     }
     const guilds = await Bot.getInstance().getAllGuilds()
     if (guilds.length === 1) {
-        res.redirect('/' + guilds[0].id + '/')
+        res.redirect('/guild/' + guilds[0].id + '/')
         return
     }
     res.render('chooseGuild', { guilds, username: req.session.username })
