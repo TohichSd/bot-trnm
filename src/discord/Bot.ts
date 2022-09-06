@@ -5,6 +5,7 @@ import {
     Guild,
     GuildMember,
     Intents,
+    MessageReaction,
     Permissions,
     User,
 } from 'discord.js'
@@ -13,12 +14,15 @@ import logger from '../classes/Logger'
 import GameEventsManager from './classes/GameEventsManager'
 import { MemberModel } from '../models/MemberModel'
 import { ClanModel } from '../models/ClanModel'
+import ReportsManager from './classes/ReportsManager'
+import Logger from '../classes/Logger'
 
 export default class Bot {
     private static instance
     private client: Client
     private commandsManager: CommandsManager
     private eventsManager: GameEventsManager
+    private reportsManager: ReportsManager
 
     private constructor() {
         this.client = new Client({
@@ -30,6 +34,7 @@ export default class Bot {
                 Intents.FLAGS.GUILD_MESSAGE_TYPING,
                 Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
                 Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
             ]),
         })
     }
@@ -64,6 +69,7 @@ export default class Bot {
         if (username) await this.client.user.setUsername(username)
         this.commandsManager = commandsManager
         this.eventsManager = new GameEventsManager()
+        this.reportsManager = new ReportsManager()
         this.setEvents()
     }
 
@@ -71,7 +77,20 @@ export default class Bot {
         this.client.on('messageCreate', message => this.commandsManager.handleMessage(message))
         this.client.on('interactionCreate', async interaction => {
             if (interaction instanceof ButtonInteraction)
-                await this.eventsManager.onEventButtonClick(interaction)
+                try {
+                    await this.eventsManager.onEventButtonClick(interaction)
+                } catch (e) {
+                    Logger.error(e)
+                }
+        })
+        this.client.on('messageReactionAdd', async reaction => {
+            if (reaction.emoji.name != '✅') return
+            if (reaction.partial) reaction = await reaction.fetch()
+            try {
+                await this.reportsManager.onReactionAdd(reaction as MessageReaction)
+            } catch (e) {
+                Logger.error(e)
+            }
         })
     }
 
@@ -145,7 +164,7 @@ export default class Bot {
         if (!member.permissions) return []
         return member.permissions
     }
-    
+
     public async getMemberClanRoleID(guildID: string, memberID: string): Promise<string> {
         const discordMemberData = await Bot.getInstance().getMemberByID(guildID, memberID)
         if (!discordMemberData) throw new Error('Discord member data unavailable')
@@ -156,7 +175,7 @@ export default class Bot {
         if (!memberClanRoles) return undefined
         return memberClanRoles[0]
     }
-    
+
     public numberToEmojis(num: number): string {
         const digitStrings = {
             0: 'zero',
@@ -171,7 +190,7 @@ export default class Bot {
             9: 'nine',
             '-': 'heavy_minus_sign',
         }
-        
+
         return num
             .toString()
             .split('')

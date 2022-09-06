@@ -19,6 +19,9 @@ export class EventReport {
     
     @prop({ required: true })
     public points: number[]
+    
+    @prop()
+    public is_accepted: boolean
 
     @prop({ required: true, ref: () => Event })
     public event: Ref<Event>

@@ -15,6 +15,9 @@ export class GameReport {
 
     @prop({ required: true })
     public datetimeMs: number
+
+    @prop()
+    public is_accepted: boolean
 }
 
 export const GameReportModel = getModelForClass(GameReport, {

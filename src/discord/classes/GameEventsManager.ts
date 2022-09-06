@@ -30,17 +30,11 @@ type EventEditOptions = {
 }
 
 export default class GameEventsManager {
-    private bot: Bot
-
-    constructor() {
-        this.bot = Bot.getInstance()
-    }
-
     public async createEvent(guildID: string, options: EventOptions): Promise<void> {
         const guildData = await GuildModel.getByGuildID(guildID)
         if (!guildData) throw new Error('Guild not found')
 
-        const discordGuild = await this.bot.getGuild(guildID)
+        const discordGuild = await Bot.getInstance().getGuild(guildID)
         await discordGuild.channels.fetch(guildData.channels.tournament_channel)
         if (!discordGuild) throw new Error('Discord guild data unavailable')
 

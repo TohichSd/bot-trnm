@@ -1,8 +1,9 @@
 import { Message } from 'discord.js'
 import ICommand from '../classes/ICommand'
-import { CommandError, CommandSyntaxError } from '../../classes/CommandErrors'
+import { CommandSyntaxError } from '../../classes/CommandErrors'
 import { MemberModel } from '../../models/MemberModel'
 import { ClanModel } from '../../models/ClanModel'
+import Bot from '../Bot'
 
 const command: ICommand = {
     name: 'очки',
@@ -20,24 +21,19 @@ const command: ICommand = {
             message.mentions.members.first().id
         )
         if (message.member.partial) await message.member.fetch()
-        const clans = await ClanModel.getAllGuildClans(message.guild.id)
-        const memberRoles = message.member.roles.cache.map(role => role.id)
-        const clan = clans.filter(c => memberRoles.includes(c.role_id))
-        if (clan.length > 1)
-            throw new CommandError(
-                'Too many clans for one member',
-                'Ошибка: У участника должна быть только одна клановая роль!'
-            )
+        const memberClanRoleID = await Bot.getInstance().getMemberClanRoleID(
+            message.guild.id,
+            memberData.id
+        )
+        const clanData = await ClanModel.getClanByRoleID(memberClanRoleID)
         if (args[2].startsWith('+') || args[2].startsWith('-')) {
             await memberData.editPoints(memberData.points + points)
-            if (clan.length == 1)
-                await clan[0].updateOne({ $set: { points: clan[0].points + points } })
+            await clanData.updateOne({ $set: { points: clanData.points + points } })
         } else {
             await memberData.editPoints(points)
-            if (clan.length == 1)
-                await clan[0].updateOne({
-                    $set: { points: clan[0].points + points - memberData.points },
-                })
+            await clanData.updateOne({
+                $set: { points: clanData.points + points - memberData.points },
+            })
         }
         await message.react('✅')
     },
