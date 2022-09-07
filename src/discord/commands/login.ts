@@ -25,7 +25,7 @@ const command: ICommand = {
             await channel.send(
                 'Вот ваша ссылка для входа:\n' +
                     `${new URL('/login', env.SELF_URL)}?token=${accessToken.token}` +
-                    '\nОна действует 24 часа'
+                    '\nОна действует 24 часа. При получении новой ссылки все старые перестанут работать.'
             )
         } catch (e) {
             throw new CommandError(
