@@ -33,6 +33,7 @@ const command: ICommand = {
                 'Не получилось отправить ссылку в ЛС. Попробуйте ещё раз.'
             )
         }
+        await message.react('✅')
     },
 }
 
