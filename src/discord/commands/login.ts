@@ -6,7 +6,6 @@ import Permissions = Config.Permissions
 import { AccessTokenModel } from '../../models/AccessTokenModel'
 import { env } from 'process'
 import { CommandError } from '../../classes/CommandErrors'
-import * as path from 'path'
 
 const command: ICommand = {
     name: 'войти',
@@ -25,7 +24,7 @@ const command: ICommand = {
             const channel = await message.member.createDM()
             await channel.send(
                 'Вот ваша ссылка для входа:\n' +
-                    `${path.join(env.SELF_URL, '/login')}?token=${accessToken.token}` +
+                    `${new URL('/login', env.SELF_URL)}?token=${accessToken.token}` +
                     '\nОна действует 24 часа'
             )
         } catch (e) {
