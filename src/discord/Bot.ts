@@ -83,11 +83,12 @@ export default class Bot {
                     Logger.error(e)
                 }
         })
-        this.client.on('messageReactionAdd', async reaction => {
+        this.client.on('messageReactionAdd', async (reaction, user) => {
             if (reaction.emoji.name != '✅') return
             if (reaction.partial) reaction = await reaction.fetch()
+            if (user.partial) user = await user.fetch()
             try {
-                await this.reportsManager.onReactionAdd(reaction as MessageReaction)
+                await this.reportsManager.onReactionAdd(reaction as MessageReaction, user as User)
             } catch (e) {
                 Logger.error(e)
             }

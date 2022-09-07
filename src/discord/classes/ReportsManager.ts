@@ -1,15 +1,27 @@
-import { MessageReaction } from 'discord.js'
+import { MessageReaction, User } from 'discord.js'
 import { GameReportModel } from '../../models/GameReportModel'
 import { EventReportModel } from '../../models/EventReportModel'
 import { MemberModel } from '../../models/MemberModel'
 import { Config } from '../../config/BotConfig'
 import POINTS = Config.POINTS
+import Permissions = Config.Permissions
 import Bot from '../Bot'
 import { ClanModel } from '../../models/ClanModel'
 
 export default class ReportsManager {
-    public async onReactionAdd(reaction: MessageReaction): Promise<void> {
+    public async onReactionAdd(reaction: MessageReaction, user: User): Promise<void> {
         if (reaction.emoji.name != '✅') return
+
+        const permissions = await Bot.getInstance().getMemberPermissions(
+            reaction.message.guild.id,
+            user.id
+        )
+        if (
+            !permissions.includes(Permissions.ADMIN) &&
+            !permissions.includes(Permissions.ACCEPT_GAME_REPORTS)
+        )
+            return
+
         const gameReportsCount = await GameReportModel.countDocuments({
             message_id: reaction.message.id,
             is_accepted: { $ne: true },
