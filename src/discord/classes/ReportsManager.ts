@@ -25,11 +25,14 @@ export default class ReportsManager {
                     const clanData = await ClanModel.getClanByRoleID(memberClanRoleID)
                     if (id != gameReport.winner) {
                         await member.editPoints(POINTS.R_GAME)
-                        if (clanData) await clanData.updateOne({ $inc: { points: POINTS.R_GAME } })
+                        if (clanData)
+                            await clanData.updateOne({ $inc: { points: POINTS.R_GAME, games: 1 } })
                     } else {
                         await member.editPoints(POINTS.R_GAME_WIN)
                         if (clanData)
-                            await clanData.updateOne({ $inc: { points: POINTS.R_GAME_WIN } })
+                            await clanData.updateOne({
+                                $inc: { points: POINTS.R_GAME_WIN, games: 1, wins: 1 },
+                            })
                     }
                 })
             )
