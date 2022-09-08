@@ -44,7 +44,7 @@ export default class Server {
                 useDefaults: true,
                 directives: {
                     'default-src': "'self'",
-                    'img-src': ["'self'", 'cdn.discordapp.com'],
+                    'img-src': ["'self'", 'cdn.discordapp.com', 'media.discordapp.com'],
                     'upgrade-insecure-requests': null,
                 },
             })

@@ -15,8 +15,8 @@ export namespace Config {
     }
     
     export const POINTS = {
-        R_GAME: 10,
-        R_GAME_WIN: 30,
+        R_GAME: 0,
+        R_GAME_WIN: 0,
         E_GAME: 20,
         E_GAME_WIN: 70
     }
