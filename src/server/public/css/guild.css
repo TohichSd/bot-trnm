@@ -19,9 +19,12 @@
 @media screen and (max-width: 768px) {
   .card {
     width: 90%;
-    font-size: 20px;
+    font-size: 15px;
     border: 1px solid white;
     background-size: 130%;
-    text-decoration: underline;
+  }
+  
+  .card > div {
+    padding: 50px;
   }
 }
