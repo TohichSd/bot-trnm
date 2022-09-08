@@ -3,10 +3,8 @@ import { GameReportModel } from '../../models/GameReportModel'
 import { EventReportModel } from '../../models/EventReportModel'
 import { MemberModel } from '../../models/MemberModel'
 import { Config } from '../../config/BotConfig'
-import POINTS = Config.POINTS
 import Permissions = Config.Permissions
 import Bot from '../Bot'
-import { ClanModel } from '../../models/ClanModel'
 
 export default class ReportsManager {
     public async onReactionAdd(reaction: MessageReaction, user: User): Promise<void> {
@@ -47,23 +45,12 @@ export default class ReportsManager {
         await Promise.all(
             gameReport.members.map(async id => {
                 const member = await MemberModel.getMemberByID(reaction.message.guild.id, id)
-                const memberClanRoleID = await Bot.getInstance().getMemberClanRoleID(
-                    reaction.message.guild.id,
-                    id
-                )
-                const clanData = await ClanModel.getClanByRoleID(memberClanRoleID)
                 if (id != gameReport.winner) {
-                    await member.updateOne({ $inc: { points: POINTS.R_GAME, games: 1 } })
-                    if (clanData)
-                        await clanData.updateOne({ $inc: { points: POINTS.R_GAME, games: 1 } })
+                    await member.updateOne({ $inc: { games: 1 } })
                 } else {
                     await member.updateOne({
-                        $inc: { points: POINTS.R_GAME_WIN, games: 1, wins: 1 },
+                        $inc: { games: 1, wins: 1 },
                     })
-                    if (clanData)
-                        await clanData.updateOne({
-                            $inc: { points: POINTS.R_GAME_WIN },
-                        })
                 }
             })
         )
@@ -81,13 +68,9 @@ export default class ReportsManager {
         await Promise.all(
             eventReport.members.map(async (id, i) => {
                 const member = await MemberModel.getMemberByID(reaction.message.guild.id, id)
-                const memberClanRoleID = await Bot.getInstance().getMemberClanRoleID(
-                    reaction.message.guild.id,
-                    id
-                )
-                const clanData = await ClanModel.getClanByRoleID(memberClanRoleID)
-                if (clanData) await clanData.updateOne({ $inc: { points: eventReport.points[i] } })
-                await member.editPoints(eventReport.points[i])
+                await Bot.getInstance()
+                    .getPointsManager()
+                    .editMemberPoints(reaction.message.guild.id, member.id, eventReport.points[i])
             })
         )
         await eventReport.updateOne({ is_accepted: true })

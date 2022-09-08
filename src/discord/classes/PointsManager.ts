@@ -21,17 +21,15 @@ export default class PointsManager {
         points: number
     ): Promise<void> {
         const memberClanRoleID = await Bot.getInstance().getMemberClanRoleID(guildID, memberID)
-        if (!memberClanRoleID) return
-        await this.editClanPoints(memberClanRoleID, points)
+        if (memberClanRoleID) await this.editClanPoints(memberClanRoleID, points)
         const memberData = await MemberModel.getMemberByID(guildID, memberID)
         await memberData.updateOne({ $inc: { points } })
     }
 
     public async setMemberPoints(guildID: string, memberID: string, points: number): Promise<void> {
         const memberClanRoleID = await Bot.getInstance().getMemberClanRoleID(guildID, memberID)
-        if (!memberClanRoleID) return
-        await this.setClanPoints(memberClanRoleID, points)
         const memberData = await MemberModel.getMemberByID(guildID, memberID)
+        if (memberClanRoleID) await this.editClanPoints(memberClanRoleID, points - memberData.points)
         await memberData.updateOne({ $set: { points } })
     }
 }

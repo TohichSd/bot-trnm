@@ -16,6 +16,7 @@ import { MemberModel } from '../models/MemberModel'
 import { ClanModel } from '../models/ClanModel'
 import ReportsManager from './classes/ReportsManager'
 import Logger from '../classes/Logger'
+import PointsManager from './classes/PointsManager'
 
 export default class Bot {
     private static instance
@@ -23,6 +24,7 @@ export default class Bot {
     private commandsManager: CommandsManager
     private eventsManager: GameEventsManager
     private reportsManager: ReportsManager
+    private pointsManager: PointsManager
 
     private constructor() {
         this.client = new Client({
@@ -157,6 +159,10 @@ export default class Bot {
 
     public getEventsManager(): GameEventsManager {
         return this.eventsManager
+    }
+    
+    public getPointsManager(): PointsManager {
+        return this.pointsManager
     }
 
     public async getMemberPermissions(guildID: string, memberID: string): Promise<string[]> {
