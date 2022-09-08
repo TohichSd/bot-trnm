@@ -6,9 +6,14 @@
   background-size: 120%;
 }
 
+.clan-  card.card-dark > div {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .clan-card .link-wrapper {
   padding-bottom: 10px;
 }
+
 
 .clan-card a {  
   color: #ffd6d6;
