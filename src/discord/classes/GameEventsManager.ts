@@ -1,6 +1,7 @@
 import { GuildModel } from '../../models/GuildModel'
 import {
     ButtonInteraction,
+    ColorResolvable,
     GuildMember,
     MessageActionRow,
     MessageButton,
@@ -43,22 +44,18 @@ export default class GameEventsManager {
             guildData.channels.tournament_channel
         )) as TextChannel
         if (!eventsChannel) throw new Error('Discord channel data unavailable')
-
-        const datetime = moment(options.datetimeMs)
-
+        
         // Сообщение с турниром
-        const eventMessage = new MessageEmbed()
-            .setColor(randomColor({ hue: 'green', luminosity: 'light' }))
-            .setTitle(`:fire: ${options.name} :fire:`)
-            .setDescription(options.description)
-            .addField(
-                '\u200b',
-                `:clock1: Турнир пройдёт **${datetime
-                    .locale('ru')
-                    .format('ll')}** в **${datetime.format('HH:mm')}** по мск :clock1:`
-            )
-            .addField('Уже участвуют:', 'Участников пока нет...')
-            .setImage(options.imageUrl)
+        const embedEvent = this.createEmbedEventMessage(
+            options.name,
+            options.description,
+            options.imageUrl,
+            options.datetimeMs,
+            randomColor({
+                hue: 'green',
+                luminosity: 'light',
+            })
+        )
 
         const row = new MessageActionRow().addComponents(
             new MessageButton()
@@ -67,7 +64,7 @@ export default class GameEventsManager {
                 .setStyle('SUCCESS')
         )
 
-        const sentMessage = await eventsChannel.send({ embeds: [eventMessage], components: [row] })
+        const sentMessage = await eventsChannel.send({ embeds: [embedEvent], components: [row] })
 
         const newEvent = new EventModel({
             guild_id: guildID,
@@ -89,7 +86,7 @@ export default class GameEventsManager {
             entityType: 'EXTERNAL',
             entityMetadata: { location: sentMessage.url },
         })
-        
+
         // Уведомление о турнире
         if (guildData.channels.notifications_channel) {
             const notificationsChannel = (await discordGuild.channels.fetch(
@@ -135,23 +132,14 @@ export default class GameEventsManager {
         )) as TextChannel
         const discordMessage = await discordChannel.messages.fetch(messageID)
 
-        const datetime = moment(event.datetimeMs)
-        const embedEvent = new MessageEmbed()
-            .setTitle(event.name)
-            .setDescription(event.description)
-            .addField(
-                '\u200b',
-                `:clock1: Турнир пройдёт **${datetime
-                    .locale('ru')
-                    .format('ll')}** в **${datetime.format('HH:mm')}** по мск :clock1:`
-            )
-            .addField(
-                '\u200b',
-                ':game_die: **УЖЕ УЧАСТВУЮТ:** ' +
-                    (eventMembers.length > 0 ? eventMembers.join(', ') : 'Участников пока нет...')
-            )
-            .setImage(event.imageUrl)
-            .setColor(discordMessage.embeds[0].color)
+        const embedEvent = this.createEmbedEventMessage(
+            event.name,
+            event.description,
+            event.imageUrl,
+            event.datetimeMs,
+            discordMessage.embeds[0].color,
+            eventMembers
+        )
 
         await discordMessage.edit({ embeds: [embedEvent] })
     }
@@ -201,5 +189,35 @@ export default class GameEventsManager {
                         'Не забудь указать ссылку на steam. Для этого напиши !ссылка [твоя ссылка].',
                 })
         }
+    }
+
+    private createEmbedEventMessage(
+        name: string,
+        description: string,
+        imageUrl: string,
+        datetimeMs: number,
+        color?: ColorResolvable,
+        eventMembers?: string[]
+    ): MessageEmbed {
+        const datetime = moment(datetimeMs)
+
+        if (!eventMembers) eventMembers = []
+
+        return new MessageEmbed()
+            .setTitle(`:fire: ${name} :fire:`)
+            .setDescription(':trophy: ' + description)
+            .addField(
+                '\u200b',
+                `:clock1: Турнир пройдёт **${datetime
+                    .locale('ru')
+                    .format('ll')}** в **${datetime.format('HH:mm')}** по мск :clock1:`
+            )
+            .addField(
+                '\u200b',
+                ':game_die: **УЖЕ УЧАСТВУЮТ:** ' +
+                    (eventMembers.length > 0 ? eventMembers.join(', ') : 'Участников пока нет...')
+            )
+            .setImage(imageUrl)
+            .setColor(color)
     }
 }
