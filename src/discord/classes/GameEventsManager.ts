@@ -204,7 +204,7 @@ export default class GameEventsManager {
         if (!eventMembers) eventMembers = []
 
         return new MessageEmbed()
-            .setTitle(`:fire: ${name} :fire:`)
+            .setTitle(`:fire: ${name.toUpperCase()} :fire:`)
             .setDescription(':trophy: ' + description)
             .addField(
                 '\u200b',
