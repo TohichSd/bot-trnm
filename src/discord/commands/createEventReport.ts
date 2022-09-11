@@ -47,25 +47,28 @@ const command: ICommand = {
         }
 
         // Участники турнира
-        const members = (
+        let members = (
             await interview.ask(
                 'Перечислите участников игры **кроме себя**, *@упомянув* их в одном сообщении',
                 { validator: message => message.mentions.members.size == 3 }
             )
         ).mentions.members.map(m => m.id)
 
+        const winnerValidator = (msg: Message): boolean => {
+            if (msg.mentions.members.size != 1) return false
+            const id = msg.mentions.members.first().id
+            return !(!members.includes(id) && id != message.member.id)
+        }
+        
         // Победитель
         const winner = (
             await interview.ask('Кто победил? Ответьте, *@упомянув* участника', {
-                validator: message => message.mentions.members.size == 1,
+                validator: winnerValidator,
             })
         ).mentions.members.first().id
-
-        if (members[0] != winner) {
-            members.splice(members.indexOf(winner, 1))
-            members.splice(0, 0, winner)
-        }
-
+        
+        members = [winner, ...members.filter(id => id != winner)]
+        
         if (winner != message.member.id) members.push(message.member.id)
 
         const numberValidator = m => !isNaN(parseInt(m.content))
@@ -90,7 +93,7 @@ const command: ICommand = {
             validator: message => message.attachments.size == 1,
         })
 
-        let members_string = `:first_place:<@${winner}> - ${points[0]}:cyclone:`
+        let members_string = `:first_place:<@${winner}> - ${points[0]} очков :cyclone:`
         await Promise.all(
             members.map((id, i) => {
                 if (id !== winner) members_string += `\n:game_die:<@${id}> - ${points[i]}:cyclone:`
@@ -136,6 +139,7 @@ const command: ICommand = {
         try {
             const sentMessage = await message.channel.send({ embeds: [embedReport] })
             eventReport.message_id = sentMessage.id
+            interview.cleanMessages()
         } catch (e) {
             Logger.warn(e)
             throw new CommandError(
