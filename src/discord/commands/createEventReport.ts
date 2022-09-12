@@ -96,7 +96,7 @@ const command: ICommand = {
         let members_string = `:first_place:<@${winner}> - ${points[0]} очков :cyclone:`
         await Promise.all(
             members.map((id, i) => {
-                if (id !== winner) members_string += `\n:game_die:<@${id}> - ${points[i]}:cyclone:`
+                if (id !== winner) members_string += `\n:game_die:<@${id}> - ${points[i]} очков :cyclone:`
             })
         )
 
@@ -140,6 +140,7 @@ const command: ICommand = {
             const sentMessage = await message.channel.send({ embeds: [embedReport] })
             eventReport.message_id = sentMessage.id
             interview.cleanMessages()
+            await message.delete()
         } catch (e) {
             Logger.warn(e)
             throw new CommandError(
