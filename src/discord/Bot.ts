@@ -72,6 +72,7 @@ export default class Bot {
         this.commandsManager = commandsManager
         this.eventsManager = new GameEventsManager()
         this.reportsManager = new ReportsManager()
+        this.pointsManager = new PointsManager()
         this.setEvents()
     }
 

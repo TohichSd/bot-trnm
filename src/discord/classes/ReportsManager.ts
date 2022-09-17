@@ -76,5 +76,7 @@ export default class ReportsManager {
         await eventReport.updateOne({ is_accepted: true })
         const embedReport = reaction.message.embeds[0]
         embedReport.setFooter({ text: 'Очки начислены ✅' })
+        
+        await reaction.message.edit({ embeds: [embedReport] })
     }
 }
