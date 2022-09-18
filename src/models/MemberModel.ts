@@ -108,8 +108,11 @@ class Member {
         )
     }
 
-    public async setPermissions(this: DocumentType<Member>, permissions: Config.Permissions[]): Promise<unknown> {
-        return this.updateOne({ permissions }).exec()
+    public async setPermissions(
+        this: DocumentType<Member>,
+        permissions: Config.Permissions[]
+    ): Promise<unknown> {
+        return this.updateOne({ $set: { permissions } }).exec()
     }
 
     public async editPoints(this: DocumentType<Member>, points: number): Promise<unknown> {

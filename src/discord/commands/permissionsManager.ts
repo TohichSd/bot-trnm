@@ -23,34 +23,38 @@ const assignPermissions = async (message: Message) => {
             validator,
         })
     )
-    const accept_game_reports = answerConverter(
-        await interview.ask('Право принимать рейтинговые игры? (да/нет)', {
-            validator,
-        })
-    )
-    const access_dashboard = answerConverter(
-        await interview.ask('Доступ к панели управления? (да/нет)', {
-            validator,
-        })
-    )
-    const manage_events = answerConverter(
-        await interview.ask('Управлять турнирами? (да/нет)', {
-            validator,
-        })
-    )
-    const manage_clan_wars = answerConverter(
-        await interview.ask('Управлять клановыми войнами? (да/нет)', {
-            validator,
-        })
-    )
 
     const permissions: Config.Permissions[] = []
 
+    if (!admin) {
+        const accept_game_reports = answerConverter(
+            await interview.ask('Право принимать рейтинговые игры? (да/нет)', {
+                validator,
+            })
+        )
+        const access_dashboard = answerConverter(
+            await interview.ask('Доступ к панели управления? (да/нет)', {
+                validator,
+            })
+        )
+        const manage_events = answerConverter(
+            await interview.ask('Управлять турнирами? (да/нет)', {
+                validator,
+            })
+        )
+        const manage_clan_wars = answerConverter(
+            await interview.ask('Управлять клановыми войнами? (да/нет)', {
+                validator,
+            })
+        )
+
+        if (accept_game_reports) permissions.push(Config.Permissions.ACCEPT_GAME_REPORTS)
+        if (access_dashboard) permissions.push(Config.Permissions.ACCESS_DASHBOARD)
+        if (manage_events) permissions.push(Config.Permissions.MANAGE_EVENTS)
+        if (manage_clan_wars) permissions.push(Config.Permissions.MANAGE_CLAN_WARS)
+    }
+
     if (admin) permissions.push(Config.Permissions.ADMIN)
-    if (accept_game_reports) permissions.push(Config.Permissions.ACCEPT_GAME_REPORTS)
-    if (access_dashboard) permissions.push(Config.Permissions.ACCESS_DASHBOARD)
-    if (manage_events) permissions.push(Config.Permissions.MANAGE_EVENTS)
-    if (manage_clan_wars) permissions.push(Config.Permissions.MANAGE_CLAN_WARS)
 
     await memberData.setPermissions(permissions)
     await message.reply('Готово!')
@@ -71,7 +75,9 @@ const printMemberRoleInfo = async (message: Message) => {
     const embed = new MessageEmbed()
         .setDescription(`Права для участника <@${message.mentions.members.first().id}>`)
         .setColor('#32c9ae')
-        .setFooter('Если вы хотите изменить права участника, напишите !права изменить @участник')
+        .setFooter({
+            text: 'Если вы хотите изменить права участника, напишите !права изменить @участник',
+        })
     const translate = {
         admin: 'Админ (все разрешения)',
         accept_game_reports: 'Принимать рейтинговые игры',

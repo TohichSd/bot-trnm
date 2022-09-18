@@ -52,7 +52,7 @@ export default class CommandsManager {
      */
     public async handleMessage(message: Message): Promise<void> {
         const prefix = BotConfig.prefix
-        
+
         if (message.author.bot) return
         if (!message.content.startsWith(prefix)) return
         const commandName = message.content.slice(prefix.length).split(' ')[0].toLowerCase()
@@ -62,15 +62,23 @@ export default class CommandsManager {
         }
         const command = await this.get(commandName)
         if (!command) return
-        const permissions = await Bot.getInstance().getMemberPermissions(message.guild.id, message.member.id)
-        
+        const permissions = await Bot.getInstance().getMemberPermissions(
+            message.guild.id,
+            message.member.id
+        )
+
         if (command.permissions) {
             const tf = command.permissions.map(p => {
                 return permissions.includes(p)
             })
-            if (!permissions.includes(Permissions.ADMIN) && tf.includes(false)) return
+            if (
+                !permissions.includes(Permissions.ADMIN) &&
+                tf.includes(false) &&
+                message.member.id != message.guild.ownerId
+            )
+                return
         }
-        
+
         try {
             logger.info(`${message.author.tag} used command "${message.content}"`)
             await command.execute(message)
