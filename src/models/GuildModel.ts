@@ -43,6 +43,9 @@ export class Guild {
     @prop({ required: true, default: () => ({}) })
     public channels: GuildChannels
 
+    @prop()
+    public timezone: string
+
     @prop({ required: true, default: () => 2 })
     public static async getByGuildID(this: ReturnModelType<typeof Guild>, id: string): Promise<DocumentType<Guild>> {
         return this.findOne({ guild_id: id }).exec()

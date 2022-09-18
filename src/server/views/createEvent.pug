@@ -30,6 +30,8 @@ html(lang='ru')
             h3 Когда будет проведён турнир?
             input(type='datetime-local', name='datetime', required=true)
           input(name='csrfToken', hidden=true, value=csrfToken, readonly=true)
+          input#timezone(name='timezone', hidden=true, readonly=true)
           button(type='submit').btn.action-2 СОЗДАТЬ
   include includes/footer
 script(src='/script/createEvent.js', defer=true)
+script(src='/script/common/timezone.js', defer=true)

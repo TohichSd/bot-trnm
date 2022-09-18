@@ -30,6 +30,16 @@ type EventEditOptions = {
     imageUrl?: string
 }
 
+type EmbedEventMessageOptions = {
+    name: string
+    description: string
+    imageUrl: string
+    datetimeMs: number
+    timezone?: string
+    color?: ColorResolvable
+    eventMembers?: string[]
+}
+
 export default class GameEventsManager {
     public async createEvent(guildID: string, options: EventOptions): Promise<void> {
         const guildData = await GuildModel.getByGuildID(guildID)
@@ -44,18 +54,15 @@ export default class GameEventsManager {
             guildData.channels.tournament_channel
         )) as TextChannel
         if (!eventsChannel) throw new Error('Discord channel data unavailable')
-        
+
         // Сообщение с турниром
-        const embedEvent = this.createEmbedEventMessage(
-            options.name,
-            options.description,
-            options.imageUrl,
-            options.datetimeMs,
-            randomColor({
-                hue: 'green',
-                luminosity: 'light',
-            })
-        )
+        const embedEvent = this.createEmbedEventMessage({
+            name: options.name,
+            description: options.description,
+            imageUrl: options.imageUrl,
+            datetimeMs: options.datetimeMs,
+            timezone: guildData.timezone || 'Europe/Moscow',
+        })
 
         const row = new MessageActionRow().addComponents(
             new MessageButton()
@@ -71,6 +78,7 @@ export default class GameEventsManager {
             name: options.name,
             description: options.description,
             datetimeMs: moment(options.datetimeMs).valueOf(),
+            timezone: guildData.timezone || 'Europe/Moscow',
             imageUrl: options.imageUrl,
             message_id: sentMessage.id,
         })
@@ -117,8 +125,8 @@ export default class GameEventsManager {
             await event.save()
         }
 
-        const guildDB = await GuildModel.getByGuildID(guildID)
-        if (!guildDB) throw new NotFoundError(NotFoundError.types.GUILD)
+        const guildData = await GuildModel.getByGuildID(guildID)
+        if (!guildData) throw new NotFoundError(NotFoundError.types.GUILD)
         const eventMembers = await Promise.all(
             event.members.map(async _id => {
                 const memberDB = await MemberModel.findById(_id)
@@ -128,18 +136,19 @@ export default class GameEventsManager {
 
         const discordGuild = await Bot.getInstance().getGuild(guildID)
         const discordChannel = (await discordGuild.channels.fetch(
-            guildDB.channels.tournament_channel
+            guildData.channels.tournament_channel
         )) as TextChannel
         const discordMessage = await discordChannel.messages.fetch(messageID)
 
-        const embedEvent = this.createEmbedEventMessage(
-            event.name,
-            event.description,
-            event.imageUrl,
-            event.datetimeMs,
-            discordMessage.embeds[0].color,
-            eventMembers
-        )
+        const embedEvent = this.createEmbedEventMessage({
+            name: event.name,
+            description: event.description,
+            imageUrl: event.imageUrl,
+            datetimeMs: event.datetimeMs,
+            timezone: guildData.timezone || 'Europe/Moscow',
+            color: discordMessage.embeds[0].color,
+            eventMembers,
+        })
 
         await discordMessage.edit({ embeds: [embedEvent] })
     }
@@ -191,21 +200,22 @@ export default class GameEventsManager {
         }
     }
 
-    private createEmbedEventMessage(
-        name: string,
-        description: string,
-        imageUrl: string,
-        datetimeMs: number,
-        color?: ColorResolvable,
-        eventMembers?: string[]
-    ): MessageEmbed {
-        const datetime = moment(datetimeMs)
+    private createEmbedEventMessage(options: EmbedEventMessageOptions): MessageEmbed {
+        const datetime = moment(options.datetimeMs).tz(options.timezone || 'Europe/Moscow')
 
-        if (!eventMembers) eventMembers = []
+        options.eventMembers = options.eventMembers || []
+        options.color =
+            options.color ||
+            randomColor({
+                hue: 'green',
+                luminosity: 'light',
+            })
+
+        const membersCount = options.eventMembers.length
 
         return new MessageEmbed()
-            .setTitle(`:fire: ${name.toUpperCase()} :fire:`)
-            .setDescription(':trophy: ' + description)
+            .setTitle(`:fire: ${options.name.toUpperCase()} :fire:`)
+            .setDescription(options.description)
             .addField(
                 '\u200b',
                 `:clock1: Турнир пройдёт **${datetime
@@ -214,10 +224,12 @@ export default class GameEventsManager {
             )
             .addField(
                 '\u200b',
-                ':game_die: **УЖЕ УЧАСТВУЮТ:** ' +
-                    (eventMembers.length > 0 ? eventMembers.join(', ') : 'Участников пока нет...')
+                `:game_die: **УЧАСТВУ${membersCount == 1 ? 'ЕТ' : 'ЮТ'} ${membersCount} ИГРОК${
+                    membersCount == 1 ? '' : membersCount > 4 || membersCount == 0 ? 'ОВ' : 'А'
+                }**\n` +
+                    (membersCount > 0 ? options.eventMembers.join(', ') : 'Участников пока нет...')
             )
-            .setImage(imageUrl)
-            .setColor(color)
+            .setImage(options.imageUrl)
+            .setColor(options.color)
     }
 }

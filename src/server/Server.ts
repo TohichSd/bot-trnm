@@ -10,6 +10,9 @@ import { HTTPError } from '../classes/CommandErrors'
 import { StatusCodes } from 'http-status-codes'
 import Logger from '../classes/Logger'
 import MongoStore = require('connect-mongo')
+import { Config } from '../config/BotConfig'
+import { NextFunction, Request, Response } from 'express'
+import Bot from '../discord/Bot'
 
 export default class Server {
     private static instance: Server
@@ -113,5 +116,28 @@ export default class Server {
             else if (err.errorType == 'APIError') res.json({ error: err })
             else Logger.error(err)
         })
+    }
+
+    public checkPermissions(permissions: Config.Permissions[]) {
+        return async function (req: Request, res: Response, next: NextFunction): Promise<void> {
+            if (!req.session.member_id) {
+                res.redirect('/login')
+                return
+            }
+
+            const memberPermissions = await Bot.getInstance().getMemberPermissions(
+                req.params.guild_id,
+                req.session.member_id
+            )
+            if (
+                permissions.filter(p => memberPermissions.includes(p)).length ==
+                    permissions.length ||
+                memberPermissions.includes(Config.Permissions.ADMIN)
+            ) {
+                next()
+                return
+            }
+            next(new HTTPError(403, 'Кажется вы не можете посещать эту страницу('))
+        }
     }
 }

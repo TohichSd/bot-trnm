@@ -7,6 +7,7 @@ import { HTTPError } from '../../classes/CommandErrors'
 import Logger from '../../classes/Logger'
 import { v4 as uuid } from 'uuid'
 import { Config } from '../../config/BotConfig'
+import Server from '../Server'
 import Permissions = Config.Permissions
 
 const router = Router()
@@ -46,64 +47,62 @@ router.get('/guild/:guild_id/events', async (req, res) => {
     })
 })
 
-router.get('/guild/:guild_id/events/create', async (req, res, next) => {
-    if (!(await checkPermissions(req.params.guild_id, req.session.member_id))) {
-        next()
-        return
-    }
-
-    req.session.csrfToken = uuid()
-    const bot = Bot.getInstance()
-    const guild = await bot.getGuild(req.params.guild_id)
-    req.query.name = req.query.name || ''
-    req.query.description = req.query.description || ''
-    req.query.datetimeMs = req.query.datetimeMs || ''
-    req.query.imageUrl = req.query.imageUrl || ''
-    const defaults = {
-        name: decodeURI(req.query.name.toString()),
-        description: decodeURI(req.query.description.toString()),
-        datetimeMs: moment(parseInt(decodeURI(req.query.datetimeMs.toString()))).toISOString(),
-        imageUrl: decodeURIComponent(req.query.imageUrl.toString()),
-    }
-    res.render('createEvent', {
-        guild,
-        csrfToken: req.session.csrfToken,
-        defaults,
-        username: req.session.username,
-    })
-})
-
-router.post('/guild/:guild_id/events/create', async (req, res, next) => {
-    if (!(await checkPermissions(req.params.guild_id, req.session.member_id))) {
-        next()
-        return
-    }
-
-    if (req.body.csrfToken != req.session.csrfToken) {
-        res.redirect(`/${req.params.guild_id}/events/`)
-        return
-    }
-    if (!req.body.name || !req.body.description || !req.body.datetime || !req.body.imageUrl) {
-        next(new HTTPError(StatusCodes.BAD_REQUEST))
-        return
-    }
-    const eventsManager = Bot.getInstance().getEventsManager()
-    try {
-        await eventsManager.createEvent(req.params.guild_id, {
-            name: req.body.name,
-            description: req.body.description,
-            datetimeMs: moment(req.body.datetime).valueOf(),
-            imageUrl: req.body.imageUrl,
+router.get(
+    '/guild/:guild_id/events/create',
+    Server.getInstance().checkPermissions([Permissions.MANAGE_EVENTS]),
+    async (req, res) => {
+        req.session.csrfToken = uuid()
+        const bot = Bot.getInstance()
+        const guild = await bot.getGuild(req.params.guild_id)
+        req.query.name = req.query.name || ''
+        req.query.description = req.query.description || ''
+        req.query.datetimeMs = req.query.datetimeMs || ''
+        req.query.imageUrl = req.query.imageUrl || ''
+        const defaults = {
+            name: decodeURI(req.query.name.toString()),
+            description: decodeURI(req.query.description.toString()),
+            datetimeMs: moment(parseInt(decodeURI(req.query.datetimeMs.toString()))).toISOString(),
+            imageUrl: decodeURIComponent(req.query.imageUrl.toString()),
+        }
+        res.render('createEvent', {
+            guild,
+            csrfToken: req.session.csrfToken,
+            defaults,
+            username: req.session.username,
         })
-    } catch (e) {
-        Logger.warn(e)
     }
-    res.render('result', {
-        title: 'Готово!',
-        message: 'Турнир создан.',
-        backLink: '..',
-        username: req.session.username,
-    })
-})
+)
+
+router.post(
+    '/guild/:guild_id/events/create',
+    Server.getInstance().checkPermissions([Permissions.MANAGE_EVENTS]),
+    async (req, res, next) => {
+        if (req.body.csrfToken != req.session.csrfToken) {
+            res.redirect(`/${req.params.guild_id}/events/`)
+            return
+        }
+        if (!req.body.name || !req.body.description || !req.body.datetime || !req.body.imageUrl || !req.body.timezone) {
+            next(new HTTPError(StatusCodes.BAD_REQUEST))
+            return
+        }
+        const eventsManager = Bot.getInstance().getEventsManager()
+        try {
+            await eventsManager.createEvent(req.params.guild_id, {
+                name: req.body.name,
+                description: req.body.description,
+                datetimeMs: moment(req.body.datetime).tz(req.body.timezone).utc().valueOf(),
+                imageUrl: req.body.imageUrl,
+            })
+        } catch (e) {
+            Logger.warn(e)
+        }
+        res.render('result', {
+            title: 'Готово!',
+            message: 'Турнир создан.',
+            backLink: '..',
+            username: req.session.username,
+        })
+    }
+)
 
 export default router
