@@ -84,13 +84,19 @@ export default class GameEventsManager {
         })
         await newEvent.save()
 
+        const baseEventTime = moment(options.datetimeMs)
+            .add(
+                moment().tz(Intl.DateTimeFormat().resolvedOptions().timeZone).utcOffset(),
+                'minutes'
+            )
+        
         const scheduledEvent = await discordGuild.scheduledEvents.create({
             name: options.name,
             privacyLevel: 'GUILD_ONLY',
             description: options.description,
             channel: eventsChannel.id,
-            scheduledStartTime: moment(options.datetimeMs).toISOString(),
-            scheduledEndTime: moment(options.datetimeMs + 1000 * 60 * 60 * 3).toISOString(),
+            scheduledStartTime: baseEventTime.toISOString(),
+            scheduledEndTime: baseEventTime.add(3, 'hours').toISOString(),
             entityType: 'EXTERNAL',
             entityMetadata: { location: sentMessage.url },
         })
@@ -201,7 +207,12 @@ export default class GameEventsManager {
     }
 
     private createEmbedEventMessage(options: EmbedEventMessageOptions): MessageEmbed {
-        const datetime = moment(options.datetimeMs).tz(options.timezone || 'Europe/Moscow')
+        const datetime = moment(options.datetimeMs).add(
+            moment(options.datetimeMs)
+                .tz(options.timezone || 'Europe/Moscow')
+                .utcOffset(),
+            'minutes'
+        )
 
         options.eventMembers = options.eventMembers || []
         options.color =

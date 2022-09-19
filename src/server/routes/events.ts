@@ -90,7 +90,7 @@ router.post(
             await eventsManager.createEvent(req.params.guild_id, {
                 name: req.body.name,
                 description: req.body.description,
-                datetimeMs: moment(req.body.datetime).tz(req.body.timezone).utc().valueOf(),
+                datetimeMs: moment(req.body.datetime).subtract(moment().tz(req.body.timezone).utcOffset(), 'minutes').valueOf(),
                 imageUrl: req.body.imageUrl,
             })
         } catch (e) {
