@@ -75,7 +75,7 @@ class Member {
         return memberData
     }
 
-    // Максимальное количесво побед среди всех участников
+    // Максимальное количество побед среди всех участников
     private static async getMaxWins() {
         const res: DocumentType<Member>[] = await MemberModel.find({}, { wins: 1, _id: 0 })
             .sort({ wins: -1 })
