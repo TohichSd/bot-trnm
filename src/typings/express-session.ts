@@ -6,5 +6,6 @@ declare module 'express-session' {
         username: string
         csrfToken: string
         lastGuild: string
+        lastSubmitID: string
     }
 }

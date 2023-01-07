@@ -1,6 +1,6 @@
 html(lang='ru')
   head
-    title= 'Создать турнир | ' + guild.name
+    title= 'Редактировать турнир | ' + guild.name
     link(rel='stylesheet', href='/css/common.css')
     link(rel='stylesheet', href='/css/createEvent.css')
     meta(content="width=device-width, initial-scale=1", name="viewport")
@@ -28,11 +28,11 @@ html(lang='ru')
             img.d-none#image-preview(alt = 'Проверьте правильность введённого URL. Учтите, что вставлять изображение можно только из Discord (URL должен начинаться с cdn.discordapp...)')
           label.pointer
             h3 Когда будет проведён турнир?
-            input(type='datetime-local', name='datetime', required=true)
+            input(type='datetime-local', name='datetime', value=defaults.datetime, required=true)
           input(name='csrfToken', hidden=true, value=csrfToken, readonly=true)
           input#timezone(name='timezone', hidden=true, readonly=true)
           input#submit-id(name='submitID', hidden=true, readonly=true)
-          button(type='submit').btn.action-2 СОЗДАТЬ
+          button(type='submit').btn.action-2 ПОДТВЕРДИТЬ
   include includes/footer
 script(src='/script/createEvent.js', defer=true)
 script(src='/script/common/timezone.js', defer=true)

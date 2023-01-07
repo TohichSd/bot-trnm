@@ -35,7 +35,7 @@ export default class Server {
                 },
                 store: MongoStore.create({
                     mongoUrl: env.CONNECTION_STRING,
-                    dbName: 'botdata-test',
+                    dbName: env.DB_NAME,
                 }),
                 resave: false,
                 saveUninitialized: false,
@@ -52,6 +52,14 @@ export default class Server {
                 },
             })
         )
+        
+        this.app.use((req, res, next) => {
+            if (req.method != 'POST') return next()
+            if (req.body.submitID == req.session.lastSubmitID) return res.redirect('/')
+            req.session.lastSubmitID = req.body.submitID
+            next()
+        })
+        
         this.app.use(helmet.dnsPrefetchControl())
         this.app.use(helmet.expectCt())
         this.app.use(helmet.frameguard())
@@ -114,7 +122,13 @@ export default class Server {
                     errorDescription: err.response,
                 })
             else if (err.errorType == 'APIError') res.json({ error: err })
-            else Logger.error(err)
+            else {
+                Logger.error(err)
+                res.render('error', {
+                    errorTitle: 'Что-то пошло не так...',
+                    errorDescription: 'Если ошибка повторяется, сообщите об этом администрации.'
+                })
+            }
         })
     }
 

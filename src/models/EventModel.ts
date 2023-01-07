@@ -35,7 +35,6 @@ class Event {
     ): Promise<DocumentType<Event>> {
         return this.findOne({
             message_id: messageID,
-            datetimeMs: { $gt: Date.now().valueOf() - 8 * 60 * 60 * 1000 },
         }).exec()
     }
 

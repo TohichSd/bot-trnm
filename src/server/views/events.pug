@@ -45,6 +45,8 @@ html(lang='ru')
             if manageEventsPermission
               a#repeat-link(title='Повторить этот турнир')
                 button().btn.action.pointer Повторить
+              a#edit-link(title='Редактировать этот турнир')
+                button().btn.action.pointer Редактировать
 
             button#close.btn.danger.pointer Закрыть
 script(src='/script/events.js', defer=true)

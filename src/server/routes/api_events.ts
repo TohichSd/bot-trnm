@@ -1,17 +1,21 @@
 import { Router } from 'express'
 import { Event, EventModel } from '../../models/EventModel'
 import * as moment from 'moment-timezone'
-import { APIError } from '../../classes/CommandErrors'
+import { APIError, HTTPError } from '../../classes/CommandErrors'
 import { StatusCodes } from 'http-status-codes'
 import { DocumentType } from '@typegoose/typegoose'
+import { GuildModel } from '../../models/GuildModel'
 
 const router = Router()
 
 router.get('/api/:guild_id/events', async (req, res, next) => {
+    const guildData = await GuildModel.getByGuildID(req.params.guild_id)
+    if (!guildData) next(new HTTPError(400))
     const type = req.query.type || 'all'
+    const timezone = (req.query.timezone || 'Europe/Moscow') as string
     if (type == 'new') {
         const new_events = (await EventModel.getNewGuildEvents(req.params.guild_id)).map(event => {
-            const datetime = moment(event.datetimeMs).locale('ru').calendar()
+            const datetime = moment(event.datetimeMs).tz(timezone).locale('ru').calendar()
             return {
                 name: event.name,
                 description:
@@ -24,7 +28,7 @@ router.get('/api/:guild_id/events', async (req, res, next) => {
         res.json(new_events)
     } else if (type == 'old') {
         const old_events = (await EventModel.getOldGuildEvents(req.params.guild_id)).map(event => {
-            const datetime = moment(event.datetimeMs).locale('ru').format('LLLL')
+            const datetime = moment(event.datetimeMs).tz(timezone).locale('ru').format('LLLL')
             return {
                 name: event.name,
                 description: event.description,
@@ -36,7 +40,7 @@ router.get('/api/:guild_id/events', async (req, res, next) => {
         res.json(old_events)
     } else if (type == 'all') {
         const events = (await EventModel.getAllGuildEvents(req.params.guild_id)).map(event => {
-            const datetime = moment(event.datetimeMs).locale('ru').format('LLLL')
+            const datetime = moment(event.datetimeMs).tz(timezone).locale('ru').format('LLLL')
             return {
                 name: event.name,
                 description: event.description,

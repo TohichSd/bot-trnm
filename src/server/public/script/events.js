@@ -7,6 +7,7 @@ const showOldEvents = document.querySelector('#show-old-events')
 const h2OldEvents = document.querySelector('h2#old-events')
 const popupClose = document.querySelector('#close')
 const newEventsContainer = document.querySelector('.events-container')
+const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 class Popup {
     constructor(element) {
@@ -26,8 +27,11 @@ class Popup {
         urlRepeat.searchParams.set('imageUrl', encodeURIComponent(imageUrl))
         this.element.querySelector('#repeat-link').setAttribute('href', urlRepeat.toString())
 
-        const urlEnd = new URL(`${messageID}/end/`, document.baseURI)
-        this.element.querySelector('#end-link').setAttribute('href', urlEnd.toString())
+        // const urlEnd = new URL(`${messageID}/end/`, document.baseURI)
+        const urlEdit = new URL(`edit`, document.baseURI)
+        urlEdit.searchParams.set('id', encodeURIComponent(messageID))
+        // this.element.querySelector('#end-link').setAttribute('href', urlEnd.toString())
+        this.element.querySelector('#edit-link').setAttribute('href', urlEdit.toString())
     }
 
     show() {
@@ -65,7 +69,7 @@ function showPopup(id) {
 }
 
 function updateOldEvents() {
-    fetch(`/api/${guildID}/events?type=old`).then(async events => {
+    fetch(`/api/${guildID}/events?type=old&timezone=${timezone}`).then(async events => {
         events = await events.json()
         phOld.style.display = 'none'
         if (events.error) {
@@ -87,7 +91,7 @@ function updateOldEvents() {
 }
 
 function updateNewEvents() {
-    fetch(`/api/${guildID}/events?type=new`).then(async events => {
+    fetch(`/api/${guildID}/events?type=new&timezone=${timezone}`).then(async events => {
         events = await events.json()
         phNew.style.display = 'none'
         if (events.error) {
