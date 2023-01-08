@@ -6,6 +6,9 @@ import {
     ReturnModelType,
 } from '@typegoose/typegoose'
 import { Config } from '../config/BotConfig'
+import * as NodeCache from 'node-cache'
+
+const cache = new NodeCache()
 
 @modelOptions({ schemaOptions: { collection: 'members' } })
 class Member {
@@ -49,11 +52,24 @@ class Member {
 
     public static async getBestGuildMembers(
         this: ReturnModelType<typeof Member>,
-        guild_id: string
+        guild_id: string,
+        limit?: number
     ): Promise<DocumentType<Member>[]> {
-        return this.find({ guild_id, points: { $gt: 0 } })
-            .sort({ points: -1 })
-            .exec()
+        if (limit)
+            return this.find({ guild_id, games: { $gt: 0 }, wins: { $gt: 0 } })
+                .sort({
+                    winIndex: -1,
+                    points: -1,
+                })
+                .limit(limit)
+                .exec()
+        else
+            return this.find({ guild_id, games: { $gt: 0 }, wins: { $gt: 0 } })
+                .sort({
+                    winIndex: -1,
+                    points: -1,
+                })
+                .exec()
     }
 
     /**
@@ -76,36 +92,51 @@ class Member {
     }
 
     // Максимальное количество побед среди всех участников
-    private static async getMaxWins() {
-        const res: DocumentType<Member>[] = await MemberModel.find({}, { wins: 1, _id: 0 })
-            .sort({ wins: -1 })
-            .limit(1)
-            .exec()
-        return res[0].wins
+    private static async getMaxWins(guildID) {
+        let res: DocumentType<Member>[]
+        if (!cache.get<number>(`mw${guildID}`)) {
+            res = await MemberModel.find({ guild_id: guildID }, { wins: 1, _id: 0 })
+                .sort({ wins: -1 })
+                .limit(1)
+                .exec()
+            cache.set<number>(`mw${guildID}`, res[0].wins || 0)
+            return res[0].wins
+        } else return cache.get<number>(`mw${guildID}`)
+    }
+
+    private static async updateGuildWinIndexes(guildID: string) {
+        const maxWins = await Member.getMaxWins(guildID)
+        const members = await MemberModel.find({ guild_id: guildID })
+        await Promise.all(
+            members.map(async m => {
+                m.winIndex = m.calculateWinIndex(maxWins)
+                await m.save()
+            })
+        )
     }
 
     public async editGamesCount(this: DocumentType<Member>, count: number): Promise<void> {
+        const maxWins = await Member.getMaxWins(this.guild_id)
         this.updateOne({
             $inc: { games: count },
             $set: {
-                winIndex: await this.calculateWinIndex(),
+                winIndex: this.calculateWinIndex(maxWins),
             },
         })
     }
 
     public async editWinsCount(this: DocumentType<Member>, count: number): Promise<void> {
-        this.updateOne(
-            { _id: this._id },
-            {
-                $inc: {
-                    games: count,
-                    wins: count,
-                },
-                $set: {
-                    winIndex: await this.calculateWinIndex(),
-                },
-            }
-        )
+        const maxWins = await Member.getMaxWins(this.guild_id)
+        await this.updateOne({
+            $inc: {
+                games: count,
+                wins: count,
+            },
+        }).exec()
+        if (this.wins > maxWins) {
+            cache.del(`mw${this.guild_id}`)
+            await Member.updateGuildWinIndexes(this.guild_id)
+        }
     }
 
     public async setPermissions(
@@ -119,11 +150,12 @@ class Member {
         return this.updateOne({ $set: { points } }).exec()
     }
 
-    private async calculateWinIndex(this: DocumentType<Member>) {
-        const maxWins = await Member.getMaxWins()
+    private calculateWinIndex(this: DocumentType<Member>, maxWins: number) {
+        if (this.games == 0 || !this.games) return 0
         return (((2 * this.wins) / maxWins) * this.wins) / this.games
     }
 }
+
 
 const MemberModel = getModelForClass(Member)
 
