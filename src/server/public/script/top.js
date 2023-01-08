@@ -26,7 +26,10 @@ function updateMembers() {
                 `<h2 class='place'>${i + 1} место</h2>` +
                 `<div class='member-info'>` +
                 `<h2 class='name'>${member.name}</h2>` +
-                `<h3 class='points'>${member.points}</h3>` +
+                `<h3 class='stat'>${member.wins} / ${member.games} (${Math.round(
+                    (member.wins / member.games) * 100
+                )}%)</h3>` +
+                `<p class='points'>${member.points} очков</p>` +
                 `</nobr>` +
                 `</div>` +
                 `</div>`
@@ -69,8 +72,7 @@ function showPopup(id) {
         popupWins.innerHTML = 'Выиграл(а) <span>' + memberData.wins + '</span> игр'
         popupPoints.innerHTML = 'Всего <span>' + memberData.points + '</span> очк'
         if (memberData.points % 10 === 1) popupPoints.innerHTML += 'о'
-        else if (memberData.points % 10 < 5 && memberData.points % 10 > 1)
-            popupPoints.innerHTML += 'а'
+        else if (memberData.points % 10 < 5 && memberData.points % 10 > 1) popupPoints.innerHTML += 'а'
         else popupPoints.innerHTML += 'ов'
     })
 }

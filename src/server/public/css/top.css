@@ -24,6 +24,18 @@
   margin-bottom: 0;
 }
 
+.member-card > div h3 {
+  color: #ffffff;
+  text-shadow: 2px 0 #2f2000, -2px 0 #2f2000, 0 2px #2f2000, 0 -2px #2f2000,
+  1px 1px #2f2000, -1px -1px #2f2000, 1px -1px #2f2000, -1px 1px #2f2000;
+}
+
+.member-card > div .points {
+  color: white;
+  font-size: 20px;
+  margin: 0 auto;
+}
+
 @media (max-width: 768px) {
   .member-card > div h3 {
     font-size: 200%;
