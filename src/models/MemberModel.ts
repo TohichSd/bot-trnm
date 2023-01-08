@@ -104,7 +104,7 @@ class Member {
         } else return cache.get<number>(`mw${guildID}`)
     }
 
-    private static async updateGuildWinIndexes(guildID: string) {
+    public static async updateGuildWinIndexes(guildID: string): Promise<void> {
         const maxWins = await Member.getMaxWins(guildID)
         const members = await MemberModel.find({ guild_id: guildID })
         await Promise.all(
