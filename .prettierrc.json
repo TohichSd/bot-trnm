@@ -7,6 +7,8 @@
     "@prettier/plugin-pug"
   ],
   "tabWidth": 4,
-  "printWidth": 100,
-  "pugTabWidth": 2
+  "printWidth": 105,
+  "pugTabWidth": 2,
+  "endOfLine": "crlf",
+  "trailingComma": "es5"
 }
