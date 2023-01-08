@@ -18,19 +18,30 @@ router.get('/api/:guild_id/clans/:role_id/members', async (req, res) => {
     const role = await guild.roles.fetch(clan.role_id)
     const members = await Promise.all(
         role.members.map(async m => {
-            return m.fetch()
+            if (m.partial)
+                return m.fetch()
+            return m
         })
     )
     const membersData = await Promise.all(
         members.map(async m => {
-            return MemberModel.getMemberByID(req.params.guild_id, m.id)
-        })
-    )
-    res.json(
-        members.map((m, i) => {
+            const memberData = await MemberModel.getMemberByID(req.params.guild_id, m.id)
             return {
                 name: m.displayName,
+                id: m.id,
                 imageUrl: m.displayAvatarURL(),
+                games: memberData.games,
+                wins: memberData.wins,
+                points: memberData.points,
+            }
+        })
+    )
+    
+    res.json(
+        membersData.sort((m1, m2) => m2.points - m1.points).map((m, i) => {
+            return {
+                name: m.name,
+                imageUrl: m.imageUrl,
                 games: membersData[i].games,
                 wins: membersData[i].wins,
                 points: membersData[i].points,
