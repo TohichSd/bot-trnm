@@ -13,11 +13,14 @@ export namespace Config {
         MANAGE_CLAN_WARS = 'manage_clan_wars',
         MANAGE_EVENTS = 'manage_events',
     }
-    
-    export const POINTS = {
-        R_GAME: 0,
-        R_GAME_WIN: 0,
-        E_GAME: 20,
-        E_GAME_WIN: 70
+
+    export const channelsNames = {
+        applications_channel: 'Канал для заявок',
+        tournament_channel: 'Канал для турниров',
+        clan_wars_channel: 'Канал для войны кланов',
+        game_report_channel: 'Канал для отчётов о рейтинговых играх',
+        game_report_images_channel: 'Канал для картинок отчётов',
+        logs_channel: 'Канал для логов',
+        notifications_channel: 'Канал для уведомлений',
     }
 }

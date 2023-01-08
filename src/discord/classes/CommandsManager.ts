@@ -83,9 +83,10 @@ export default class CommandsManager {
             logger.info(`${message.author.tag} used command "${message.content}"`)
             await command.execute(message)
         } catch (e) {
+            const defaultText = '(Ошибка 0) Обратитесь к администрации сервера.'
             if (e instanceof CommandError) {
                 logger.warn(e)
-                await message.reply(e.replyText).then(errorMessage => {
+                await message.reply(e.replyText ||defaultText ).then(errorMessage => {
                     if (e.deleteTimeout)
                         setTimeout(() => {
                             errorMessage.delete()
@@ -94,7 +95,7 @@ export default class CommandsManager {
                 })
             } else {
                 logger.error(e)
-                await message.reply('(Ошибка 0) Обратитесь к администрации сервера.')
+                await message.reply(defaultText)
             }
         }
     }
