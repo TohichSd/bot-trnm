@@ -4,7 +4,7 @@
     "target": "esnext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "noEmitHelpers": true,
+    "inlineSourceMap": true,
     "moduleResolution": "Node",
     "outDir": "./dist",
     "lib": [
@@ -15,7 +15,7 @@
       "es5"
     ],
     "baseUrl": "./src",
-    "typeRoots": ["./src/typings", "./node_modules/@types"],
+    "typeRoots": ["./src/typings", "./node_modules/@types"]
   },
   "exclude": [
     "node_modules"
