@@ -46,11 +46,9 @@ export default class ReportsManager {
             gameReport.members.map(async id => {
                 const member = await MemberModel.getMemberByID(reaction.message.guild.id, id)
                 if (id != gameReport.winner) {
-                    await member.updateOne({ $inc: { games: 1 } })
+                    await member.editGamesCount(1)
                 } else {
-                    await member.updateOne({
-                        $inc: { games: 1, wins: 1 },
-                    })
+                    await member.editWinsCount(1)
                 }
             })
         )
