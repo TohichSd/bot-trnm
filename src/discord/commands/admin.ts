@@ -12,6 +12,7 @@ const command: ICommand = {
         if (args.length == 2) {
             if (args[1] === 'update-win-index') {
                 await MemberModel.updateGuildWinIndexes(message.guild.id)
+                await message.react('✅')
             }
         }
     },

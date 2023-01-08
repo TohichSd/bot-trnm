@@ -2,6 +2,7 @@ import Bot from '../../discord/Bot'
 import { MemberModel } from '../../models/MemberModel'
 import { Router } from 'express'
 import Logger from '../../classes/Logger'
+import { env } from 'process'
 
 const router = Router()
 
@@ -18,7 +19,6 @@ router.get('/api/:guild_id/top', async (req, res) => {
         res.json(
             membersData
                 .filter(member => membersDiscordData.has(member.id))
-                .sort((a, b) => b.points - a.points)
                 .map(member => {
                     return {
                         id: member.id,
@@ -27,6 +27,7 @@ router.get('/api/:guild_id/top', async (req, res) => {
                         points: member.points,
                         name: membersDiscordData.get(member.id).displayName,
                         imageUrl: membersDiscordData.get(member.id).displayAvatarURL(),
+                        winIndex: env.NODE_ENV == 'development' ? member.winIndex : undefined,
                     }
                 })
         )

@@ -55,21 +55,14 @@ class Member {
         guild_id: string,
         limit?: number
     ): Promise<DocumentType<Member>[]> {
-        if (limit)
-            return this.find({ guild_id, games: { $gt: 0 }, wins: { $gt: 0 } })
-                .sort({
-                    winIndex: -1,
-                    points: -1,
-                })
-                .limit(limit)
-                .exec()
-        else
-            return this.find({ guild_id, games: { $gt: 0 }, wins: { $gt: 0 } })
-                .sort({
-                    winIndex: -1,
-                    points: -1,
-                })
-                .exec()
+        const query = this.find({
+            guild_id,
+            $or: [{ games: { $gt: 0 }, wins: { $gt: 0 } }, { points: { $gt: 0 } }],
+        }).sort({
+            winIndex: -1,
+        })
+        if (limit) return query.limit(limit).exec()
+        else return query.exec()
     }
 
     /**
@@ -152,7 +145,7 @@ class Member {
 
     private calculateWinIndex(this: DocumentType<Member>, maxWins: number) {
         if (this.games == 0 || !this.games) return 0
-        return (((2 * this.wins) / maxWins) * this.wins) / this.games
+        return ((((2 * this.wins) / maxWins) * this.wins) / this.games) * (1 + this.points / 10000)
     }
 }
 

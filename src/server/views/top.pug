@@ -18,8 +18,13 @@ html(lang='ru')
         br
         strong.error#members-error Ошибка, попробуйте обновить список.
       .main-container
-    
-    #popup.popup.d-none
+        span &#8203;
+
+      p.info Если вы не видите себя в списке, проверьте, что у вас есть хотя бы одна победа в рейтинге или есть очки войны
+    include includes/footer
+
+
+  #popup.popup.d-none
       div
         div
           strong.error#member-info-error Ошибка. Повторите попытку.
@@ -35,5 +40,4 @@ html(lang='ru')
           p#close.pointer Закрыть
               
         
-    include includes/footer
 script(src='/script/top.js', defer=true)

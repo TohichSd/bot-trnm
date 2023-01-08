@@ -20,16 +20,19 @@ function updateMembers() {
             card.classList.add('card', 'member-card', 'card-dark')
             if (i <= 2) card.classList.add('top3')
             const member = res[i]
+            let percentage
+            if (member.games !== 0)
+                percentage= Math.round((member.wins / member.games) * 100)
+            else percentage = 0
             card.style.backgroundImage = `url(${member.imageUrl})`
             card.innerHTML =
                 `<div class='pointer'>` +
                 `<h2 class='place'>${i + 1} место</h2>` +
                 `<div class='member-info'>` +
                 `<h2 class='name'>${member.name}</h2>` +
-                `<h3 class='stat'>${member.wins} / ${member.games} (${Math.round(
-                    (member.wins / member.games) * 100
-                )}%)</h3>` +
+                `<h3 class='stat'>${member.wins} / ${member.games} (${percentage}%)</h3>` +
                 `<p class='points'>${member.points} очков</p>` +
+                (member.winIndex ? `<p>${member.winIndex}</p>` : '') +
                 `</nobr>` +
                 `</div>` +
                 `</div>`
@@ -65,7 +68,7 @@ function showPopup(id) {
             return
         }
         container.parentElement.style.backgroundImage = `url(/img/cards/${Math.floor(
-            Math.random() * 10
+            Math.random() * 10,
         )}.png)`
         popupName.innerText = memberData.name
         popupGames.innerHTML = 'Сыграл(а) <span>' + memberData.games + '</span> игр'
