@@ -81,7 +81,13 @@ export default class Bot {
         this.client.on('interactionCreate', async interaction => {
             if (interaction instanceof ButtonInteraction)
                 try {
-                    await this.eventsManager.onEventButtonClick(interaction)
+                    if (interaction.customId == 'add-remove-member')
+                        await this.eventsManager.onEventButtonClick(interaction)
+                    else if (interaction.customId == 'btn-view-top') {
+                        await (
+                            await import('./commands/getScoreboard')
+                        ).default.execute(interaction)
+                    }
                 } catch (e) {
                     Logger.error(e)
                 }
@@ -161,7 +167,7 @@ export default class Bot {
     public getEventsManager(): GameEventsManager {
         return this.eventsManager
     }
-    
+
     public getPointsManager(): PointsManager {
         return this.pointsManager
     }

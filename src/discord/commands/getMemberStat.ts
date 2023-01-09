@@ -1,5 +1,5 @@
 import ICommand from '../classes/ICommand'
-import { GuildMember, Message, MessageEmbed } from 'discord.js'
+import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
 import { MemberModel } from '../../models/MemberModel'
 import { CommandSyntaxError } from '../../classes/CommandErrors'
 import { ClanModel } from '../../models/ClanModel'
@@ -18,35 +18,47 @@ const command: ICommand = {
 
         const clans = await ClanModel.getAllGuildClans(message.guild.id)
         const memberData = await MemberModel.getMemberByID(message.guild.id, member.id)
+
         if (memberData === null) {
             if (member.id === message.member.id)
                 await message.reply('Вы ещё не сыграли ни одной рейтинговой игры!')
             else await message.reply(`У <@${member.id}> ещё нет ни одной сыгранной рейтинговой игры!`)
             return
         }
+
         const winRate =
             memberData.games !== 0 ? `(${Math.round((memberData.wins / memberData.games) * 100)}%)` : ''
+
         const statEmbed = new MessageEmbed()
             .setDescription(`Статистика игрока <@${member.id}>`)
             .setColor('#3e76b2')
             .addField(':trophy: Победы:', `${memberData.wins} ${winRate}`)
             .addField(':game_die: Всего игр:', memberData.games.toString())
             .addField(':cyclone: Всего очков:', memberData.points.toString())
+
         if (member.partial) await member.fetch()
+
         const memberClan = clans
             .map(clan => {
                 if (member.roles.cache.has(clan.role_id)) return clan.role_id
                 return undefined
             })
             .filter(id => id)
+
         if (memberClan.length > 0) statEmbed.addField(':shield: клан:', `<@&${memberClan[0]}>`)
 
-        statEmbed.addField(
-            '\u200b',
-            `Статистику всех игроков можно посмотреть на сайте сервера ${env.SELF_URL} или командой **!игроки**`
+        const row = new MessageActionRow().addComponents(
+            new MessageButton()
+                .setCustomId('btn-view-top')
+                .setLabel('Топ игроков')
+                .setStyle('PRIMARY'),
+            new MessageButton()
+                .setURL(new URL(`/guild/${message.guild.id}/top/`, env.SELF_URL).href)
+                .setLabel('Посмотреть на сайте сервера')
+                .setStyle('LINK')
         )
         
-        await message.reply({ embeds: [statEmbed] })
+        await message.reply({ embeds: [statEmbed], components: [row] })
     },
 }
 

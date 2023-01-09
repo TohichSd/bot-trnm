@@ -1,14 +1,19 @@
 import ICommand from '../classes/ICommand'
 import { MemberModel } from '../../models/MemberModel'
-import { MessageEmbed } from 'discord.js'
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
 import numberToEmojis from '../util/numberToEmojis'
 import { env } from 'process'
 
 const command: ICommand = {
-    name: 'игроки',
+    name: 'топ',
     description: 'Список лучших игроков сервера',
 
-    async execute(message) {
+    async execute(inp: Message | ButtonInteraction) {
+        let message: Message
+
+        if (inp instanceof Message) message = inp
+        else if (inp instanceof ButtonInteraction) message = inp.message as Message
+
         const members = await MemberModel.getBestGuildMembers(message.guild.id, 9)
 
         const embedMembers = new MessageEmbed()
@@ -30,13 +35,22 @@ const command: ICommand = {
                 `:trophy: Победы: ${member.wins}\n` +
                 `:game_die: Всего игр: ${member.games}\n` +
                 `:cyclone: Очков войны: ${member.points}`
-            
+
             if (env.NODE_ENV == 'development') text += `\n${member.winIndex}`
 
             embedMembers.addField('\u200b', text, true)
         })
 
-        await message.reply({ embeds: [embedMembers] })
+        const row = new MessageActionRow().addComponents(
+            new MessageButton()
+                .setURL(new URL(`/guild/${message.guild.id}/top/`, env.SELF_URL).href)
+                .setLabel('Посмотреть на сайте сервера')
+                .setStyle('LINK')
+        )
+
+        if (inp instanceof Message) await message.reply({ embeds: [embedMembers], components: [row] })
+        else if (inp instanceof ButtonInteraction)
+            await inp.reply({ embeds: [embedMembers], components: [row], ephemeral: true })
     },
 }
 
