@@ -19,11 +19,12 @@ const createApplication = async (message: Message) => {
 
     const level = await interview.ask('Какой у вас уровень в игре?')
     const micro = await interview.ask('Есть ли у вас микрофон?')
-    const link = await interview.ask('Укажите ссылку на ваш профиль в Steam')
+    const link = await interview.ask('Укажите ссылку на ваш профиль в Steam', {
+        validator: answer => answer.content.includes('https://steamcommunity.com/id'),
+    })
 
     let memberData = await MemberModel.getMemberByID(message.guild.id, message.member.id)
-    if (!memberData)
-        memberData = new MemberModel({ id: message.member.id, guild_id: message.guild.id })
+    if (!memberData) memberData = new MemberModel({ id: message.member.id, guild_id: message.guild.id })
 
     memberData.level = level.content
     memberData.micro = micro.content
@@ -74,8 +75,7 @@ const command: ICommand = {
             else throw new Error('Invalid command')
 
             let memberData = await MemberModel.getMemberByID(message.guild.id, member.id)
-            if (!memberData)
-                memberData = new MemberModel({ id: member.id, guild_id: message.guild.id })
+            if (!memberData) memberData = new MemberModel({ id: member.id, guild_id: message.guild.id })
             if (!memberData.link || !memberData.level || !memberData.micro)
                 if (member.id == message.member.id)
                     throw new CommandError(
