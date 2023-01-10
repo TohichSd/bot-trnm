@@ -23,12 +23,13 @@ const command: ICommand = {
                 .setColor('#a9ff9f')
                 .setDescription(
                     channels
-                        .filter(ch => !!guildData.channels[ch])
                         .map(
                             (ch, i) =>
-                                `${i + 1}. <#${guildData.channels[ch]}> - ${
-                                    Config.channelsNames[ch] || '[нет названия] ' + ch
-                                } **(${ch})**`
+                                `${i + 1}. ${
+                                    guildData.channels[ch]
+                                        ? '<#' + guildData.channels[ch] + '>'
+                                        : '[не задан]'
+                                } - ${Config.channelsNames[ch] || '[нет названия] ' + ch} **(${ch})**`
                         )
                         .join('\n')
                 )

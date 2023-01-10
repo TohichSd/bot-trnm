@@ -4,7 +4,7 @@ import { DocumentType, getModelForClass, modelOptions, prop, ReturnModelType } f
  * Представляет параметры каналов сервера
  */
 @modelOptions({ schemaOptions: { _id: false } })
-class GuildChannels {
+export class GuildChannels {
     @prop()
     public applications_channel?: string
 
