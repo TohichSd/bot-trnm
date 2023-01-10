@@ -1,9 +1,10 @@
 import ICommand from '../classes/ICommand'
-import { Message, MessageEmbed, TextChannel } from 'discord.js'
+import { Message, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from 'discord.js'
 import { CommandSyntaxError, NotFoundError } from '../../classes/CommandErrors'
 import { ClanModel } from '../../models/ClanModel'
 import Interview from '../classes/Interview'
 import { GuildModel } from '../../models/GuildModel'
+import { env } from 'process'
 
 const command: ICommand = {
     name: 'клан',
@@ -70,7 +71,15 @@ const command: ICommand = {
                     )
                 })
             )
-            await message.reply({ embeds: [embedClans] })
+
+            const row = new MessageActionRow().addComponents(
+                new MessageButton()
+                    .setURL(new URL(`/guild/${message.guild.id}/clans/`, env.SELF_URL).href)
+                    .setLabel('Посмотреть на сайте сервера')
+                    .setStyle('LINK')
+            )
+            
+            await message.reply({ embeds: [embedClans], components: [row] })
         } else throw new CommandSyntaxError(this.syntax)
     },
 }
