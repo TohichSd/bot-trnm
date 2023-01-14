@@ -15,6 +15,7 @@ import { EventModel } from '../../models/EventModel'
 import { MemberModel } from '../../models/MemberModel'
 import { NotFoundError } from '../../classes/CommandErrors'
 import Logger from '../../classes/Logger'
+import { env } from 'process'
 
 type EventOptions = {
     name: string
@@ -68,7 +69,11 @@ export default class GameEventsManager {
             new MessageButton()
                 .setCustomId('add-remove-member')
                 .setLabel('ПРИНЯТЬ УЧАСТНИЕ')
-                .setStyle('SUCCESS')
+                .setStyle('SUCCESS'),
+            new MessageButton()
+                .setURL(new URL(`/guild/${guildID}/events/`, env.SELF_URL).href)
+                .setLabel('Посмотреть турнир на сайте сервера')
+                .setStyle('LINK')
         )
 
         const sentMessage = await eventsChannel.send({ embeds: [embedEvent], components: [row] })
@@ -84,12 +89,11 @@ export default class GameEventsManager {
         })
         await newEvent.save()
 
-        const baseEventTime = moment(options.datetimeMs)
-            .add(
-                moment().tz(Intl.DateTimeFormat().resolvedOptions().timeZone).utcOffset(),
-                'minutes'
-            )
-        
+        const baseEventTime = moment(options.datetimeMs).add(
+            moment().tz(Intl.DateTimeFormat().resolvedOptions().timeZone).utcOffset(),
+            'minutes'
+        )
+
         const scheduledEvent = await discordGuild.scheduledEvents.create({
             name: options.name,
             privacyLevel: 'GUILD_ONLY',
@@ -229,16 +233,15 @@ export default class GameEventsManager {
             .setDescription(options.description)
             .addField(
                 '\u200b',
-                `:clock1: Турнир пройдёт **${datetime
-                    .locale('ru')
-                    .format('ll')}** в **${datetime.format('HH:mm')}** по мск :clock1:`
+                `:clock1: Турнир пройдёт **${datetime.locale('ru').format('ll')}** в **${datetime.format(
+                    'HH:mm'
+                )}** по мск :clock1:`
             )
             .addField(
                 '\u200b',
                 `:game_die: **УЧАСТВУ${membersCount == 1 ? 'ЕТ' : 'ЮТ'} ${membersCount} ИГРОК${
                     membersCount == 1 ? '' : membersCount > 4 || membersCount == 0 ? 'ОВ' : 'А'
-                }**\n` +
-                    (membersCount > 0 ? options.eventMembers.join(', ') : 'Участников пока нет...')
+                }**\n` + (membersCount > 0 ? options.eventMembers.join(', ') : 'Участников пока нет...')
             )
             .setImage(options.imageUrl)
             .setColor(options.color)
