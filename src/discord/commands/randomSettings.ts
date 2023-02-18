@@ -8,6 +8,7 @@ const command: ICommand = {
 
     async execute(message: Message) {
         const embed = new MessageEmbed()
+        embed.setColor('#65fc60')
         const promises = Config.randomEventOptions.map(ctg => {
             const randomElement = ctg.values[Math.floor(Math.random() * ctg.values.length)]
             embed.addField(ctg.name, randomElement)
