@@ -110,12 +110,12 @@ class Member {
 
     public async editGamesCount(this: DocumentType<Member>, count: number): Promise<void> {
         const maxWins = await Member.getMaxWins(this.guild_id)
-        this.updateOne({
+        await this.updateOne({
             $inc: { games: count },
             $set: {
                 winIndex: this.calculateWinIndex(maxWins),
             },
-        })
+        }).exec()
     }
 
     public async editWinsCount(this: DocumentType<Member>, count: number): Promise<void> {
