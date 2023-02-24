@@ -20,7 +20,7 @@ const createApplication = async (message: Message) => {
     const level = await interview.ask('Какой у вас уровень в игре?')
     const micro = await interview.ask('Есть ли у вас микрофон?')
     const link = await interview.ask('Укажите ссылку на ваш профиль в Steam', {
-        validator: answer => answer.content.includes('https://steamcommunity.com/id'),
+        validator: answer => answer.content.includes('https://steamcommunity.com/'),
     })
 
     let memberData = await MemberModel.getMemberByID(message.guild.id, message.member.id)
