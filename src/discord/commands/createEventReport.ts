@@ -39,54 +39,68 @@ const command: ICommand = {
             const num = parseInt(eventNumAnswer.content)
             event = events[num - 1]
         } else {
-            throw new CommandError(
-                'No new events found',
-                'Турниры не обнаружены :frowning2:',
-                10000
-            )
+            throw new CommandError('No new events found', 'Турниры не обнаружены :frowning2:', 10000)
         }
 
         // Участники турнира
         let members = (
             await interview.ask(
-                'Перечислите участников игры **кроме себя**, *@упомянув* их в одном сообщении',
-                { validator: message => message.mentions.members.size == 3 }
+                'Перечислите участников игры **кроме себя**, *@упомянув* их в одном сообщении.',
+                { validator: message => message.mentions.members.size in [2, 3] }
             )
         ).mentions.members.map(m => m.id)
+
+        if (members.length == 2) {
+            const ai = await interview.ask(
+                'Указано только 3 участника. В игре принимал участие ИИ? (да/нет)'
+            )
+            if (ai.content.toLowerCase() != 'да')
+                throw new CommandError('Invalid members count', 'Укажите всех участников')
+        }
 
         const winnerValidator = (msg: Message): boolean => {
             if (msg.mentions.members.size != 1) return false
             const id = msg.mentions.members.first().id
             return !(!members.includes(id) && id != message.member.id)
         }
-        
+
         // Победитель
         const winner = (
             await interview.ask('Кто победил? Ответьте, *@упомянув* участника', {
                 validator: winnerValidator,
             })
         ).mentions.members.first().id
-        
+
         members = [winner, ...members.filter(id => id != winner)]
-        
+
         if (winner != message.member.id) members.push(message.member.id)
 
         const numberValidator = m => !isNaN(parseInt(m.content))
-        
-        const points0 = parseInt((await interview.ask(`Сколько очков получает <@${members[0]}>?`, {
-            validator: numberValidator,
-        })).content)
-        const points1 = parseInt((await interview.ask(`Сколько очков получает <@${members[1]}>?`, {
-            validator: numberValidator,
-        })).content)
-        const points2 = parseInt((await interview.ask(`Сколько очков получает <@${members[2]}>?`, {
-            validator: numberValidator,
-        })).content)
-        const points3 = parseInt((await interview.ask(`Сколько очков получает <@${members[3]}>?`, {
-            validator: numberValidator,
-        })).content)
-        
-        const points = [points0, points1, points2, points3]
+
+        const points = []
+        /*await Promise.all(
+            members.map(async id => {
+                return parseInt(
+                    (
+                        await interview.ask(`Сколько очков получает <@${id}>?`, {
+                            validator: numberValidator,
+                        })
+                    ).content
+                )
+            })
+        )*/
+
+        for await (const id of members) {
+            points.push(
+                parseInt(
+                    (
+                        await interview.ask(`Сколько очков получает <@${id}>?`, {
+                            validator: numberValidator,
+                        })
+                    ).content
+                )
+            )
+        }
 
         // Скрин
         const imageAnswer = await interview.ask('Отправьте скрин', {
@@ -96,9 +110,12 @@ const command: ICommand = {
         let members_string = `:first_place:<@${winner}> - ${points[0]} очков :cyclone:`
         await Promise.all(
             members.map((id, i) => {
-                if (id !== winner) members_string += `\n:game_die:<@${id}> - ${points[i]} очков :cyclone:`
+                if (id !== winner)
+                    members_string += `\n:game_die:<@${id}> - ${points[i]} очков :cyclone:`
             })
         )
+
+        if (members.length < 4) members_string += `\n:game_die:ИИ :robot:`
 
         const eventReport = new EventReportModel()
         eventReport.guild_id = message.guild.id
@@ -115,7 +132,7 @@ const command: ICommand = {
                 `https://discord.com/channels/${message.guild.id}/${guildData.channels.tournament_channel}/${event.message_id}`
             )
             .addField('Участники:', members_string)
-            .addField('\u200b', `:purple_circle: Проводил ${message.member.toString()}`)
+            .addField('\u200b', `:purple_circle: Проводил(а) ${message.member.toString()}`)
             .setColor(randomColor({ luminosity: 'light' }))
 
         try {
@@ -123,11 +140,9 @@ const command: ICommand = {
                 guildData.channels.game_report_images_channel
             )) as TextChannel
 
-            await imageStoreChannel
-                .send({ files: [imageAnswer.attachments.first().url] })
-                .then(m => {
-                    embedReport.setImage(m.attachments.first().url)
-                })
+            await imageStoreChannel.send({ files: [imageAnswer.attachments.first().url] }).then(m => {
+                embedReport.setImage(m.attachments.first().url)
+            })
         } catch (e) {
             Logger.error(e)
             throw new CommandError(
