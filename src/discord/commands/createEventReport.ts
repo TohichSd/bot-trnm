@@ -46,7 +46,7 @@ const command: ICommand = {
         let members = (
             await interview.ask(
                 'Перечислите участников игры **кроме себя**, *@упомянув* их в одном сообщении.',
-                { validator: message => message.mentions.members.size in [2, 3] }
+                { validator: message => message.mentions.members.size >= 2 }
             )
         ).mentions.members.map(m => m.id)
 
